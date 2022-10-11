@@ -21,4 +21,16 @@ msleep %>%
 
 ggplot(msleep, aes(x = bodywt, y = vore)) + geom_col()
 ```
+```{r, echo=FALSE}
+msleep %>%
+  group_by(vore) %>%
+  summarize(`average body weight` = mean(bodywt)) %>%
+  knitr::kable()
+```
 
+... or make a plot.
+
+```{r, fig.cap = "Wow captions too!"}
+ggplot(msleep, aes(x = sleep_total, y = bodywt)) +
+  geom_point() + scale_x_log10() + scale_y_log10()
+```
