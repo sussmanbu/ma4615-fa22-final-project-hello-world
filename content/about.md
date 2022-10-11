@@ -20,7 +20,7 @@ Luis is a Ph.D. student in Stats and is the Teaching Fellow for the course.
 Dan is a professor in the Math/Stat department and is the instructor for the course.
 
 ## Guanchen Xiao
-Guanchen is a undergraduate student studying Mathematics and Economics. 
+Guanchen is an undergraduate student studying Mathematics and Economics. 
 Github account: https://github.com/GraceX66 
 
 
