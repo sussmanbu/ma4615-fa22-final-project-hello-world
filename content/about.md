@@ -20,7 +20,7 @@ Github account: https://github.com/GraceX66
 Fangzhou is an undergraduate student majoring in Human Physiology and minoring in Mathematics. Github account: https://github.com/chengfz2001
 
 ## Zehao Zhou (Leo)
-Leo is an undergrad major in Math & Statistics.
+Leo is an undergrad major in Math & Statistics. <br />
 Github account: https://github.com/leozzh0926
 
 <!-- Please leave in the information below -->
