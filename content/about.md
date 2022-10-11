@@ -27,6 +27,9 @@ Github account: https://github.com/leozzh0926
 Yuke is a undergraduate majoring in biomedical engineering. <br />
 Github account: https://github.com/trustyuke
 
+## Xuzhan Tan (Jerry)
+Jerry is an undergrduate majoring in Statistics & Economics. <br />
+Github account: https://github.com/XuzhanTan
 <!-- Please leave in the information below -->
 
 ### Info About this Template.

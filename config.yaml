@@ -1,5 +1,5 @@
-baseURL: https://ma415final.netlify.app/
-title: MA 415 Project
+https://hello-world-415.netlify.app/
+title: Hello, World!
 
 # Comment when installing using Hugo Modules
 theme: eureka
