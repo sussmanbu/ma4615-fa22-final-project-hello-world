@@ -19,7 +19,7 @@ Github account: https://github.com/GraceX66
 ## Fangzhou Cheng
 Fangzhou is an undergraduate student majoring in Human Physiology and minoring in Mathematics. Github account: https://github.com/chengfz2001
 
-##Zehao Zhou (Leo)
+## Zehao Zhou (Leo)
 Leo is an undergrad major in Math & Statistics.
 Github account: https://github.com/leozzh0926
 
