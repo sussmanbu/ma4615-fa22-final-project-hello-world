@@ -13,11 +13,11 @@ The members of this team are below.
 
 
 ## Guanchen Xiao
-Guanchen is an undergraduate student studying Mathematics and Economics. 
+Guanchen is an undergraduate student studying Mathematics and Economics. <br />
 Github account: https://github.com/GraceX66 
 
 ## Fangzhou Cheng
-Fangzhou is an undergraduate student majoring in Human Physiology and minoring in Mathematics. Github account: https://github.com/chengfz2001
+Fangzhou is an undergraduate student majoring in Human Physiology and minoring in Mathematics. <br /> Github account: https://github.com/chengfz2001
 
 ## Zehao Zhou (Leo)
 Leo is an undergrad major in Math & Statistics. <br />
