@@ -11,18 +11,13 @@ This comes from the file `content/about.md`.
 This is a website for the final project for MA[46]15 Data Science with R by Team TEAMNAME.
 The members of this team are below.
 
-## Luis Iberico
-
-Luis is a Ph.D. student in Stats and is the Teaching Fellow for the course.
-
-## Dan Sussman
-
-Dan is a professor in the Math/Stat department and is the instructor for the course.
-
 ## Guanchen Xiao
 Guanchen is an undergraduate student studying Mathematics and Economics. 
 Github account: https://github.com/GraceX66 
 
+## Fangzhou Cheng
+Fangzhou is an undergraduate student majoring in Human Physiology and minoring in Mathematics.
+Github account: https://github.com/chengfz2001
 
 
 <!-- Please leave in the information below -->
