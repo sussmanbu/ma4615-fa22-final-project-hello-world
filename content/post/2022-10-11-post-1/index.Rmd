@@ -1,0 +1,24 @@
+---
+title: Post 1
+author: Guanchen Xiao
+date: '2022-10-11'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-10-11T09:39:43-04:00'
+featuredVideo: ~
+featuredImage: ~
+---
+```{r, message=FALSE}
+library(tidyverse)
+msleep %>%
+  group_by(vore) %>%
+  summarize(`average body weight` = mean(bodywt))
+
+ggplot(msleep, aes(x = bodywt, y = vore)) + geom_col()
+```
+
