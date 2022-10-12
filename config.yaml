@@ -1,4 +1,4 @@
-https://hello-world-415.netlify.app/
+baseURL: https://hello-world-415.netlify.app/
 title: Hello, World!
 
 # Comment when installing using Hugo Modules
