@@ -1,6 +1,6 @@
 ---
 title: Post 1
-author: Guanchen Xiao
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-10-11'
 slug: []
 categories: []
@@ -13,24 +13,15 @@ lastmod: '2022-10-11T09:39:43-04:00'
 featuredVideo: ~
 featuredImage: ~
 ---
-```{r, message=FALSE}
-library(tidyverse)
-msleep %>%
-  group_by(vore) %>%
-  summarize(`average body weight` = mean(bodywt))
+The first dataset is Medicare Inpatient Hospitals by Provider and Service. We found this data source on the website of the Centers for Medicare and Medicaid Services (CMS). https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service. This dataset contains 165281 rows and 15 columns. Each row represents a different provider. 15 features of this dataset include the address and basic information of the provider, the definition of Diagnosis Related Group (DRG), payments, and charges. This dataset is collected based on information gathered by CMS data for Original Medicare Part A beneficiaries by Inpatient Prospective Payment System (IPPS) hospitals. 
 
-ggplot(msleep, aes(x = bodywt, y = vore)) + geom_col()
-```
-```{r, echo=FALSE}
-msleep %>%
-  group_by(vore) %>%
-  summarize(`average body weight` = mean(bodywt)) %>%
-  knitr::kable()
-```
+We want to know how well Medicare is benefiting the patients in Inpatient Prospective Payment System (IPPS) hospitals by analyzing the average covered charges for each DRG. Also, we wonder whether there is a relationship between the total number of discharges and DRGs disregarding the providers and the hospitals. Finally, we want to figure out if there is a relationship between average medicare payment and the number of total discharges to see the pattern of providers’ services. However, it might be challenging to generalize how well the hospitals or the providers are doing solely according to this dataset since it only contains Medicare beneficiaries with Part A fee-for-service coverage. 
 
-... or make a plot.
+The second dataset is the crime incident reports from 2021. We found this dataset on Analyze Boston website, the open data hub for the city of Boston. https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system/resource/f4495ee9-c42c-4019-82c1-d067f07e45d2 This dataset contains 71,721 rows where each row is a crime incident. It has 18 columns describing the type, time, and location of the incidents. Features we are interested in exploring include descriptions of the incident, the district the crime was reported in, whether a shooting took place, the earliest date and time the incident could have taken place, and the street name the incident took place. The crime incident reports are provided by Boston Police Department to document the details they found when they first arrived at the incident scene. This dataset includes a reduced set of features from the new crime incident report system to capture the type, time, and location of the incident.  
 
-```{r, fig.cap = "Wow captions too!"}
-ggplot(msleep, aes(x = sleep_total, y = bodywt)) +
-  geom_point() + scale_x_log10() + scale_y_log10()
-```
+The data could be loaded and cleaned using R studio. We choose the analyze crime incident reports from 2021 instead of 2022 because the 2021 dataset is more complete. Boston is a relatively safe metropolitan area to live in and we hope to understand more about crime incidents in Boston through data analysis. We wonder if there is a relationship between crime rate and time of the day, week, and year. We are also interested to explore if shootings happen more frequently in certain areas of Boston.  It might be hard to address it because there might be confounding effects we are unknown of.  
+
+The third dataset is related to a household’s amount of dollars spent on health insurance during this year, and we generate it from ipums cps, a micro-database from the monthly U.S. labor force survey. https://cps.ipums.org/cps/. There are 152732 rows of raw data and 14 variables in total, including year(survey year), month, age, sex, race, marst (marital status), vetstat (veteran status), citizen (citizenship status), empstat (employment status), classwkr (class of work), schlcoll (college attendance), diffany (any difficulty), inctot (total personal income), and hipval (total expenditure on health insurance). We intend to make hipval our main Y variable and investigate how other variables affect people’s decisions on health insurance expenditures. More importantly, employment status also plays a big role since as the government keeps raising interest rates to avoid inflation, it is extremely likely that the country is in a trend of recession; therefore, it would be worthful to determine how people are affected and how they adjust to the changing macroeconomic environment. 
+
+The dataset is completely raw hence we have a lot to do with data cleaning such as deleting all the NIP (N/A) variables or changing the variable into a readable label (ex: for sex, 1 represents male and 2 represents female). 
+
