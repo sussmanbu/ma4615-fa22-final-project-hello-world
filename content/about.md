@@ -13,12 +13,32 @@ The members of this team are below.
 
 ## Luis Iberico
 
+<<<<<<< HEAD
 Luis is a Ph.D. student in Stats and is the Teaching Fellow for the course.
 
 ## Dan Sussman
 
 Dan is a professor in the Math/Stat department and is the instructor for the course.
+=======
+## Guanchen Xiao
+Guanchen is an undergraduate student studying Mathematics and Economics. <br />
+Github account: https://github.com/GraceX66 
 
+## Fangzhou Cheng
+Fangzhou is an undergraduate student majoring in Human Physiology and minoring in Mathematics. <br /> Github account: https://github.com/chengfz2001
+
+## Zehao Zhou (Leo)
+Leo is an undergrad major in Math & Statistics. <br />
+Github account: https://github.com/leozzh0926
+>>>>>>> 61a4cea52e3b89af95ac7ad750b6b9b26d796e17
+
+## Yuke Li
+Yuke is a undergraduate majoring in biomedical engineering. <br />
+Github account: https://github.com/trustyuke
+
+## Xuzhan Tan (Jerry)
+Jerry is an undergrduate majoring in Statistics & Economics. <br />
+Github account: https://github.com/XuzhanTan
 <!-- Please leave in the information below -->
 
 ### Info About this Template.
