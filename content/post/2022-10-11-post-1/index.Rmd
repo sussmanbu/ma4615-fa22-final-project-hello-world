@@ -1,5 +1,5 @@
 ---
-title: Post 1
+title: Post 1 - Dataset Collection
 author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-10-11'
 slug: []
