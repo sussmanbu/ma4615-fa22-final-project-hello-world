@@ -22,7 +22,6 @@ Fangzhou is an undergraduate student majoring in Human Physiology and minoring i
 ## Zehao Zhou (Leo)
 Leo is an undergrad major in Math & Statistics. <br />
 Github account: https://github.com/leozzh0926
->>>>>>> 61a4cea52e3b89af95ac7ad750b6b9b26d796e17
 
 ## Yuke Li
 Yuke is a undergraduate majoring in biomedical engineering. <br />
