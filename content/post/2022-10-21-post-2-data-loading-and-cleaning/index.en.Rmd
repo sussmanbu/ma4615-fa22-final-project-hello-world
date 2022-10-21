@@ -1,0 +1,35 @@
+---
+title: Post 2 - Data Loading and Cleaning
+author: Daniel Sussman
+date: '2022-10-21'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-10-21T09:37:04-04:00'
+featuredVideo: ~
+featuredImage: ~
+---
+```{r}
+library(tidyverse)
+
+medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv"))
+
+## CLEAN the data
+medicare_data_clean <- medicare_data
+
+write_csv(medicare_data_clean, file = here::here("dataset", "Medicare_Data.csv"))
+
+save(medicare_data_clean, file = here::here("dataset/Medicare_Data.RData"))
+```
+```{r}
+medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_Org_Name) %>%
+  filter(Rndrng_Prvdr_City == "Boston") %>%
+  select(-Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs))
+```
+
