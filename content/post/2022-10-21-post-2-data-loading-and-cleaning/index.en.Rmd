@@ -13,6 +13,11 @@ lastmod: '2022-10-21T09:37:04-04:00'
 featuredVideo: ~
 featuredImage: ~
 ---
+
+## Data Loading and Cleaning 
+
+We decided to focus on the first dataset, Medicare Inpatient Hospitals by Provider and Service. The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis.
+
 ```{r}
 library(tidyverse)
 ##Remove dollar signs to make data available
@@ -23,17 +28,46 @@ col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(),
 medicare_data_clean <- medicare_data %>% 
 ##Remove missing values
 filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
+##Remove NA 
+   drop_na() %>%      
 ##Remove useless columns
 select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
  
 write_csv(medicare_data_clean, file = here::here("dataset", "Medicare_Data_clean.csv"))
 save(medicare_data_clean, file = here::here("dataset/Medicare_Data.RData"))
 ```
+
+## Exploratory Data Analysis
+
+We calculate the mean of discharge, covered, total payment, and medicare payment based on state.
 ```{r}
-medicare_data_clean %>%
-  group_by(Rndrng_Prvdr_Org_Name) %>%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt)) %>%
-ggplot() + geom_point(aes(Mean_Covered, Mean_Total_Payment))
+medicare_data_sum <- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)) 
+```
+### Plot 1 
+__The relationship between Average Medicare Payments and Average Total Payments__
+```{r}
+ggplot(medicare_data_sum) + geom_point(aes(Mean_Total_Payment, Mean_Medicare_Payment))
 ```
 
+The Medicare covered payment increases as the total payment increases. This makes sense because Medicare covers payment mostly by a certain percentage, but may vary depending on differences in hospital charge structures.
 
+### Plot 2 
+__The ratio of total payment and covered for each state__
+```{r}
+medicare_data_sum %>% ggplot() + geom_point(aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, Mean_Total_Payment/Mean_Covered), y = Mean_Total_Payment/Mean_Covered)) + scale_x_discrete(guide = guide_axis(n.dodge = 2)) + labs(x = "State")
+```
+Maryland is an outlier because it is the only state where hospitals are accountable for the health of their communities.
+
+### Plot 3
+__The ratio of medicare payment and total payment for each state__
+```{r}
+medicare_data_sum %>%
+ group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+mutate(percent_payment=Mean_Medicare_Payment/Mean_Total_Payment)%>%
+    ggplot() +
+    geom_point(aes(y = percent_payment, x = reorder(Rndrng_Prvdr_State_Abrvtn,percent_payment)))+ 
+    scale_x_discrete(guide = guide_axis(n.dodge=2))+labs(x='State',y='Percent of Medicare payment of total payment')
+```
+Washington DC and Hawaii have the lowest ratio of medical payment and total payment while South Dakota and Maryland have the highest ratio.
