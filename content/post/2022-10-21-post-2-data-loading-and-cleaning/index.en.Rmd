@@ -15,21 +15,25 @@ featuredImage: ~
 ---
 ```{r}
 library(tidyverse)
-
-medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv"))
-
+##Remove dollar signs to make data available
+medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+ 
 ## CLEAN the data
-medicare_data_clean <- medicare_data
-
-write_csv(medicare_data_clean, file = here::here("dataset", "Medicare_Data.csv"))
-
+medicare_data_clean <- medicare_data %>% 
+##Remove missing values
+filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
+##Remove useless columns
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+ 
+write_csv(medicare_data_clean, file = here::here("dataset", "Medicare_Data_clean.csv"))
 save(medicare_data_clean, file = here::here("dataset/Medicare_Data.RData"))
 ```
 ```{r}
 medicare_data_clean %>%
   group_by(Rndrng_Prvdr_Org_Name) %>%
-  filter(Rndrng_Prvdr_City == "Boston") %>%
-  select(-Rndrng_Prvdr_State_Abrvtn) %>%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs))
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt)) %>%
+ggplot() + geom_point(aes(Mean_Covered, Mean_Total_Payment))
 ```
-abc
+
+
