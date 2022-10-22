@@ -58,6 +58,7 @@ __The ratio of total payment and covered for each state__
 ```{r}
 medicare_data_sum %>% ggplot() + geom_point(aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, Mean_Total_Payment/Mean_Covered), y = Mean_Total_Payment/Mean_Covered)) + scale_x_discrete(guide = guide_axis(n.dodge = 2)) + labs(x = "State")
 ```
+
 Maryland is an outlier because it is the only state where hospitals are accountable for the health of their communities.
 
 ### Plot 3
@@ -70,4 +71,6 @@ mutate(percent_payment=Mean_Medicare_Payment/Mean_Total_Payment)%>%
     geom_point(aes(y = percent_payment, x = reorder(Rndrng_Prvdr_State_Abrvtn,percent_payment)))+ 
     scale_x_discrete(guide = guide_axis(n.dodge=2))+labs(x='State',y='Percent of Medicare payment of total payment')
 ```
+
 Washington DC and Hawaii have the lowest ratio of medical payment and total payment while South Dakota and Maryland have the highest ratio. From the above graph that describes the percentage the Medicare payment in the total payment, it’s quite clear that there’s a standard of 85% that can be found within all the states in the U.S. However, it’s quite surprising to find that there are almost half of the states do not fulfill this standard. To be more specific, it means the residents of these states have to afford 15-25% of the total payment even if they have medicare covered. Also, there are states that covered more than 90% of the payment which means the person only has to afford less than 10% of the total payment. The disparity is visually huge among all the states and it is something that could be further analyzed to see if there’s a need to improve the Medicare system in each state.
+
