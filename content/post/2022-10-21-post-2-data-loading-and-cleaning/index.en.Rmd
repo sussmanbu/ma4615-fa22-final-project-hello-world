@@ -1,6 +1,6 @@
 ---
 title: Post 2 - Data Loading and Cleaning
-author: Daniel Sussman
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-10-21'
 slug: []
 categories: []
@@ -32,4 +32,4 @@ medicare_data_clean %>%
   select(-Rndrng_Prvdr_State_Abrvtn) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs))
 ```
-
+abc
