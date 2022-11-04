@@ -14,6 +14,7 @@ featuredVideo: ~
 featuredImage: ~
 ---
 ###1 Modeling
+
 ```{r}
 library(tidyverse)
 medicare_data_clean
@@ -28,6 +29,7 @@ ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom
 There is a positive linear correlation between the mean medicare payment and mean total payment by states. The slope is 0.8750288 and the intercept is -514.6072736. Therefore, the predicted Medicare payment can be estimated by the equation (Total_Payment*0.8750288 - 514.6072736).
 
 ###2 EDA 1
+
 ```{r}
 medicare_data_clean %>% ggplot(aes(Rndrng_Prvdr_State_Abrvtn, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
   geom_bin2d() + coord_flip() + guides(y = guide_axis(n.dodge = 2)) + scale_fill_viridis_c()
@@ -36,6 +38,7 @@ medicare_data_clean %>% ggplot(aes(Rndrng_Prvdr_State_Abrvtn, Avg_Mdcr_Pymt_Amt/
 Most states have the ratio of average medical payment over average total payment concentrated in the range of 0.7-1.0. a few outliers are below 0.7 or greater than 1. By looking at states with larger population and more samples, such as California, Texas, Florida, and New York, more ratio are concentrated in the 0.8-0.95 range.
 
 ###3 EDA 2
+
 ```{r}
 ggplot(medicare_data_clean,aes(x=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt,y=Rndrng_Prvdr_RUCA)) +
   stat_binhex() + labs(x= "Coverage Proportion", y="RUCA")
