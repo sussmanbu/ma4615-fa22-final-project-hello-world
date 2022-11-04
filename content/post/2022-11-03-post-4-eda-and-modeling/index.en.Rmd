@@ -13,22 +13,36 @@ lastmod: '2022-11-03T21:21:25-04:00'
 featuredVideo: ~
 featuredImage: ~
 ---
+###1 Modeling
 ```{r}
 library(tidyverse)
-library(modelr)
-
+medicare_data_clean
 medicare_data_sum <- medicare_data_clean %>%
   group_by(Rndrng_Prvdr_State_Abrvtn) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
-
 medicare_mod <- lm(Avg_Mdcr_Pymt_Amt ~ Avg_Tot_Pymt_Amt, data = medicare_data_clean)
-(beta <- coef(medicare_mod))
-
-ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red", size = 1)
-
-medicare_data_clean %>% add_residuals(medicare_mod) %>% ggplot(aes(Avg_Tot_Pymt_Amt, resid)) + geom_ref_line(h = 0) + geom_point()
+beta <- coef(medicare_mod)
+ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
 ```
+
+There is a positive linear correlation between the mean medicare payment and mean total payment by states. The slope is 0.8750288 and the intercept is -514.6072736. Therefore, the predicted Medicare payment can be estimated by the equation (Total_Payment*0.8750288 - 514.6072736).
+
+###2 EDA 1
 ```{r}
-ggplot(head(medicare_data_sum,6), aes(x = factor(1), fill = factor(Mean_Medicare_Payment/Mean_Total_Payment))) + geom_bar(width = 1)  + facet_wrap(~Rndrng_Prvdr_State_Abrvtn) + coord_polar(theta = "y")
+medicare_data_clean %>% ggplot(aes(Rndrng_Prvdr_State_Abrvtn, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
+  geom_bin2d() + coord_flip() + guides(y = guide_axis(n.dodge = 2)) + scale_fill_viridis_c()
 ```
 
+Most states have the ratio of average medical payment over average total payment concentrated in the range of 0.7-1.0. a few outliers are below 0.7 or greater than 1. By looking at states with larger population and more samples, such as California, Texas, Florida, and New York, more ratio are concentrated in the 0.8-0.95 range.
+
+###3 EDA 2
+```{r}
+ggplot(medicare_data_clean,aes(x=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt,y=Rndrng_Prvdr_RUCA)) +
+  stat_binhex() + labs(x= "Coverage Proportion", y="RUCA")
+```
+
+RUCA (Rural-Urban Commuting Area Code) is an index of urbanization based on the ZIP code developed by the US government in 2010. From 1 to 10, a more significant number represents a more rural and lower commuting area. Based on this index, we can make a graph of RUCA and the proportion of coverage across the U.S. The graph shows the relationship between the economic development of an area and medicare coverage provided by the local government.
+
+From the graph, we can see that most hospitals are located in urban areas with higher commuting. However, the variability of the coverage in urban areas is also high. For areas with RUCA below 2.5, the lines are wider compared to the lines with higher RUCA. It indicates that there are a lot of hospitals that are actually not providing enough coverage for patients.  
+
+It could also potentially work as an indicator of U.S development and medicare policies. For areas with a higher RUCA, we can see the data points are clearly less scattered. It means that the U.S government is providing more coverage to old people living in rural areas. Such intention is good from the basics. It allows old people to easily have access to healthcare and medical resources when there’s a need. It also reduces the demand for old people to travel.
