@@ -28,10 +28,13 @@ medicare_data_sum <- medicare_data_clean %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
 medicare_mod <- lm(Avg_Mdcr_Pymt_Amt ~ Avg_Tot_Pymt_Amt, data = medicare_data_clean)
 beta <- coef(medicare_mod)
+var <- sigma(medicare_mod)
+var
 ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
 ```
 
-There is a positive linear correlation between the mean medicare payment and mean total payment by states. The slope is 0.8750288 and the intercept is -514.6072736. Therefore, the predicted Medicare payment can be estimated by the equation (Total_Payment*0.8750288 - 514.6072736).
+There is a positive linear correlation between the mean medicare payment and mean total payment by states. The slope is 0.8750288 and the intercept is -514.6072736; therefore, the predicted Medicare payment can be estimated by the equation: Mean_Medicate_Payment^ = Total_Payment^*0.8750288 - 514.6072736). Most of the data points seem to cluster between 12500 and 19000 in terms of mean total payment. There are few outliers with relatively low leverage and low influence hence will not impact our model a lot. We have a variance of 2697.746, but it seems understandable as our y values, mean medicare payments, are extremely large. Therefore, it seems like linear regression is a good fit for our two variables
+
 
 ###2 EDA 1
 
