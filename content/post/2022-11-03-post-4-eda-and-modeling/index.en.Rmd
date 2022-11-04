@@ -1,0 +1,15 @@
+---
+title: Post 4 - EDA and Modeling
+author: Daniel Sussman
+date: '2022-11-03'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-11-03T21:21:25-04:00'
+featuredVideo: ~
+featuredImage: ~
+---
