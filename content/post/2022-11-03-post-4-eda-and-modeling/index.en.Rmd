@@ -1,6 +1,6 @@
 ---
 title: Post 4 - EDA and Modeling
-author: Daniel Sussman
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-11-03'
 slug: []
 categories: []
@@ -13,3 +13,22 @@ lastmod: '2022-11-03T21:21:25-04:00'
 featuredVideo: ~
 featuredImage: ~
 ---
+```{r}
+library(tidyverse)
+library(modelr)
+
+medicare_data_sum <- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+medicare_mod <- lm(Avg_Mdcr_Pymt_Amt ~ Avg_Tot_Pymt_Amt, data = medicare_data_clean)
+(beta <- coef(medicare_mod))
+
+ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red", size = 1)
+
+medicare_data_clean %>% add_residuals(medicare_mod) %>% ggplot(aes(Avg_Tot_Pymt_Amt, resid)) + geom_ref_line(h = 0) + geom_point()
+```
+```{r}
+ggplot(head(medicare_data_sum,6), aes(x = factor(1), fill = factor(Mean_Medicare_Payment/Mean_Total_Payment))) + geom_bar(width = 1)  + facet_wrap(~Rndrng_Prvdr_State_Abrvtn) + coord_polar(theta = "y")
+```
+
