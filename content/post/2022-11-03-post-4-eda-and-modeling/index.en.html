@@ -1,6 +1,6 @@
 ---
 title: Post 4 - EDA and Modeling
-author: Daniel Sussman
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-11-03'
 slug: []
 categories: []
@@ -19,3 +19,39 @@ featuredImage: ~
 
 </div>
 
+<p>###1 Modeling</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
+## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
+## ✔ tidyr   1.2.0      ✔ stringr 1.4.1 
+## ✔ readr   2.1.2      ✔ forcats 0.5.2 
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>medicare_data &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Data.csv&quot;) , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean &lt;- medicare_data %&gt;% 
+filter(!grepl(&#39;Unknown&#39;, medicare_data$Rndrng_Prvdr_RUCA_Desc)) %&gt;%
+   drop_na() %&gt;%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+medicare_data_sum &lt;- medicare_data_clean %&gt;%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %&gt;%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+medicare_mod &lt;- lm(Avg_Mdcr_Pymt_Amt ~ Avg_Tot_Pymt_Amt, data = medicare_data_clean)
+beta &lt;- coef(medicare_mod)
+ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = &quot;red&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>There is a positive linear correlation between the mean medicare payment and mean total payment by states. The slope is 0.8750288 and the intercept is -514.6072736. Therefore, the predicted Medicare payment can be estimated by the equation (Total_Payment*0.8750288 - 514.6072736).</p>
+<p>###2 EDA 1</p>
+<pre class="r"><code>medicare_data_clean %&gt;% ggplot(aes(Rndrng_Prvdr_State_Abrvtn, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
+  geom_bin2d() + coord_flip() + guides(y = guide_axis(n.dodge = 2)) + scale_fill_viridis_c()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Most states have the ratio of average medical payment over average total payment concentrated in the range of 0.7-1.0. a few outliers are below 0.7 or greater than 1. By looking at states with larger population and more samples, such as California, Texas, Florida, and New York, more ratio are concentrated in the 0.8-0.95 range.</p>
+<p>###3 EDA 2</p>
+<pre class="r"><code>ggplot(medicare_data_clean,aes(x=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt,y=Rndrng_Prvdr_RUCA)) +
+  stat_binhex() + labs(x= &quot;Coverage Proportion&quot;, y=&quot;RUCA&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>RUCA (Rural-Urban Commuting Area Code) is an index of urbanization based on the ZIP code developed by the US government in 2010. From 1 to 10, a more significant number represents a more rural and lower commuting area. Based on this index, we can make a graph of RUCA and the proportion of coverage across the U.S. The graph shows the relationship between the economic development of an area and medicare coverage provided by the local government.</p>
+<p>From the graph, we can see that most hospitals are located in urban areas with higher commuting. However, the variability of the coverage in urban areas is also high. For areas with RUCA below 2.5, the lines are wider compared to the lines with higher RUCA. It indicates that there are a lot of hospitals that are actually not providing enough coverage for patients.</p>
+<p>It could also potentially work as an indicator of U.S development and medicare policies. For areas with a higher RUCA, we can see the data points are clearly less scattered. It means that the U.S government is providing more coverage to old people living in rural areas. Such intention is good from the basics. It allows old people to easily have access to healthcare and medical resources when there’s a need. It also reduces the demand for old people to travel.</p>
