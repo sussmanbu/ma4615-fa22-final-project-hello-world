@@ -1,5 +1,5 @@
 ---
-title: 2022-11-11-post-5-Merging-Dataset
+title: Merging Datasets
 author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-11-11'
 slug: []
@@ -14,6 +14,9 @@ featuredVideo: ~
 featuredImage: ~
 ---
 
+We found a dataset from the website of the Centers for Medicare and Medicaid Services (CMS).  https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums . This dataset summarized information on medicare premium beneficiaries and amounts by yearly trend, demographics and geography. We picked the data from 2020, which is same as our initial dataset. We guess there might be some relationship between discharge and premium.
+
+##Output 1
 ```{r}
 library(tidyverse)
 medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
@@ -22,12 +25,30 @@ medicare_data_clean <- medicare_data %>%
 filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
    drop_na() %>%      
 select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
-medicare_data_sum <- medicare_data_clean %>%
+(medicare_data_sum <- medicare_data_clean %>%
   group_by(Rndrng_Prvdr_State_Abrvtn) %>%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
-medicare_mod <- lm(Avg_Mdcr_Pymt_Amt ~ Avg_Tot_Pymt_Amt, data = medicare_data_clean)
-beta <- coef(medicare_mod)
-var <- sigma(medicare_mod)
-var
-ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+```
+
+##Output 2
+```{r}
+library(tidyverse)
+premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
+(medicare_premium_combined <- merge(premiumA,medicare_data_sum))
+```
+
+The first difficulty we run into is that the state of our new data set is written in full name, whereas the state of our initial dataset is written in abbreviation; as a result, we need to alter the new data set's state into abbreviations. Furthermore, since the amount of rows in our original dataset and the amount in our new dataset are different, making it difficult to combine the two, we summarized our initial dataset and grouped it by state, bringing the number of rows into line with the number in our new dataset. Finally, we merge two datasets into a new file called “medicare_premium_combined” using the merge function.
+
+##Output 3
+```{r}
+ggplot(medicare_premium_combined) +
+  geom_smooth(aes(x = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, y = Mean_Discharge), method = "lm")
+```
+
+There is a positive linear relationship between the variable “Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries” and “Mean_Discharge”, indicating that as the average premium by person increases, the average discharge by provider also increases. Therefore, this plot implies that the more expensive the premium charged to a beneficiary is, the more frequent the beneficiary will go to the hospital and seek medical care.
+
+##Output 4
+```{r}
+(Combined <- merge(premiumA,medicare_data_sum)) %>% mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>% 
+ggplot() + geom_point(aes(x = reorder(Rndrng_Prvdr_State_Abrvtn,premium_individual),y = premium_individual)) +  scale_x_discrete(guide = guide_axis(n.dodge =2)) + labs(x = 'state')
 ```
