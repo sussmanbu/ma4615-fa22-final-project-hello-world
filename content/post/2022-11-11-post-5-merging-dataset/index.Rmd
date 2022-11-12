@@ -1,0 +1,33 @@
+---
+title: 2022-11-11-post-5-Merging-Dataset
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
+date: '2022-11-11'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-11-11T20:57:26-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+```{r}
+library(tidyverse)
+medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean <- medicare_data %>% 
+filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+medicare_data_sum <- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+medicare_mod <- lm(Avg_Mdcr_Pymt_Amt ~ Avg_Tot_Pymt_Amt, data = medicare_data_clean)
+beta <- coef(medicare_mod)
+var <- sigma(medicare_mod)
+var
+ggplot(medicare_data_sum, aes(Mean_Total_Payment, Mean_Medicare_Payment)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
+```
