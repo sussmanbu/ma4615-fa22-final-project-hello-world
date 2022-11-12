@@ -1,5 +1,5 @@
 ---
-title: Merging Datasets
+title: Post 5 - Merging Datasets
 author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-11-11'
 slug: []
@@ -34,7 +34,7 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
 ```{r}
 library(tidyverse)
 premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
-(medicare_premium_combined <- merge(premiumA,medicare_data_sum))
+medicare_premium_combined <- merge(premiumA,medicare_data_sum)
 ```
 
 The first difficulty we run into is that the state of our new data set is written in full name, whereas the state of our initial dataset is written in abbreviation; as a result, we need to alter the new data set's state into abbreviations. Furthermore, since the amount of rows in our original dataset and the amount in our new dataset are different, making it difficult to combine the two, we summarized our initial dataset and grouped it by state, bringing the number of rows into line with the number in our new dataset. Finally, we merge two datasets into a new file called “medicare_premium_combined” using the merge function.
