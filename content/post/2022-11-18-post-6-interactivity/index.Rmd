@@ -1,0 +1,15 @@
+---
+title: Post 6 - Interactivity
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
+date: '2022-11-18'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-11-18T21:40:44-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
