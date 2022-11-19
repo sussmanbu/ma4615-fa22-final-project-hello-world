@@ -20,7 +20,8 @@ featuredImage: ~
 </div>
 
 <p>We found a dataset from the website of the Centers for Medicare and Medicaid Services (CMS). <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a> . This dataset summarized information on medicare premium beneficiaries and amounts by yearly trend, demographics and geography. We picked the data from 2020, which is same as our initial dataset. We guess there might be some relationship between discharge and premium.</p>
-<p>##Output 1</p>
+<div id="output-1" class="section level2">
+<h2>Output 1</h2>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
 ## ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
@@ -54,18 +55,25 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
 ## 10 FL                                  36.9       92665.          13998.  11935.
 ## # … with 41 more rows, and abbreviated variable names ¹​Mean_Total_Payment,
 ## #   ²​Mean_Medicare_Payment</code></pre>
-<p>##Output 2</p>
+</div>
+<div id="output-2" class="section level2">
+<h2>Output 2</h2>
 <pre class="r"><code>library(tidyverse)
 premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
 medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum)</code></pre>
 <p>The first difficulty we run into is that the state of our new data set is written in full name, whereas the state of our initial dataset is written in abbreviation; as a result, we need to alter the new data set’s state into abbreviations. Furthermore, since the amount of rows in our original dataset and the amount in our new dataset are different, making it difficult to combine the two, we summarized our initial dataset and grouped it by state, bringing the number of rows into line with the number in our new dataset. Finally, we merge two datasets into a new file called “medicare_premium_combined” using the merge function.</p>
-<p>##Output 3</p>
+</div>
+<div id="output-3" class="section level2">
+<h2>Output 3</h2>
 <pre class="r"><code>ggplot(medicare_premium_combined) +
   geom_smooth(aes(x = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, y = Mean_Discharge), method = &quot;lm&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>There is a positive linear relationship between the variable “Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries” and “Mean_Discharge”, indicating that as the average premium by person increases, the average discharge by provider also increases. Therefore, this plot implies that the more expensive the premium charged to a beneficiary is, the more frequent the beneficiary will go to the hospital and seek medical care.</p>
-<p>##Output 4</p>
+</div>
+<div id="output-4" class="section level2">
+<h2>Output 4</h2>
 <pre class="r"><code>(Combined &lt;- merge(premiumA,medicare_data_sum)) %&gt;% mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %&gt;% 
 ggplot() + geom_point(aes(x = reorder(Rndrng_Prvdr_State_Abrvtn,premium_individual),y = premium_individual)) +  scale_x_discrete(guide = guide_axis(n.dodge =2)) + labs(x = &#39;state&#39;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
