@@ -13,3 +13,15 @@ lastmod: '2022-11-18T21:40:44-05:00'
 featuredVideo: ~
 featuredImage: ~
 ---
+## This week, we discussed our initial thoughts on the interactivity for our final project. 
+
+### Our Stories
+We come up with two interactive plans. Our first plan is to present the nationwide big picture of the data and allow users to zoom in to show specific situations for each state. Our second plan is to offer datasets and trends for several years, let users compare changes through the years, and zoom in on the data of any year.
+We plan to provide an interactive plot based on states and years and to orient the users on how medicare coverage percentage and premiums change among states and from year to year. We want to discuss the factors that can affect medicare coverage percentage and discharge amounts, such as premiums, urban and ritual levels, and disease type. It is possible to predict the medicare coverage percentage for each state/city based on the RUCA codes, which reflect population density, urbanization, daily commuting, disease type, and the premium the beneficiary has to pay.
+
+### Our Plans
+We plan to use a shiny interactivity model to generate the trends for various factors based on medicare coverage percentage for each state. We have collected the necessary data that we are about to present and have discovered some exciting trends and findings among the variables. In this way, we can provide a customized prediction model for each state and guide the user to determine which factor is more critical for the specific state. We also plan to generate a crosstalk interactive map that provides each state's individual data points. 
+
+### Difficulties
+We have difficulty finding the longitude and latitude information of the state, which is required to allow users to zoom in to display information about specific locations. We also have difficulty deciding what information should be displayed on the detail page for each state. Our dataset is very diverse, including many aspects of medicare. Some are related, and some are not. We are unsure what information should be included and how much information should be included. 
+
