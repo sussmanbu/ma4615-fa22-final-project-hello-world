@@ -55,7 +55,7 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 </div>
 <div id="data-import-and-cleaning" class="section level1">
 <h1>Data Import and Cleaning</h1>
-<p>In <a href="../static/load_and_clean_data.R">load_and_clean_data.R</a>, we loaded and cleaned our datasets:</p>
+<p>In <a href="https://hello-world-415.netlify.app/load_and_clean_data.R">load_and_clean_data.R</a>, we loaded and cleaned our datasets:</p>
 <div id="the-first-dataset-medicare-inpatient-hospitals---by-provider-and-service" class="section level2">
 <h2>The first dataset: Medicare Inpatient Hospitals - by Provider and Service</h2>
 <p>The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis.
@@ -71,11 +71,15 @@ We first discussed to identify the columns we need for this project. After selec
 <p>In order to combine the two datasets, we used function <code>group_by</code> to sort the first dataset by states , and used function <code>merge()</code> to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-## ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
+## ✔ ggplot2 3.4.0      ✔ purrr   0.3.5 
 ## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
-## ✔ tidyr   1.2.0      ✔ stringr 1.4.1 
-## ✔ readr   2.1.2      ✔ forcats 0.5.2 
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+## ✔ readr   2.1.3      ✔ forcats 0.5.2</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.2.2</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.2.2</code></pre>
+<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.2.2</code></pre>
+<pre><code>## Warning: package &#39;purrr&#39; was built under R version 4.2.2</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
