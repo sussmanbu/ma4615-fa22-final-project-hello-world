@@ -40,7 +40,7 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 * Reduced_Base_Premium_Amount: total Medicare part A reduced premium paid in a given state 
 
 # Data Import and Cleaning
-In [load_and_clean_data.R](C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/load_and_clean_data.R), we loaded and cleaned our datasets:
+In [load_and_clean_data.R](static/load_and_clean_data.R), we loaded and cleaned our datasets:
 
 ## The first dataset: Medicare Inpatient Hospitals - by Provider and Service
 The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis. 
