@@ -7,8 +7,6 @@ featuredImage: images/Data Page.webp
 draft: false
 ---
 
-This comes from the file `content/data.Rmd`.
-
 # Data Source
 In the United States, the government is spending more and more expenditures on healthcare for decades, but there is little healthcare outcomes indicated by the overall health condition of Americans. Also, with the aging of population, a more comprehensive and cost-efficient medical environment for the old is necessary to provide health security for American people. Medicare is a kind of public health insurance designed for people 65 or older, and certain people with disabilities, End-Stage Renal Disease (ESRD), or 
 Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore, in order to learn more about how well Medicare is benefiting the patients treated Inpatient Prospective Payment System (IPPS) hospitals, we decided to focus on the Medicare data of the beneficiaries with Part A fee-for-service coverage. In this project, we want to study what factors can affect the Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare.
@@ -52,12 +50,18 @@ While merging the cleaned first dataset with other datasets, we summarized and c
 # Datasets Combination
 In order to combine the two datasets, we used function `group_by` to sort the first dataset by states , and used function `merge()` to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.
 ```{r}
-library(tidyverse)
-premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
+suppressPackageStartupMessages(library(tidyverse))
+premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), 
+                     col_types = cols(Total_Premium_Amount =col_number(),  
+                    Reduced_Base_Premium_Amount=col_number(), 
+                    Standard_Base_Premium_Amount = col_number()))
 medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
 medicare_data_sum<- medicare_data_clean %>%
   group_by(Rndrng_Prvdr_State_Abrvtn) %>%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
 medicare_premium_combined <- merge(premiumA,medicare_data_sum) %>%
     mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
 ```

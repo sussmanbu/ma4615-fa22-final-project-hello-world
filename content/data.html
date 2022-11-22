@@ -12,7 +12,6 @@ draft: false
 
 </div>
 
-<p>This comes from the file <code>content/data.Rmd</code>.</p>
 <div id="data-source" class="section level1">
 <h1>Data Source</h1>
 <p>In the United States, the government is spending more and more expenditures on healthcare for decades, but there is little healthcare outcomes indicated by the overall health condition of Americans. Also, with the aging of population, a more comprehensive and cost-efficient medical environment for the old is necessary to provide health security for American people. Medicare is a kind of public health insurance designed for people 65 or older, and certain people with disabilities, End-Stage Renal Disease (ESRD), or
@@ -69,20 +68,11 @@ We first discussed to identify the columns we need for this project. After selec
 <div id="datasets-combination" class="section level1">
 <h1>Datasets Combination</h1>
 <p>In order to combine the two datasets, we used function <code>group_by</code> to sort the first dataset by states , and used function <code>merge()</code> to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-## ✔ ggplot2 3.4.0      ✔ purrr   0.3.5 
-## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
-## ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
-## ✔ readr   2.1.3      ✔ forcats 0.5.2</code></pre>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;purrr&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
+<pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))
+premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), 
+                     col_types = cols(Total_Premium_Amount =col_number(),  
+                    Reduced_Base_Premium_Amount=col_number(), 
+                    Standard_Base_Premium_Amount = col_number()))
 medicare_data_clean &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Data_clean.csv&quot;))</code></pre>
 <pre><code>## Rows: 164520 Columns: 10
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -94,7 +84,10 @@ medicare_data_clean &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicar
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>medicare_data_sum&lt;- medicare_data_clean %&gt;%
   group_by(Rndrng_Prvdr_State_Abrvtn) %&gt;%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
 medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum) %&gt;%
     mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)</code></pre>
 </div>
