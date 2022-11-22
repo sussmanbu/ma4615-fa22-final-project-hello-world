@@ -3,96 +3,68 @@ title: Data
 description:
 toc: true
 featuredVideo:
-featuredImage: images/data-import-cheatsheet-thumbs.png
+featuredImage: images/Data Page.webp
 draft: false
 ---
 
-
-
 This comes from the file `content/data.Rmd`.
 
-Your first steps in this project will be to find data to work on.
+# Data Source
+In the United States, the government is spending more and more expenditures on healthcare for decades, but there is little healthcare outcomes indicated by the overall health condition of Americans. Also, with the aging of population, a more comprehensive and cost-efficient medical environment for the old is necessary to provide health security for American people. Medicare is a kind of public health insurance designed for people 65 or older, and certain people with disabilities, End-Stage Renal Disease (ESRD), or 
+Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore, in order to learn more about how well Medicare is benefiting the patients treated Inpatient Prospective Payment System (IPPS) hospitals, we decided to focus on the Medicare data of the beneficiaries with Part A fee-for-service coverage. In this project, we want to study what factors can affect the Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare.
 
-I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
+## Dataset 1
+* Link to the original dataset: https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service
+* The first dataset is Medicare Inpatient Hospitals by Provider and Service, which contains detailed information on Rural-Urban Commuting Area (RUCA) codes, Diagnosis Related Group (DRG) category, total discharges, average covered charges by Medicare, total payment, and Medicare payment for the healthcare providers from more than 3,000 hospitals across 51 states in the US. Each row represents a provider with a certain DRG service provided. This dataset is found by our team member Fangzhou Cheng and is collected based on information gathered by Centers for Medicare & Medicaid Services (CMS) for Original Medicare Part A beneficiaries by IPPS hospitals. The primary source of the data is the CMS’s Medicare Provider Analysis and Review (MEDPAR) inpatient data based on fiscal year (October 1st through September 30th). The inpatient provider name and address are derived from CMS’s Provider of Service (POS) data, a resource that provides characteristics associated with institutional facilities. HRRs are geographic units of analysis based on facility location zip codes that were developed by the Dartmouth Atlas of Health Care to delineate regional health care markets in the United States. The data is collected to summarize the information on services and procedures provided to Medicare beneficiaries by hospital facilities.
 
-You are __not__ allowed to work on COVID data.
+## Dataset 2
+* Link to the original dataset: https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums
+* The second dataset summarized information on total premium, standard base premium, and reduced base premium for beneficiaries by 51 states across the US. We picked the data from 2020, which is same year as our initial dataset. This dataset is found by our team member Yuke Li and is gathered from CMS data for beneficiaries enrolled in the Medicare program available from the CMS Chronic Conditions Data Warehouse. The data is collected to summarize the premiums that the beneficiaries have to pay for the Medicare services, and we intend to combine this dataset with the first one to analyze the relationship between Medicare coverages and its premiums.
 
-Initially, you will study _one dataset_ but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable.
-Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
+# Variables
+* Rndrng_Prvdr_Org_Name: rendering provider name; name of the provider.
+* Rndrng_Prvdr_City: rendering provider city; the city in which the provider is physically located.
+* Rndrng_Prvdr_State_Abrvtn: rendering provider state abbreviation; the state abbreviation for the state in which the provider is physically located.
+* Rndrng_Prvdr_RUCA: rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.
+* DRG_Cd: Diagnosis Related Group (DRG) definition; groups similar clinical conditions
+* DRG_Desc: DRG description;description of DRG_Cd.
+* Tot_Dschrgs: total discharges; measures the number of discharges billed by all providers for inpatient hospital services.
+* Avg_Submtd_Cvrd_Chrg: average covered charges; the average charge of all providers' services covered by Medicare for discharges in the DRG.
+* Avg_Tot_Pymt_Amt: average total payments; The average total payments to all providers for the DRG.
+* Avg_Mdcr_Pymt_Amt: average medicare payments; the average amount that Medicare pays to the provider for Medicare's share of the MS-DRG. 
+* Total_Premium_Number_of_Beneficiaries: number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment. 
+* Total_Premium_Amount: total Medicare part A premium paid in a given state 
+* Standard_Base_Premium_Number_of_Beneficiaries: individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment. 
+* Standard_Base_Premium_Amount: total Medicare part A standard premium paid in a given state 
+* Reduced_Base_Premium_Number_of_Beneficiaries: individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium 
+* Reduced_Base_Premium_Amount: total Medicare part A reduced premium paid in a given state 
 
+# Data Import and Cleaning
+In [load_and_clean_data.R](C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/load_and_clean_data.R), we loaded and cleaned our datasets:
 
-## Where to keep data?
+## The first dataset: Medicare Inpatient Hospitals - by Provider and Service
+The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis. 
+We first discussed to identify the columns we need for this project. After selecting the required columns for our datasets, we created another global variable dataset by filtering out those datasets with missing and abnormal values. There are mainly two types of missing values in our datasets – “NA” and “Unknown”. “Unknown” only appears in the RUCA variable and “NA” only appears in the numeric value. After dropping these values, we made some further decisions on the columns that will be needed for our EDA process. In the end, we dropped those variables with repetitive meanings such as the name and code for providers. After testing the availability of the test and making some basic coding on the cleaned dataset, we created our finalized dataset for future usage.
+ 
+## The second dataset: CMS Program Statistics - Medicare Premiums
+While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recoded the file under CSV format and finalized the merging data into another file.
 
-
-Below 50mb: In `dataset` folder
-
-Above 50mb: In `dataset_ignore` folder. This folder will be ignored by `git` so you'll have to manually sync these files across your team.
-
-### Sharing your data
-
-
-For small datasets (<50mb), you can use the `dataset` folder that is tracked by github. Add the files just like you would any other file.
-
-**Do not** use a folder named `data`.
-This folder is reserved by `hugo`.
-If you create a folder named `data` this will cause problems.
-
-For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`. This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits. Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
-
-Your [load_and_clean_data.R](/load_and_clean_data.R) file is how you will load and clean your data. Here is a an example of a very simple one.
-
+# Datasets Combination
+In order to combine the two datasets, we used function `group_by` to sort the first dataset by states , and used function `merge()` to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.
 ```{r}
-source(
-  here::here("static", "load_and_clean_data.R"),
-  echo = TRUE # Use echo=FALSE or omit it to avoid code output  
-)
+library(tidyverse)
+premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
+medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+medicare_data_sum<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+medicare_premium_combined <- merge(premiumA,medicare_data_sum) %>%
+    mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
 ```
 
-Note how I use the `here::here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
-This function is used to specify directories within the project's root directory.
-You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\\MA415\\Final_Project\\`) and using `here` ensures that it doesn't matter what the current working directory is as long as you have this RStudio Project open.
 
-----
-
-
-
-## Files in static
-
-### `load_and_clean_data.R`
-
-The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them.
-This file might create a derivative data set that you then use for your subsequent analysis.
-Note that you don't need to run this script from every post/page.
-Instead, you can load in the results of this script, which could be plain text files or `.RData` files. In your data page you'll describe how these results were created. If you have a very large data set, you might save smaller data sets that you can use for exploration purposes.
-To link to this file, you can use `[cleaning script](/load_and_clean_data.R)`. 
-
-
-When you are loading in data, I recommend using the `here::here` function to specify the file path. This function is used to specify a path relative to your project's root directory. Hence, you can read a file using eg, `read_csv(here::here("dataset/data_file.csv"))`.
-
-
-### Shiny Interactive
-
-If you are using a shiny interactive, you'll need to keep that in a separate folder (i.e. not in `static` or `content`). For the shiny interactive you'll need to publish the app on `shinyapps.io` where the app can be run. When you publish, make sure to include any data sets you are loading in among the files you publish since those datasets will need to be loaded by your app. 
-
-
-
-
-
-----
-
-## Rubric: On this page
-
-you will
-
-* Describe where/how to find data.
-  * You must include a link to the original data source(s). Make sure to provide attribution to those who collected the data.
-  * Why was the data collected/curated? Who put it together? (This is important, if you don't know why it was collected then that might not be a good dataset to look at.
-* Describe the different data files used and what each variable means. 
-  * If you have many variables then only describe the most relevant ones and summarize the rest.
-* Describe any cleaning you had to do for your data.
-  * You *must* include a link to your `load_and_clean_data.R` file.
-  * Also, describe any additional R packages you used outside of those covered in class.
-  * Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
-  * Some repetition of what you do in your `load_and_clean_data.R` file is fine and encouraged if it helps explain what you did.
-* Organization, clarity, cleanliness of the page
-  * Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
+# References
+* Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service. 
+* Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums. 
+* Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020. 
+* Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/ (21 Nov. 2022)
