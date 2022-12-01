@@ -17,7 +17,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year = c(2020)
 medicare_data_clean$year <- year
-medicare_data_clean
 medicare_data_sum$year<-year
 ```
 
@@ -41,7 +40,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year19 = c(2019)
 medicare_data_clean19$year <- year19
-medicare_data_clean19
 medicare_data_sum19$year<-year19
 
 medicare_data18 <- read_csv(here::here("dataset", "medicare-18.csv") , 
@@ -55,7 +53,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year18 = c(2018)
 medicare_data_clean18$year <- year18
-medicare_data_clean18
 medicare_data_sum18$year<-year18
 
 medicare_data17 <- read_csv(here::here("dataset", "medicare-17.csv") , 
@@ -69,7 +66,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year17 = c(2017)
 medicare_data_clean17$year <- year17
-medicare_data_clean17
 medicare_data_sum17$year<-year17
 
 medicare_data16 <- read_csv(here::here("dataset", "medicare-16.csv") , 
@@ -83,7 +79,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year16 = c(2016)
 medicare_data_clean16$year <- year16
-medicare_data_clean16
 medicare_data_sum16$year<-year16
 
 medicare_data15 <- read_csv(here::here("dataset", "medicare-15.csv") , 
@@ -97,7 +92,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year15 = c(2015)
 medicare_data_clean15$year <- year15
-medicare_data_clean15
 medicare_data_sum15$year<-year15
 
 medicare_data14 <- read_csv(here::here("dataset", "medicare-14.csv") , 
@@ -111,7 +105,6 @@ select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Pr
   summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
 year14 = c(2014)
 medicare_data_clean14$year <- year14
-medicare_data_clean14
 medicare_data_sum14$year<-year14
 
 ```
