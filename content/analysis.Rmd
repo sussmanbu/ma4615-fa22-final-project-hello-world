@@ -11,59 +11,160 @@ This comes from the file `content/analysis.Rmd`.
 
 We describe here our detailed data analysis.
 
+## Motivation for our Data Analysis (DA)
+In this project, we aim to study factors that can affect Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare. We want to explore factors that might influence the out-of-pocket cost for Medicare beneficiaries. We are interested to see if there is a correlation between Rural-Urban Commuting Area Code), GDP, total discharges, covered charges, total payment, GDP, premium, and ratio of medicare payment/total paymeny (an estimation of out-of-pocket costs).
+
+### Average Premiums vs. Total Discharge
+
+In the first plot, we analyzed the relationship between average Medicare premiums and mean discharge. The x-axis is the mean discharge of each state, and the y-axis is the average premium calculated from Total Premium divided by Total number of beneficiaries according to each state. We observed that there is a weak positive correlation between average Medicare premiums and mean discharges, implying that the premium values might be set based on how frequent the Medicare beneficiaries go to hospitals and look for medical services. 
+```{r,eval = FALSE}
+ggplot(medicare_premium_combined) +
+  geom_smooth(aes(x = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, y = Mean_Discharge), method = "lm")
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/content/post/2022-11-11-post-5-merging-dataset/index_files/figure-html/unnamed-chunk-3-1.png")
+```
+
+### EDA of Coverage vs. Geographical Location(RUCA)
+
+One important factor researchers want to know about is geographical location’s influence on medicare coverage. It could show the insufficiency of current policy on coverage geographically and whether the government is balancing it well. To achieve so, the institution which creates this dataset includes RUCA as one of the many variables.
+
+RUCA (Rural-Urban Commuting Area Code) is an index of urbanization based on the ZIP code developed by the US government in 2010. From 1 to 10, a more significant number represents a more rural and lower commuting area. On the contrary, a smaller number represents a more urbanized and higher commuting area.
+
+Based on this index, we can make a graph of RUCA and the proportion of coverage across the U.S. The graph below shows the relationship between the economic development of an area and medicare coverage provided by the local government.
+
+```{r,eval = FALSE}
+ggplot(medicare_data_clean,aes(x=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt,y=Rndrng_Prvdr_RUCA)) +
+  stat_binhex() + labs(x= "Coverage Proportion", y="RUCA")
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/content/post/2022-11-03-post-4-eda-and-modeling/index.en_files/figure-html/unnamed-chunk-3-1.png")
+```
+
+From the graph, we can see that most data points concentrate at the bottom right corner. It means most patients in urban areas can receive a high percentage of medicare coverage in hospitals. This is good news since it indicates that most population in the country is benefited from the current medical policy. 
+
+However, the variabilities of the coverage in areas other than the most urbanized areas are also high. First, for areas with RUCA higher than 3, the lines(composed of hexagons on the graph) are wide but there’s not enough concentration as the bottom-most line. It indicates that a lot of patients in rural areas are not receiving enough amount of coverage. Second, the concentration government has on the most rural area is not enough. For areas with RUCA higher than 3, we can see a clear trend of data points becoming less scattered as the RUCA gets higher. However, when it comes to the areas where RUCA equals 10, the line becomes scattered again. It means there are still a group of old people who are not receiving enough amount of coverage.
+
+For further studies, the graph can potentially work as an indicator of U.S. development based on medicare policies. For areas with a higher RUCA, we can see the data points are clearly less scattered. It means that the U.S. government is focusing on providing coverage to old people living in rural areas. Such intention is good from the basics. It allows old people to have more access to healthcare and medical resources when there’s a need. It also reduces the demand for old people to travel across the country. Compared to a less developed country, the graph could vary a lot and we won’t be able to see such a trend. 
+The indicator could also be compared among different states. By sorting the data points by the state code, we can have a graph as below:
+
+```{r, eval = FALSE}
+medicare_data_clean %>% ggplot(aes(Rndrng_Prvdr_State_Abrvtn, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
+  geom_bin2d() + coord_flip() + guides(y = guide_axis(n.dodge = 2)) + scale_fill_viridis_c()
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/content/post/2022-11-03-post-4-eda-and-modeling/index.en_files/figure-html/unnamed-chunk-2-1.png")
+```
+Most states have the coverage proportion concentrated in the range of 0.7-1.0. a few outliers are below 0.7 or greater than 1. By looking at states with a larger population and more samples, such as California, Texas, Florida, and New York, more coverage proportions are concentrated in the 0.8-0.95 range. When more information is provided, the government and scholars can assess each state’s performance on medicare coverage.
+
+### GDP vs Covered Discharge
+We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. 
+
+```{r, include = FALSE}
+library(tidyverse)
+data <- read_csv("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/medicare_GDP_combined.csv", col_types=cols(GDP=col_number(),Mean_Medicare_Payment=col_number(),Rndrng_Prvdr_State_Abrvtn=col_character()))
+data %>% arrange(desc(GDP))
+```
+```{r }
+ggplot(data)+geom_point(aes(x=log(GDP), y=log(Mean_Covered) ,color=Rndrng_Prvdr_State_Abrvtn))
+```
 
 ```{r}
+fit <- lm(log(Mean_Covered) ~ log(GDP), data = data)
+beta <- coef(fit)
+var <- sigma(fit)
+ggplot(data, aes(x=log(GDP), y=log(Mean_Covered))) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
+```
+
+We used log transformation to both variables since GDP and Coverage in dollars are big amounts, making it hard to observe patterns or trends without log-transformation. We then fit a linear regression line between the two variables and find a weak positive linear correlation between them. The slope is 0.1281689 and the intercept is 9.4635316. There are few outliers with relatively high leverage and high influence hence might impact our model a lot, so we decide to move those outliers later.
+
+We want to figure out whether there are some trends in medicare payment, total payment, and medicare covered throughout the years, so we obtain the raw data from 2014-2020 and clean them in the same way to obtain the mean medicare payment, mean total payment, and mean medicare covered of each state for each year.
+
+### Mean_Medicare_Payment over Mean_Total_Payment from 2014 to 2020
+
+```{r, eval = FALSE}
+ggplot(medicare_data_sum_total, aes(group=year, x = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image1.png")
+```
+
+First, we made a boxplot to show the trend of Mean_Medicare_Payment over Mean_Total_Payment from 2014 to 2020.  The figure above reflects the percentage of doctors' salaries that Medicare pays to doctors. The higher this percentage, the smaller the percentage of wages paid to doctors by patients. The boxplot shows that the mean percentage of wages paid to doctors by patients was slowly increasing between 2014-2019, but this trend changed in 2020. Combined with the fact that Covid-19 pandemic explodes in 2020, we can see that more people with better medicare plans are seeking health care in 2020, which leads to an increase in the percentage of wages paid to doctors by Medicare.
+
+### Mean_Medicare_Payment/Mean_Covered from 2014 to 2020 
+
+```{r, eval = FALSE}
+ggplot(medicare_data_sum_total, aes(group=year, Mean_Medicare_Payment/Mean_Covered)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image2.png")
+```
+In addition to the percentage of salaries of doctors paid by Medicare, we would like to know what percentage of total medicare is used to pay doctors' salaries. Mean_Covered is the total amount of money covered by medicare, which includes payments to doctors, medical devices, medicines, and other aspects of payments in health care. The graph shows that the ratio of Mean_Medicare_Payment over Mean_Covered has been decreasing since 2014, indicating that money spent on medical devices and medicines is gradually becoming a more dominant part of the total amount of Medicare.
+
+```{r, eval = FALSE}
+medicare_data_sum_total_withoutMD <- medicare_data_sum_total %>% subset(Rndrng_Prvdr_State_Abrvtn != "MD")
+ggplot(medicare_data_sum_total_withoutMD, aes(group=year, Mean_Medicare_Payment/Mean_Covered)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image3.png")
+```
+However this graph does not show this trend very clearly, because there's an outlier in the plot. Maryland is an outlier because it is the only state where hospitals are accountable for the health of their communities. When we exclude Maryland's data, this decreasing year-by-year trend becomes even more apparent.
+
+### Pearson Correlation Plot
+
+```{r Data_Prep, eval = FALSE,include = FALSE }
+library(dendextend)
+library(ComplexHeatmap)
+library(RColorBrewer)
 library(tidyverse)
-print(getwd())
-data <- read_csv(here::here("dataset/loan_refusal_clean.csv"))
-load(here::here("dataset/loan_refusal.RData"))
-print(ls())
+library(circlize)
+
+medicare_premium_heatmap <- as.data.frame(medicare_premium_combined) %>%
+  mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment, Total_Premium = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>%
+  dplyr::rename(State = Rndrng_Prvdr_State_Abrvtn) %>%
+  column_to_rownames("State") %>%
+  as.matrix()
+medicare_premium_heatmap_cor <- cor(medicare_premium_heatmap, method = "pearson")
 ```
 
-## Note on Attribution
+```{r Cor_Heatmap,include = FALSE,eval = FALSE}
+dimension <- 3.5
+p <- ComplexHeatmap::Heatmap(medicare_premium_heatmap_cor,
+                             name = "Pearson",
+                             column_title = "Pearson Correlation Heatmap of Medicare Coverage Part A",
+                             row_title = NULL,
+                             column_title_gp = gpar(fontsize = 20, fontface = "bold"),
+                             row_names_side = "left",
+                             cell_fun = function(j, i, x, y, w, h, fill) {
+                               grid.text(sprintf("%.1f", as.data.frame.matrix(medicare_premium_heatmap_cor)[i, j]), x, y, gp = gpar(fontsize = 10))
+                            }, # this line displays number in cells
+                            col = circlize::colorRamp2(c(-0.4,
+                                                         0,
+                                                         quantile(medicare_premium_heatmap_cor, 0.99, na.rm = TRUE)),
+                                                         c("#1E90FF", "white", "firebrick3")),
+                            column_names_rot = 60,
+                            cluster_columns = TRUE, cluster_rows = TRUE,
+                            show_row_names = TRUE, show_column_names = TRUE,
+                            width = unit(dimension, "in"),
+                            height = unit(dimension, "in"),
+                            heatmap_width = unit(1, "npc"),
+                            heatmap_height = unit(1, "npc"),)
+print(p)
+```
+```{r echo = FALSE}
+knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image4.png")
+```
 
-If you are directly quoting from a source, please make that clear. You can show quotes using `>` like this
+### Drug Cost per Utilizer with Various Demographic Characters
+```{r include = FALSE}
+library(tidyverse)
+PARTD <- read_csv("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/DRUG_PARTD.csv")
+```
+### 
+```{r }
+pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[8:17],PARTD$`Demographic Characteristics`[8:17],main = 'Average Drug Cost Per Part D Utilizer by Age')
+pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[24:30],PARTD$`Demographic Characteristics`[24:30],main = 'Average Drug Cost Per Part D Utilizer by Race')
 
 ```
-> To be or not to be.
-```
+People who are under 65 years old has more drug expenditure than people who are over 65 years old. People under 18 years has the highest drug cost compared to rest of age group. The average drug cost is relatively even for different races. 
 
-> To be or not to be.
-
-Also, make sure to provide a link or citation to where you are quoting from.
-
--------
-
-
-## Rubric: On this page
-
-you will
-
-
-* Introduce what motivates your Data Analysis (DA)
-  * Which variables and relationships are you most interested in?
-  * What questions are you interested in answering?
-* Breadth of the DA
-  * Make sure that you ask enough initial questions to explore the different variables in your data.
-  * i.e. Do you explore more than just one or two variables? Do you explore a few different relationships or many?
-* Depth of the DA
-  * When you answer one question, usually more questions arise as well. 
-  * The depth of the DA is about coming up with and exploring the answers to these questions, often iterating the process a few times.
-* Modeling and Inference 
-  * You should also include some kind of formal statistical model and/or inference. This could be a linear regression, logistic regression, hypothesis testing etc.
-  * Explain the techniques you used for validating your results.
-  * Describe the results of your modelling and make sure to give a sense of the uncertainty in your estimates and conclusions.
-* Explain the flaws and limitations of your analysis
-  * Are there some assumptions that you needed to make that might not hold? Is there other data that would help to answer your questions? ...
-* Clarity Figures
-  * Are your figures/tables/results easy to read, informative, without problems like overplotting, hard-to-read labels, etc?
-  * Each figure should provide a key insight. Too many figures or other data summaries can detract from this.
-* Clarity of Explanations
-  * Do you introduce why you are doing each analysis?
-  * How well do you explain each figure/result?
-  * Do you provide interpretations that suggest further analysis or explanations for observed phenomenon?
-* Organization and cleanliness.
-  * Make sure to remove excessive warnings, use clean easy-to-read code, organize with sections or multiple pages, use bullets, etc.
-  
-  
-**NOTE**: Your Data Analysis can be broken up into multiple pages if that helps with your organization.
