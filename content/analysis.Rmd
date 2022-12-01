@@ -7,10 +7,6 @@ featuredImage: https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithqu
 draft: false
 ---
 
-This comes from the file `content/analysis.Rmd`.
-
-We describe here our detailed data analysis.
-
 ## Motivation for our Data Analysis (DA)
 In this project, we aim to study factors that can affect Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare. We want to explore factors that might influence the out-of-pocket cost for Medicare beneficiaries. We are interested to see if there is a correlation between Rural-Urban Commuting Area Code), GDP, total discharges, covered charges, total payment, GDP, premium, and ratio of medicare payment/total paymeny (an estimation of out-of-pocket costs).
 
@@ -166,5 +162,6 @@ pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[8:17],PARTD$`De
 pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[24:30],PARTD$`Demographic Characteristics`[24:30],main = 'Average Drug Cost Per Part D Utilizer by Race')
 
 ```
+
 People who are under 65 years old has more drug expenditure than people who are over 65 years old. People under 18 years has the highest drug cost compared to rest of age group. The average drug cost is relatively even for different races. 
 
