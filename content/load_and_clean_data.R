@@ -56,7 +56,6 @@ premiumA <- read_csv(here::here("dataset", "PremiumA.csv"),
 ## Create a new global variable for the merged dataset)
 
 medicare_premium_combined <- merge(premiumA,medicare_data_sum)
-
 ## Store the dataset for further usage.
 
 write_csv(medicare_premium_combined, file = here::here("dataset", "medicare_premium_combined.csv"))
@@ -69,8 +68,10 @@ GDP <- read_csv(here::here("dataset", "GDP.csv"),
 ## Store the dataset for further usage.
 write_csv(GDP, file = here::here("dataset", "GDP.csv"))
 save(GDP, file = here::here("dataset/GDP.RData"))
-
 ##Create a merged dataset
 medicare_GDP_combined <- merge(GDP,medicare_data_sum)
-write_csv(GDP, file = here::here("dataset", "medicare_GDP_combined.csv"))
-save(GDP, file = here::here("dataset/medicare_GDP_combined.RData"))
+GDP
+medicare_GDP_combined
+write_csv(medicare_GDP_combined, file = here::here("dataset", "medicare_GDP_combined.csv"))
+save(medicare_GDP_combined, file = here::here("dataset/medicare_GDP_combined.RData"))
+medicare_data_sum
