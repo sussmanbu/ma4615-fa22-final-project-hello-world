@@ -3,10 +3,10 @@ title: Analysis
 description:
 toc: true
 featuredVideo:
-featuredImage: images/Data Page.webp
+featuredImage: https://www.kff.org/wp-content/uploads/2018/10/9256-figure-1.png
 draft: false
 ---
-https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithquarzite.jpg
+
 ## Motivation for our Data Analysis (DA)
 In this project, we aim to study factors that can affect Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare. We want to explore factors that might influence the out-of-pocket cost for Medicare beneficiaries. We are interested to see if there is a correlation between Rural-Urban Commuting Area Code), GDP, total discharges, covered charges, total payment, GDP, premium, and ratio of medicare payment/total paymeny (an estimation of out-of-pocket costs).
 
