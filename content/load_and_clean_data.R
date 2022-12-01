@@ -70,3 +70,7 @@ GDP <- read_csv(here::here("dataset", "GDP.csv"),
 write_csv(GDP, file = here::here("dataset", "GDP.csv"))
 save(GDP, file = here::here("dataset/GDP.RData"))
 
+##Create a merged dataset
+medicare_GDP_combined <- merge(GDP,medicare_data_sum)
+write_csv(GDP, file = here::here("dataset", "medicare_GDP_combined.csv"))
+save(GDP, file = here::here("dataset/medicare_GDP_combined.RData"))
