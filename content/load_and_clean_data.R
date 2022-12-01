@@ -64,14 +64,11 @@ save(medicare_premium_combined, file = here::here("dataset/Medicare_Data.RData")
 ##Dataset 3: GDP by states
 GDP <- read_csv(here::here("dataset", "GDP.csv"), 
                 col_types = cols_only(GDP=col_number(),  
-                                 GeoName=col_character()))
+                                      Rndrng_Prvdr_State_Abrvtn =col_character()))
 ## Store the dataset for further usage.
 write_csv(GDP, file = here::here("dataset", "GDP.csv"))
 save(GDP, file = here::here("dataset/GDP.RData"))
 ##Create a merged dataset
 medicare_GDP_combined <- merge(GDP,medicare_data_sum)
-GDP
-medicare_GDP_combined
 write_csv(medicare_GDP_combined, file = here::here("dataset", "medicare_GDP_combined.csv"))
 save(medicare_GDP_combined, file = here::here("dataset/medicare_GDP_combined.RData"))
-medicare_data_sum
