@@ -1,0 +1,136 @@
+---
+title: "Untitled"
+output: html_document
+date: "2022-12-01"
+---
+
+```{r}
+library(tidyverse)
+medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean <- medicare_data %>% 
+filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum <- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year = c(2020)
+medicare_data_clean$year <- year
+medicare_data_clean
+medicare_data_sum$year<-year
+```
+
+## Output 2
+```{r}
+library(tidyverse)
+premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), col_types = cols(Total_Premium_Amount =col_number(),  Reduced_Base_Premium_Amount=col_number(), Standard_Base_Premium_Amount = col_number()))
+medicare_premium_combined <- merge(premiumA,medicare_data_sum)
+```
+
+```{r}
+library(tidyverse)
+medicare_data19 <- read_csv(here::here("dataset", "medicare-19.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean19 <- medicare_data19 %>% 
+filter(!grepl('Unknown', medicare_data19$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum19 <- medicare_data_clean19 %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year19 = c(2019)
+medicare_data_clean19$year <- year19
+medicare_data_clean19
+medicare_data_sum19$year<-year19
+
+medicare_data18 <- read_csv(here::here("dataset", "medicare-18.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean18 <- medicare_data18 %>% 
+filter(!grepl('Unknown', medicare_data18$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum18 <- medicare_data_clean18 %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year18 = c(2018)
+medicare_data_clean18$year <- year18
+medicare_data_clean18
+medicare_data_sum18$year<-year18
+
+medicare_data17 <- read_csv(here::here("dataset", "medicare-17.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean17 <- medicare_data17 %>% 
+filter(!grepl('Unknown', medicare_data17$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum17 <- medicare_data_clean17 %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year17 = c(2017)
+medicare_data_clean17$year <- year17
+medicare_data_clean17
+medicare_data_sum17$year<-year17
+
+medicare_data16 <- read_csv(here::here("dataset", "medicare-16.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean16 <- medicare_data16 %>% 
+filter(!grepl('Unknown', medicare_data16$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum16 <- medicare_data_clean16 %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year16 = c(2016)
+medicare_data_clean16$year <- year16
+medicare_data_clean16
+medicare_data_sum16$year<-year16
+
+medicare_data15 <- read_csv(here::here("dataset", "medicare-15.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean15 <- medicare_data15 %>% 
+filter(!grepl('Unknown', medicare_data15$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum15 <- medicare_data_clean15 %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year15 = c(2015)
+medicare_data_clean15$year <- year15
+medicare_data_clean15
+medicare_data_sum15$year<-year15
+
+medicare_data14 <- read_csv(here::here("dataset", "medicare-14.csv") , 
+col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean14 <- medicare_data14 %>% 
+filter(!grepl('Unknown', medicare_data14$Rndrng_Prvdr_RUCA_Desc)) %>%
+   drop_na() %>%      
+select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc)
+(medicare_data_sum14 <- medicare_data_clean14 %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt)))
+year14 = c(2014)
+medicare_data_clean14$year <- year14
+medicare_data_clean14
+medicare_data_sum14$year<-year14
+
+```
+```{r}
+medicare_total <- rbind(medicare_data_clean,medicare_data_clean14,medicare_data_clean15,medicare_data_clean16, medicare_data_clean17,medicare_data_clean18, medicare_data_clean19)
+medicare_data_sum_total <- rbind(medicare_data_sum, medicare_data_sum19, medicare_data_sum18,medicare_data_sum17,medicare_data_sum16,medicare_data_sum15,medicare_data_sum14)
+ggplot(medicare_data_sum_total) + geom_point(aes(x = year, y = Mean_Total_Payment))
+ggplot(medicare_data_sum_total, aes(group=year, Mean_Total_Payment)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+ggplot(medicare_data_sum_total) + geom_point(aes(x = year, y = Mean_Medicare_Payment/Mean_Total_Payment))
+ggplot(medicare_data_sum_total, aes(group=year, x = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+ggplot(medicare_data_sum_total) + geom_point(aes(x = year, y = Mean_Medicare_Payment/Mean_Covered))
+ggplot(medicare_data_sum_total, aes(group=year, Mean_Medicare_Payment/Mean_Covered)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+
+```
+
+
+
+```{r}
+medicare_data_sum_total_withoutMD <- medicare_data_sum_total %>% subset(Rndrng_Prvdr_State_Abrvtn != "MD")
+ggplot(medicare_data_sum_total_withoutMD, aes(group=year, Mean_Medicare_Payment/Mean_Covered)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+```
+
