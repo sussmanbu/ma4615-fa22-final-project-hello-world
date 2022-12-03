@@ -78,13 +78,22 @@ save(origin_with_premium, file = here::here("dataset/origin_with_premium.csv.RDa
 
 health_status_state <- read.csv(here::here("dataset", "Health_Status_State.csv"))
 colnames(health_status_state)[1] = "Rndrng_Prvdr_State_Abrvtn"
-origin_with_hs <- medicare_data_sum %>%
+origin_with_hs_state <- medicare_data_sum %>%
+  left_join(health_status_state,by="Rndrng_Prvdr_State_Abrvtn",all=TRUE)
+write_csv(origin_with_hs_state, file = here::here("dataset", "origin_with_hs_state.csv"))
+save(origin_with_hs_state, file = here::here("dataset/origin_with_hs_state.csv.RData"))
+
+origin_with_hs <- medicare_data_clean %>%
   left_join(health_status_state,by="Rndrng_Prvdr_State_Abrvtn",all=TRUE)
 write_csv(origin_with_hs, file = here::here("dataset", "origin_with_hs.csv"))
 save(origin_with_hs, file = here::here("dataset/origin_with_hs.csv.RData"))
 
 ```
+```{r}
+origin_with_hs %>%
+  mutate(coverage=)
 
+```
 
 # References
 * Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service. 
