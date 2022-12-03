@@ -51,11 +51,14 @@ While merging the cleaned first dataset with other datasets, we summarized and c
 In order to combine the two datasets, we used function `group_by` to sort the first dataset by states , and used function `merge()` to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
+
 premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), 
                      col_types = cols(Total_Premium_Amount =col_number(),  
                     Reduced_Base_Premium_Amount=col_number(), 
                     Standard_Base_Premium_Amount = col_number()))
+
 medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+
 medicare_data_sum<- medicare_data_clean %>%
   group_by(Rndrng_Prvdr_State_Abrvtn) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
@@ -64,6 +67,15 @@ medicare_data_sum<- medicare_data_clean %>%
             Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
 medicare_premium_combined <- merge(premiumA,medicare_data_sum) %>%
     mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
+
+write_csv(medicare_premium_combined, file = here::here("dataset", "origin_with_premium_state.csv"))
+save(medicare_premium_combined, file = here::here("dataset/origin_with_premium_state.csv.RData"))
+
+origin_with_premium <- medicare_data_clean %>%
+  left_join(premiumA,by="Rndrng_Prvdr_State_Abrvtn",all=TRUE)
+
+write_csv(origin_with_premium, file = here::here("dataset", "origin_with_premium.csv"))
+save(origin_with_premium, file = here::here("dataset/origin_with_premium.csv.RData"))
 ```
 
 

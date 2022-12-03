@@ -115,7 +115,7 @@ library(RColorBrewer)
 library(tidyverse)
 library(circlize)
 
-medicare_premium_heatmap <- as.data.frame(medicare_premium_combined) %>%
+medicare_premium_heatmap <- as.data.frame(origin_with_premium) %>%
   mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment, Total_Premium = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>%
   dplyr::rename(State = Rndrng_Prvdr_State_Abrvtn) %>%
   column_to_rownames("State") %>%
