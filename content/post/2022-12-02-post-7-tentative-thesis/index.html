@@ -19,4 +19,13 @@ featuredImage: ~
 
 </div>
 
-<p>Medicare is a federal program thus theoretically costs and benefits should be consistent in all U.S. states. However, during the initial EDA, we found that medicare coverage, calculated from dividing the medicare payment from the total payment, varies greatly from state to state. In this project, we aim to understand the sources of variation in medicare payment across different geographic areas. We explored various factors including geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, cover charged, Hierarchical Condition Category (HCC).</p>
+<p>Medicare is a federal program thus theoretically costs and benefits should be consistent in all U.S. states. However, during the initial EDA, we found that average medicare payment varies greatly from state to state. However, studies found no relationship between medicare spending and quality of care. In this project, we aim to understand the sources of variation in medicare payment across different geographic areas and identify sources that has the largest impact on medicare payment variations. In our exploratory data analysis, we explored various factors including geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, cover charged, Hierarchical Condition Category (HCC).
+Our first dataset provides us with detailed medicare payment and total payment data. Through a preliminary EDA, we found that there were more possibilities and rationales for exploring medicare coverage, so we set our aim, identified the factors we wished to explore and conducted a second database search to purposefully find the target dataset as mentioned above.</p>
+<div id="further-exploratory-data-analysis" class="section level2">
+<h2>Further Exploratory Data Analysis</h2>
+<p>After viewing the inital factors, we determined to look for more variables according to literatures: Geographic Practice Cost Indices, Readmission penalties, and Health status. Below is the scatterplot depicting the relationship between medicare coverage and health status. We can find that there is no obvious pattern between the two variables, but there is a weak positive correlation.</p>
+<p>Mean Coverage by state and self-reported health status</p>
+<pre class="r"><code>origin_with_hs_state %&gt;%
+  mutate(Mean_Cvg=Mean_Medicare_Payment/Mean_Total_Payment) %&gt;%
+  ggplot(aes(y=Mean_Cvg,x=Health_Status)) +geom_point() +labs(x= &quot;Mean Coverage Proportion&quot;, y=&quot;Health Status&quot;) + geom_smooth(aes(y=Mean_Cvg,x=Health_Status), method = &quot;lm&quot;)</code></pre>
+</div>
