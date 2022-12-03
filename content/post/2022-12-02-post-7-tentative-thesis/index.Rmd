@@ -1,0 +1,17 @@
+---
+title: Post 7 - Tentative Thesis
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
+date: '2022-12-02'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-12-02T23:34:18-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+
+Medicare is a federal program thus theoretically costs and benefits should be consistent in all U.S. states. However, during the initial EDA, we found that medicare coverage, calculated from dividing the medicare payment from the total payment, varies greatly from state to state. In this project, we aim to understand the sources of variation in medicare payment across different geographic areas. We explored various factors including geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, cover charged, Hierarchical Condition Category (HCC). 
