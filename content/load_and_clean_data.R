@@ -129,9 +129,22 @@ HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SC
 write_csv(HCC_Readmission_Only, file = here::here("dataset", "HCC_Readmission_Only.csv"))
 save(HCC_Readmission_Only, file = here::here("dataset/HCC_Readmission_Only.RData"))
 
-##Dataset7: Combined dataset
+##Dataset7: Population
+population <- read_csv(here::here("dataset","population.csv"))
+##Store the dataset for further usage
+write_csv(population, file = here::here("dataset", "population.csv"))
+save(population, file = here::here("dataset/population.RData"))
 
-
+##Dataset8: Combined dataset
+Avg_LOS <- read_csv(here::here("dataset","Avg_LOS.csv"))
+HCC_Readmission_Only <- read_csv(here::here("dataset","HCC_Readmission_Only.csv"))
+GPCI2020 <- read_csv(here::here("dataset","GPCI2020.csv"))
+GDP <- read_csv(here::here("dataset","GDP.csv"))
+medicare_data_sum <- read_csv(here::here("dataset","medicare_data_sum.csv"))
+df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS)
+df_list
+Data_Combined <- df_list %>% reduce(full_join, by='state')
+Data_Combined
 
 
 
