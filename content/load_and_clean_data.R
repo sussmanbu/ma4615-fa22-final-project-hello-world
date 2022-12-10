@@ -110,9 +110,11 @@ save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geograph
 
 ##Dataset 5: GPCI by states
 GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
-                col_types = cols(PW_GPCI =col_number(),  
+                col_types = cols_only(Rndrng_Prvdr_State_Abrvtn = col_character(),
+                                      PW_GPCI =col_number(),  
                                       PE_GPCI =col_number(),
                                       MP_GPCI =col_number()))
+GPCI2020 <- GPCI2020 %>% group_by(Rndrng_Prvdr_State_Abrvtn) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
 ## Store the dataset for further usage.
 write_csv(GPCI2020, file = here::here("dataset", "GPCI2020.csv"))
 save(GPCI2020, file = here::here("dataset/GPCI2020.RData"))
