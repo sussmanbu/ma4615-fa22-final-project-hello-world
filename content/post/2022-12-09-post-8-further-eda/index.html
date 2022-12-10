@@ -1,6 +1,6 @@
 ---
 title: Post 8 - Further EDA
-author: Daniel Sussman
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
 date: '2022-12-09'
 slug: []
 categories: []
@@ -19,3 +19,74 @@ featuredImage: ~
 
 </div>
 
+<div id="st-eda-medicare-coverage-vs.-premium" class="section level2">
+<h2>1st EDA: Medicare Coverage vs. Premium</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
+## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
+## ✔ tidyr   1.2.0      ✔ stringr 1.4.1 
+## ✔ readr   2.1.2      ✔ forcats 0.5.2 
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>premium_combined &lt;- read_csv(here::here(&quot;dataset/origin_with_premium.csv&quot;))</code></pre>
+<pre><code>## Rows: 164520 Columns: 16
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (4): Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_City, Rndrng_Prvdr_State_Abrvt...
+## dbl (12): Rndrng_Prvdr_RUCA, DRG_Cd, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>ggplot(premium_combined) +
+  geom_smooth(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt), method = &quot;lm&quot;) + labs(x = &quot;Premium&quot;, y  = &quot;Medicare Coverage&quot;) + geom_point(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt))</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>premium_combined &lt;- premium_combined %&gt;%
+  mutate(test = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %&gt;%
+  arrange(test) %&gt;%
+  filter(!Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt &lt; 0.8)
+  
+ 
+ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=TRUE), y = Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
+  geom_boxplot() +  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + labs(x = &quot;State&quot;, y  = &quot;Medicare Coverage&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<p>Plot 1 shows the regression plot between premium and medicare coverage. There is a positive regression relationship between the two variables, indicating that Medicare Coverage increases as Premium increases. However, when we wanted to explore Medicare Coverage data for each state and reordered by premium, we saw no apparent patterns among the states. Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare coverage goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare coverage, and cheaper premium does not lower the coverage either.</p>
+</div>
+<div id="nd-eda-medicare-coverage-vs.-length-of-stay-in-hospital" class="section level2">
+<h2>2nd EDA: Medicare Coverage vs. Length of stay in hospital</h2>
+<pre class="r"><code>library(tidyverse)
+Avg_LOS &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS.csv&quot;))</code></pre>
+<pre><code>## Rows: 51 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): state
+## dbl (1): LOS
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>save(Avg_LOS, file = here::here(&quot;dataset/Avg_LOS.RData&quot;))
+medicare_data_clean &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Data_clean.csv&quot;))</code></pre>
+<pre><code>## Rows: 164520 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (4): Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_City, Rndrng_Prvdr_State_Abrvtn...
+## dbl (6): Rndrng_Prvdr_RUCA, DRG_Cd, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_T...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>medicare_data_sum&lt;- medicare_data_clean %&gt;%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %&gt;%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+ 
+colnames(medicare_data_sum)[1] =&quot;state&quot;
+LOS_plot &lt;- merge(medicare_data_sum, Avg_LOS, by = &quot;state&quot;)
+LOS_plot %&gt;% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = &quot;Length of Stay (days)&quot;, y = &quot;Medicare Coverage (%)&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>We further examined the relationship between medicare coverage and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors’ wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.</p>
+</div>
