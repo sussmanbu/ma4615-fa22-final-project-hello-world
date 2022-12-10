@@ -88,7 +88,7 @@ save(medicare_data14, file = here::here("dataset/medicare-14.RData"))
 
 ##Dataset 4: Medicare Geographic Variation
 Medicare_Geographic_Variation <- read_csv(here::here("dataset", "Medicare_Geographic_Variation.csv"), 
-                col_types = cols_only(IP_MDCR_PYMT_AMT=col_number(),  
+                col_types = cols(IP_MDCR_PYMT_AMT=col_number(),  
                                       IP_MDCR_PYMT_PCT =col_number(),
                                       IP_MDCR_PYMT_PC =col_number(),
                                       IP_MDCR_PYMT_PER_USER=col_number(),
@@ -110,7 +110,7 @@ save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geograph
 
 ##Dataset 5: GDP by states
 GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
-                col_types = cols_only(PW_GPCI =col_number(),  
+                col_types = cols(PW_GPCI =col_number(),  
                                       PE_GPCI =col_number(),
                                       MP_GPCI =col_number()))
 ## Store the dataset for further usage.
