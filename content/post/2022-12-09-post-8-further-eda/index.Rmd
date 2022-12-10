@@ -1,0 +1,55 @@
+---
+title: Post 8 - Further EDA
+author: Guanchen Xiao, Fangzhou Cheng, Zehao Zhou, Yuke Li, Xuzhan Tan
+date: '2022-12-09'
+slug: []
+categories: []
+tags: []
+description: ~
+toc: yes
+authors: []
+series: []
+lastmod: '2022-12-09T23:48:23-05:00'
+featuredVideo: ~
+featuredImage: ~
+---
+## 1st EDA: Medicare Coverage vs. Premium
+ 
+```{r}
+library(tidyverse)
+premium_combined <- read_csv(here::here("dataset/origin_with_premium.csv"))
+ 
+ggplot(premium_combined) +
+  geom_smooth(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt), method = "lm") + labs(x = "Premium", y  = "Medicare Coverage") + geom_point(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt))
+ 
+premium_combined <- premium_combined %>%
+  mutate(test = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>%
+  arrange(test) %>%
+  filter(!Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt < 0.8)
+  
+ 
+ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=TRUE), y = Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
+  geom_boxplot() +  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + labs(x = "State", y  = "Medicare Coverage")
+```
+ 
+Plot 1 shows the regression plot between premium and medicare coverage. There is a positive regression relationship between the two variables, indicating that Medicare Coverage increases as Premium increases. However, when we wanted to explore Medicare Coverage data for each state and reordered by premium, we saw no apparent patterns among the states.   Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare coverage goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare coverage, and cheaper premium does not lower the coverage either.
+
+## 2nd EDA: Medicare Coverage vs. Length of stay in hospital
+```{r}
+library(tidyverse)
+Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
+medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+medicare_data_sum<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+ 
+colnames(medicare_data_sum)[1] ="state"
+LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
+```
+We further examined the relationship between medicare coverage and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
+
