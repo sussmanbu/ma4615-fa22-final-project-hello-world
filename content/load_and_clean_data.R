@@ -108,7 +108,7 @@ write_csv(Medicare_Geographic_Variation, file = here::here("dataset", "Medicare_
 save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geographic_Variation.RData"))
 
 
-##Dataset 5: GDP by states
+##Dataset 5: GPCI by states
 GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
                 col_types = cols(PW_GPCI =col_number(),  
                                       PE_GPCI =col_number(),
@@ -118,9 +118,14 @@ write_csv(GPCI2020, file = here::here("dataset", "GPCI2020.csv"))
 save(GPCI2020, file = here::here("dataset/GPCI2020.RData"))
 
 
-
-
-
+##Dataset 6: HCC_Readmission_Only
+HCC_Readmission <- read_csv(here::here("dataset/Medicare_Geographic_Variation_by_National_State_County.csv"),
+                            col_types = cols(BENE_AVG_RISK_SCRE = col_double(),ACUTE_HOSP_READMSN_PCT = col_double()))
+HCC_Readmission_clean <- HCC_Readmission %>% filter(BENE_AGE_LVL == 'All' & YEAR == 2020 & BENE_GEO_LVL == 'State') %>% filter(BENE_GEO_DESC!= c('PR','VI'))%>% mutate(state = BENE_GEO_DESC)
+HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+##Store the dataset for further usage
+write_csv(HCC_Readmission_Only, file = here::here("dataset", "HCC_Readmission_Only.csv"))
+save(HCC_Readmission_Only, file = here::here("dataset/HCC_Readmission_Only.RData"))
 
 
 
