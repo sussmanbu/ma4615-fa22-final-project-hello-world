@@ -38,7 +38,8 @@ medicare_data_sum<- medicare_data_clean %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
             Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
+            Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
 
 ##Store the data for further usage.
 
