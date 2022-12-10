@@ -1,4 +1,4 @@
-State,Mean_Discharge,Mean_Covered,Mean_Total_Payment,Mean_Medicare_Payment,Medicare_Coverage
+state,Mean_Discharge,Mean_Covered,Mean_Total_Payment,Mean_Medicare_Payment,Medicare_Coverage
 AK,28.86415094,114660.5628,24284.33121,20744.41902,0.854230608
 AL,33.4590653,66193.39169,13156.23956,10636.56251,0.808480452
 AR,34.78881048,51084.51763,12931.13102,11165.73113,0.863476761
