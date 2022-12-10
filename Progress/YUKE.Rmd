@@ -1,0 +1,20 @@
+
+
+```{R}
+library(tidyverse)
+(HCC_Readmission <- read_csv("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/Medicare_Geographic_Variation_by_National_State_County.csv"))
+Medicare_Coverage <- read_csv("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/Medicare_Data_clean.csv")
+
+
+
+```
+
+```{R}
+HCC_Readmission_clean <- HCC_Readmission %>% filter(BENE_AGE_LVL == 'All' & YEAR == 2020 & BENE_GEO_LVL == 'State') %>% filter(BENE_GEO_DESC!= c('PA','VI')) 
+HCC_Readmission_Only <- HCC_Readmission_clean %>% select(BENE_GEO_DESC, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+
+
+
+
+```
+
