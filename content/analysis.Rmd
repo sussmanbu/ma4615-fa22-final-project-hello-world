@@ -165,3 +165,22 @@ pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[24:30],PARTD$`D
 
 People who are under 65 years old has more drug expenditure than people who are over 65 years old. People under 18 years has the highest drug cost compared to rest of age group. The average drug cost is relatively even for different races. 
 
+```{r}
+library(tidyverse)
+Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
+medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+medicare_data_sum<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+ 
+colnames(medicare_data_sum)[1] ="state"
+LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
+
+```
+
+
