@@ -85,3 +85,44 @@ medicare_data15 <- read_csv(here::here("dataset", "medicare-15.csv"))
 save(medicare_data15, file = here::here("dataset/medicare-15.RData"))
 medicare_data14 <- read_csv(here::here("dataset", "medicare-14.csv"))
 save(medicare_data14, file = here::here("dataset/medicare-14.RData"))
+
+##Dataset 4: Medicare Geographic Variation
+Medicare_Geographic_Variation <- read_csv(here::here("dataset", "Medicare_Geographic_Variation.csv"), 
+                col_types = cols(IP_MDCR_PYMT_AMT=col_number(),  
+                                      IP_MDCR_PYMT_PCT =col_number(),
+                                      IP_MDCR_PYMT_PC =col_number(),
+                                      IP_MDCR_PYMT_PER_USER=col_number(),
+                                      IP_MDCR_STDZD_PYMT_AMT=col_number(),
+                                      IP_MDCR_STDZD_PYMT_PCT=col_number(),
+                                      IP_MDCR_STDZD_PYMT_PC=col_number(),
+                                      IP_MDCR_STDZD_PYMT_PER_USER=col_number(),
+                                      BENES_IP_CVRD_STAY_CNT=col_number(),
+                                      BENES_IP_PCT=col_number(),
+                                      IP_CVRD_STAYS_PER_1000_BENES=col_number(),
+                                      IP_CVRD_DAYS_PER_1000_BENES=col_number(),
+                                      ACUTE_HOSP_READMSN_CNT=col_number(),
+                                      ACUTE_HOSP_READMSN_PCT=col_number()
+                                      ))
+## Store the dataset for further usage.
+write_csv(Medicare_Geographic_Variation, file = here::here("dataset", "Medicare_Geographic_Variation.csv"))
+save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geographic_Variation.RData"))
+
+
+##Dataset 5: GDP by states
+GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
+                col_types = cols(PW_GPCI =col_number(),  
+                                      PE_GPCI =col_number(),
+                                      MP_GPCI =col_number()))
+## Store the dataset for further usage.
+write_csv(GPCI2020, file = here::here("dataset", "GPCI2020.csv"))
+save(GPCI2020, file = here::here("dataset/GPCI2020.RData"))
+
+
+
+
+
+
+
+
+
+
