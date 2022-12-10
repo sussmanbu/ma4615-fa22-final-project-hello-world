@@ -129,6 +129,8 @@ HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SC
 write_csv(HCC_Readmission_Only, file = here::here("dataset", "HCC_Readmission_Only.csv"))
 save(HCC_Readmission_Only, file = here::here("dataset/HCC_Readmission_Only.RData"))
 
+##Dataset7: Combined dataset
+
 
 
 
