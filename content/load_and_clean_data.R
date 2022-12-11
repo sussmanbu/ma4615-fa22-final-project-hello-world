@@ -150,7 +150,13 @@ Data_Combined <- df_list %>% reduce(full_join, by='state')
 ggpairs(Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020),upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
 
-
+medicare_data_clean<-read_csv(here::here("dataset","medicare_data_clean.csv"),col_types = cols_only(state=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
+medicare_data_clean<-medicare_data_clean %>% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %>% select(Medicare_Coverage,state)
+df_list2<-list(medicare_data_clean,GDP,Avg_LOS,HCC_Readmission_Only,GPCI2020,population)
+Data_Combined2<-df_list2 %>% reduce(full_join,by='state')
+library(GGally)
+ggpairs(Data_Combined2 %>% select(Medicare_Coverage,GDP:Year2020),upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+         lower = list(continuous = wrap('cor', size = 4)))
 
 
 
