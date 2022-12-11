@@ -1,6 +1,8 @@
 library(tidyverse)
 library(dplyr)
 
+
+
 ## Below is how we load and clean our data set.
 
 ## Main Dataset: Medicare Impatient Hospitals - By Providers and Service
@@ -109,7 +111,7 @@ write_csv(Medicare_Geographic_Variation, file = here::here("dataset", "Medicare_
 save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geographic_Variation.RData"))
 
 
-##Dataset 5: GPCI by states
+##Dataset 5: GPCI2020 by states
 GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
                 col_types = cols_only(Rndrng_Prvdr_State_Abrvtn = col_character(),
                                       PW_GPCI =col_number(),  
@@ -136,16 +138,20 @@ population <- read_csv(here::here("dataset","population.csv"))
 write_csv(population, file = here::here("dataset", "population.csv"))
 save(population, file = here::here("dataset/population.RData"))
 
-##Dataset8: Combined dataset
+##Dataset8: Combined dataset for year 2020
 Avg_LOS <- read_csv(here::here("dataset","Avg_LOS.csv"))
 HCC_Readmission_Only <- read_csv(here::here("dataset","HCC_Readmission_Only.csv"))
 GPCI2020 <- read_csv(here::here("dataset","GPCI2020.csv"))
 GDP <- read_csv(here::here("dataset","GDP.csv"))
-medicare_data_sum <- read_csv(here::here("dataset","medicare_data_sum.csv"))
-df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS)
-df_list
+population <- read_csv(here::here("dataset","population.csv"),col_types=cols_only(state=col_character(),Year2020=col_number()))
+medicare_data_sum <- read_csv(here::here("dataset","medicare_data_sum.csv"),col_types=cols_only(Medicare_Coverage=col_number(),state=col_character()))
+df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population)
 Data_Combined <- df_list %>% reduce(full_join, by='state')
-Data_Combined
+ggpairs(Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020),upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+        lower = list(continuous = wrap('cor', size = 4)))
+
+
+
 
 
 
