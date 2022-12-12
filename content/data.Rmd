@@ -58,7 +58,6 @@ premiumA <- read_csv(here::here("dataset", "PremiumA.csv"),
                     Standard_Base_Premium_Amount = col_number()))
 
 medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
-
 medicare_data_sum<- medicare_data_clean %>%
   group_by(Rndrng_Prvdr_State_Abrvtn) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
