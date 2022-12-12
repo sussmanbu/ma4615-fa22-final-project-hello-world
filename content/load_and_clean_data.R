@@ -121,15 +121,15 @@ GPCI2020 <- GPCI2020 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_
 GPCI2019 <- read_csv(here::here("dataset", "GPCI2019.csv"), 
                      col_types = cols_only(state = col_character(),
                                            PW2019 =col_number(),  
-                                           PE_GPCI =col_number(),
-                                           MP_GPCI =col_number()))
-GPCI2019 <- GPCI2019 %>% group_by(state) %>% summarise(PW2019=mean(PW2019),PE2019=mean(PE_GPCI),MP2019=mean(MP_GPCI))
+                                           PE2019 =col_number(),
+                                           MP2019 =col_number()))
+GPCI2019 <- GPCI2019 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW2019),PE_GPCI=mean(PE2019),MP_GPCI=mean(MP2019))
 GPCI2018 <- read_csv(here::here("dataset", "GPCI2018.csv"), 
                      col_types = cols_only(state = col_character(),
                                            PW2018 =col_number(),  
-                                           PE_GPCI =col_number(),
-                                           MP_GPCI =col_number()))
-GPCI2018 <- GPCI2018 %>% group_by(state) %>% summarise(PW2018=mean(PW2018),PE2018=mean(PE_GPCI),MP2018=mean(MP_GPCI))
+                                           PE2018 =col_number(),
+                                           MP2018 =col_number()))
+GPCI2018 <- GPCI2018 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW2018),PE_GPCI=mean(PE2018),MP_GPCI=mean(MP2018))
 
 ## Store the dataset for further usage.
 write_csv(GPCI2020, file = here::here("dataset", "GPCI2020.csv"))
@@ -187,8 +187,8 @@ Data_Combined2<-df_list2 %>% reduce(full_join,by='state')
 ggpairs(Data_Combined2 %>% select(Medicare_Coverage,GDP:Year2020),upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
          lower = list(continuous = wrap('cor', size = 4)))
 
-GPCI_Train<-rbind(GPCI2018,GPCI2019)
-
-
-
+GPCI_Train<-GPCI_Train %>% rbind(GPCI2018,GPCI2019) %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
+Train <- merge(GPCI_Train,medicare_train) %>% select(PW_GPCI:Medicare_Coverage_Train)
+ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+        lower = list(continuous = wrap('cor', size = 4)))
 
