@@ -95,6 +95,44 @@ origin_with_hs %>%
 
 ```
 
+```{r}
+data19 <- read_csv(here::here("dataset", "medicare-19.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean19 <- data19 %>% filter(!grepl('Unknown', data19$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+datasum19<- medicare_data_clean %>%
+  group_by(state) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+Avg_LOS19 <- read_csv(here::here("dataset", "Avg_LOS19.csv"))
+LOS_plot19 <- merge(datasum19, Avg_LOS19, by = "state")
+LOS_plot19 <- LOS_plot19 %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot19$year <- c(2019)
+
+data18 <- read_csv(here::here("dataset", "medicare-18.csv"))
+data18 <- read_csv(here::here("dataset", "medicare-18.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean18 <- data18 %>% filter(!grepl('Unknown', data18$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+colnames(data_clean18)[3] ="state"
+datasum18<- medicare_data_clean %>%
+  group_by(state) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+Avg_LOS18 <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+LOS_plot18 <- merge(datasum18, Avg_LOS, by = "state")
+LOS_plot18 <- LOS_plot18 %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot18$year <- c(2018)
+### merge 18 and 19
+total <- rbind(LOS_plot18, LOS_plot19)
+write_csv(total, file = here::here("dataset", "total.csv"))
+
+data17 <- read_csv(here::here("dataset", "medicare-17.csv"))
+data16 <- read_csv(here::here("dataset", "medicare-16.csv"))
+```
+
+
 # References
 * Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service. 
 * Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums. 
