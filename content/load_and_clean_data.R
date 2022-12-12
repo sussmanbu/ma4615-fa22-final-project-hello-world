@@ -67,7 +67,7 @@ save(medicare_premium_combined, file = here::here("dataset/Medicare_Data.RData")
 ##Dataset 3: GDP by states
 GDP <- read_csv(here::here("dataset", "GDP.csv"), 
                 col_types = cols_only(GDP=col_number(),  
-                                      Rndrng_Prvdr_State_Abrvtn =col_character()))
+                                      state =col_character()))
 ## Store the dataset for further usage.
 write_csv(GDP, file = here::here("dataset", "GDP.csv"))
 save(GDP, file = here::here("dataset/GDP.RData"))
@@ -111,17 +111,33 @@ write_csv(Medicare_Geographic_Variation, file = here::here("dataset", "Medicare_
 save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geographic_Variation.RData"))
 
 
-##Dataset 5: GPCI2020 by states
+##Dataset 5: GPCI201802020 by states
 GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
-                col_types = cols_only(Rndrng_Prvdr_State_Abrvtn = col_character(),
+                col_types = cols_only(state = col_character(),
                                       PW_GPCI =col_number(),  
                                       PE_GPCI =col_number(),
                                       MP_GPCI =col_number()))
-GPCI2020 <- GPCI2020 %>% group_by(Rndrng_Prvdr_State_Abrvtn) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
+GPCI2020 <- GPCI2020 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
+GPCI2019 <- read_csv(here::here("dataset", "GPCI2019.csv"), 
+                     col_types = cols_only(state = col_character(),
+                                           PW2019 =col_number(),  
+                                           PE2019 =col_number(),
+                                           MP2019 =col_number()))
+GPCI2019 <- GPCI2019 %>% group_by(state) %>% summarise(PW2019=mean(PW2019),PE_GPCI=mean(PE2019),MP_GPCI=mean(MP2019))
+GPCI2018 <- read_csv(here::here("dataset", "GPCI2018.csv"), 
+                     col_types = cols_only(state = col_character(),
+                                           PW2018 =col_number(),  
+                                           PE2018 =col_number(),
+                                           MP2018 =col_number()))
+GPCI2018 <- GPCI2018 %>% group_by(state) %>% summarise(PW2018=mean(PW2018),PE_GPCI=mean(PE2018),MP_GPCI=mean(MP2018))
+
 ## Store the dataset for further usage.
 write_csv(GPCI2020, file = here::here("dataset", "GPCI2020.csv"))
 save(GPCI2020, file = here::here("dataset/GPCI2020.RData"))
-
+write_csv(GPCI2019, file = here::here("dataset", "GPCI2019.csv"))
+save(GPCI2019, file = here::here("dataset/GPCI2019.RData"))
+write_csv(GPCI2018, file = here::here("dataset", "GPCI2018.csv"))
+save(GPCI2018, file = here::here("dataset/GPCI2018.RData"))
 
 ##Dataset 6: HCC_Readmission_Only
 HCC_Readmission <- read_csv(here::here("dataset/Medicare_Geographic_Variation_by_National_State_County.csv"),
@@ -147,8 +163,15 @@ population <- read_csv(here::here("dataset","population.csv"),col_types=cols_onl
 medicare_data_sum <- read_csv(here::here("dataset","medicare_data_sum.csv"),col_types=cols_only(Medicare_Coverage=col_number(),state=col_character()))
 df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population)
 Data_Combined <- df_list %>% reduce(full_join, by='state')
-ggpairs(Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020),upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+Data_Combined<-Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020)
+ggpairs(Data_Combined,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
+fit1<-lm(Medicare_Coverage~.,data=Data_Combined)
+summary(fit1)
+Data_Combined$Medicare_Coverage
+plot(fit1)
+aic<-step(fit1,direction='both')
+view(Data_Combined)
 
 medicare_data_clean<-read_csv(here::here("dataset","medicare_data_clean.csv"),col_types = cols_only(state=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
 medicare_data_clean<-medicare_data_clean %>% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %>% select(Medicare_Coverage,state)
