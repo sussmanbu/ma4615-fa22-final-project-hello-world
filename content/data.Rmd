@@ -121,15 +121,48 @@ datasum18<- medicare_data_clean %>%
             Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
 
 Avg_LOS18 <- read_csv(here::here("dataset", "Avg_LOS.csv"))
-LOS_plot18 <- merge(datasum18, Avg_LOS, by = "state")
+LOS_plot18 <- merge(datasum18, Avg_LOS18, by = "state")
 LOS_plot18 <- LOS_plot18 %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
 LOS_plot18$year <- c(2018)
-### merge 18 and 19
-total <- rbind(LOS_plot18, LOS_plot19)
-write_csv(total, file = here::here("dataset", "total.csv"))
+
 
 data17 <- read_csv(here::here("dataset", "medicare-17.csv"))
+data17 <- read_csv(here::here("dataset", "medicare-17.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean17 <- data17 %>% filter(!grepl('Unknown', data17$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+colnames(data_clean17)[3] ="state"
+datasum17<- medicare_data_clean %>%
+  group_by(state) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+Avg_LOS17 <- read_csv(here::here("dataset", "Avg_LOS17.csv"))
+LOS_plot17 <- merge(datasum17, Avg_LOS17, by = "state")
+LOS_plot17 <- LOS_plot17 %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot17$year <- c(2017)
+
 data16 <- read_csv(here::here("dataset", "medicare-16.csv"))
+data16 <- read_csv(here::here("dataset", "medicare-16.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean16 <- data16 %>% filter(!grepl('Unknown', data16$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+colnames(data_clean16)[3] ="state"
+datasum16<- medicare_data_clean %>%
+  group_by(state) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+Avg_LOS16 <- read_csv(here::here("dataset", "Avg_LOS16.csv"))
+LOS_plot16 <- merge(datasum16, Avg_LOS16, by = "state")
+LOS_plot16 <- LOS_plot16 %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot16$year <- c(2016)
+
+```
+```{r}
+### merge 18 and 19
+total <- rbind(LOS_plot16,LOS_plot17,LOS_plot18, LOS_plot19)
+write_csv(total, file = here::here("dataset", "total.csv"))
 ```
 
 

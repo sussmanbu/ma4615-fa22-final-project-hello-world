@@ -70,7 +70,7 @@ You have removed the generic posts from the initial site template.
 library(tidyverse)
 library(shiny)
 df <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
-Data <- df%>% mutate(Medicare_Coverage =Avg_Mdcr_Pymt_Amt/ Avg_Tot_Pymt_Amt)
+Data <- df%>% mutate(Medicare_Coverage =Avg_Mdcr_Pymt_Amt/ Avg_Tot_Pymt_Amt) %>% filter(Tot_Dschrgs <100)
 Data_state <- Data %>% pull(state) %>% unique() %>% sort()
 which_count <- c("Medicare_Coverage")
 ui <- fluidPage(
@@ -126,23 +126,24 @@ shinyApp(ui = ui, server = server)
 ```
 
 ```{r}
+###Main
 library(tidyverse)
 library(shiny)
 df <- read_csv(here::here("dataset/total.csv"))
 Data <- df%>% mutate(Medicare_Coverage =Mean_Medicare_Payment/Mean_Total_Payment)
-Data_state <- Data %>% pull(state) %>% unique() %>% sort()
+Data_state <- Data %>% pull(year) %>% unique() %>% sort()
 which_count <- c("Medicare_Coverage")
 ui <- fluidPage(
     titlePanel("Data"),
-    selectInput(inputId = "state", label = "state", choices = Data_state),
+    selectInput(inputId = "year", label = "year", choices = Data_state),
     selectInput(inputId= "which", label = "Count", choices = which_count),
     plotOutput("distPlot")
 )
 server <- function(input, output) {
     output$distPlot <- renderPlot({
-        Data %>% filter(state == input$state) %>%
-            ggplot(aes_string(x = "year", y = input$which)) +
-            geom_point()
+        Data %>% filter(year == input$year) %>%
+            ggplot(aes_string(x = "LOS", y = input$which)) +
+            geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
 }) }
 shinyApp(ui = ui, server = server)
 ```
