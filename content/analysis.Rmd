@@ -8,165 +8,114 @@ draft: false
 ---
 
 ## Motivation for our Data Analysis (DA)
-In this project, we aim to study factors that can affect Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare. We want to explore factors that might influence the out-of-pocket cost for Medicare beneficiaries. We are interested to see if there is a correlation between Rural-Urban Commuting Area Code), GDP, total discharges, covered charges, total payment, GDP, premium, and ratio of medicare payment/total paymeny (an estimation of out-of-pocket costs).
+Medicare is a national health insurance program in the United States that provides coverage to the elderly and people with disabilities. To be eligible for Medicare coverage, individuals must be 65 years of age or older and have paid into the Medicare system through their taxes while working. We are interested in medicare payment because Medicare spending in the United States has increased significantly in recent years –– increased by more than $200 billion since 2010. In addition, it is also a significant part (15.3%) of the overall healthcare spending. With the aging population, Medicare spending is projected to increase significantly over the next decade. 
 
-### Average Premiums vs. Total Discharge
+Thus, in the project, we aim to explore factors that make U.S. healthcare so expensive by focusing on medicare spending because it is one of the largest sources of healthcare funding in the country. To make the project manageable, we decided to focus on inpatient Medicare spending due to data availability. 
 
-In the first plot, we analyzed the relationship between average Medicare premiums and mean discharge. The x-axis is the mean discharge of each state, and the y-axis is the average premium calculated from Total Premium divided by Total number of beneficiaries according to each state. We observed that there is a weak positive correlation between average Medicare premiums and mean discharges, implying that the premium values might be set based on how frequent the Medicare beneficiaries go to hospitals and look for medical services. 
+## Breadth of EDA 
+
+During initial data analysis, we analyzed [Medicare Inpatient Hospitals by Provider and Service](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service). We first explored the relationship between Average medicare Payment and average total payments. 
+
+### Plot 1: The relationship between Average Medicare Payments and Average Total Payments
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+Medicare_Coverage <- read_csv(here::here("dataset", "total.csv"))
+ggplot(Medicare_Coverage,aes(x = Mean_Medicare_Payment,y = Mean_Total_Payment)) +geom_point() +
+  ggtitle("Total Payment vs Medicare Payment") + labs(x = "Mean Medicare Payment",y = "Mean Total Payment") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The Medicare covered payment increases as the total payment increases. This makes sense because Medicare covers payment mostly by a certain percentage, but may vary depending on differences in hospital charge structures. In the graph, each datapoint represents one state. From the graph, you can see Mean Medicare Payment varies in states with some states' values cluster together. If you examine closely, you will realize the ratio of Medicare Payment and Total Payment also varies by state. For the next two plots, we explored Medicare payments and the ratio between Medicare payment and Total Payment in each states. 
+
+### Plot 2: The ratio of medicare payment and total payment for each state
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment/Mean_Total_Payment),y = Mean_Medicare_Payment/Mean_Total_Payment)) +geom_point() +
+  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x='State',y='The ratio of Mean Medicare payment and Mean Total Payment') + ggtitle("The ratio of medicare payment and total payment for each states") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Washington DC and Hawaii have the lowest ratio of medical payment and total payment while South Dakota and Maryland have the highest ratio. From the above graph that describes the percentage the Medicare payment in the total payment, it’s quite clear that there’s a standard of 85% that can be found within all the states in the U.S. However, it’s quite surprising to find that there are almost half of the states do not fulfill this standard. To be more specific, it means the residents of these states have to afford 15-25% of the total payment even if they have medicare covered. Also, there are states that covered more than 90% of the payment which means the person only has to afford less than 10% of the total payment. The disparity is visually huge among all the states and it is something that could be further analyzed to see if there’s a need to improve the Medicare system in each state.
+
+### Plot 3: Mean Medicare payment in U.S. States
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment),y = Mean_Medicare_Payment)) +geom_point() +
+  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x='State',y='Mean Medicare payment') + ggtitle("Mean Medicare payment in U.S. States") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Theoretically, Medicare coverage should be the same across all states in the United States. Since it is a national program, the benefits and services it covers should be standardized, meaning that an individual who is enrolled in Medicare in one state will have the same coverage as someone who is enrolled in Medicare in another state. However, during initial exploratory data analysis, we found that average medicare payment varies greatly from state to state. As a result, we decided to shift our focus to understand the sources of variation in medicare payment across different geographic areas and identify sources that have the largest impact on medicare payment variations. We conducted some literature reviews and identified various possible factors including premium, geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, GDP, cover charged, and hierarchical condition category (HCC). 
+
+## Depth of EDA 
+
+### Medicare Payment vs. Premium
+ 
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+premium_combined <- read_csv(here::here("dataset/origin_with_premium.csv"))
+ 
+ggplot(premium_combined) +
+  geom_smooth(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt), method = "lm") + labs(x = "Premium", y  = "Medicare Payment") + ggtitle("Medicare payment vs Premium") + theme(plot.title = element_text(hjust = 0.5))
+```
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+premium_combined <- premium_combined %>%
+  mutate(test = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>%
+  arrange(test) %>%
+  filter(!Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt < 0.8)
+  
+ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=TRUE), y = Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
+  geom_boxplot() +  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x = "State", y  = "Medicare Coverage") + ggtitle("Medicare Coverage in States (ordered by increaasing Premium") + theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+The first plot shows the regression plot between premium and medicare coverage. There is a positive regression relationship between the two variables, indicating that Medicare Coverage increases as Premium increases. However, when we wanted to explore Medicare Coverage data for each state and reordered by premium, we saw no apparent patterns among the states. Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare coverage goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare coverage, and cheaper premium does not lower the coverage either.
+
+### Medicare Coverage vs. GDP
 ```{r,eval = FALSE}
-ggplot(medicare_premium_combined) +
-  geom_smooth(aes(x = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, y = Mean_Discharge), method = "lm")
-```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/content/post/2022-11-11-post-5-merging-dataset/index_files/figure-html/unnamed-chunk-3-1.png")
-```
-
-### EDA of Coverage vs. Geographical Location(RUCA)
-
-One important factor researchers want to know about is geographical location’s influence on medicare coverage. It could show the insufficiency of current policy on coverage geographically and whether the government is balancing it well. To achieve so, the institution which creates this dataset includes RUCA as one of the many variables.
-
-RUCA (Rural-Urban Commuting Area Code) is an index of urbanization based on the ZIP code developed by the US government in 2010. From 1 to 10, a more significant number represents a more rural and lower commuting area. On the contrary, a smaller number represents a more urbanized and higher commuting area.
-
-Based on this index, we can make a graph of RUCA and the proportion of coverage across the U.S. The graph below shows the relationship between the economic development of an area and medicare coverage provided by the local government.
-
-```{r,eval = FALSE}
-ggplot(medicare_data_clean,aes(x=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt,y=Rndrng_Prvdr_RUCA)) +
-  stat_binhex() + labs(x= "Coverage Proportion", y="RUCA")
-```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/content/post/2022-11-03-post-4-eda-and-modeling/index.en_files/figure-html/unnamed-chunk-3-1.png")
-```
-
-From the graph, we can see that most data points concentrate at the bottom right corner. It means most patients in urban areas can receive a high percentage of medicare coverage in hospitals. This is good news since it indicates that most population in the country is benefited from the current medical policy. 
-
-However, the variabilities of the coverage in areas other than the most urbanized areas are also high. First, for areas with RUCA higher than 3, the lines(composed of hexagons on the graph) are wide but there’s not enough concentration as the bottom-most line. It indicates that a lot of patients in rural areas are not receiving enough amount of coverage. Second, the concentration government has on the most rural area is not enough. For areas with RUCA higher than 3, we can see a clear trend of data points becoming less scattered as the RUCA gets higher. However, when it comes to the areas where RUCA equals 10, the line becomes scattered again. It means there are still a group of old people who are not receiving enough amount of coverage.
-
-For further studies, the graph can potentially work as an indicator of U.S. development based on medicare policies. For areas with a higher RUCA, we can see the data points are clearly less scattered. It means that the U.S. government is focusing on providing coverage to old people living in rural areas. Such intention is good from the basics. It allows old people to have more access to healthcare and medical resources when there’s a need. It also reduces the demand for old people to travel across the country. Compared to a less developed country, the graph could vary a lot and we won’t be able to see such a trend. 
-The indicator could also be compared among different states. By sorting the data points by the state code, we can have a graph as below:
-
-```{r, eval = FALSE}
-medicare_data_clean %>% ggplot(aes(Rndrng_Prvdr_State_Abrvtn, Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
-  geom_bin2d() + coord_flip() + guides(y = guide_axis(n.dodge = 2)) + scale_fill_viridis_c()
-```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/content/post/2022-11-03-post-4-eda-and-modeling/index.en_files/figure-html/unnamed-chunk-2-1.png")
-```
-Most states have the coverage proportion concentrated in the range of 0.7-1.0. a few outliers are below 0.7 or greater than 1. By looking at states with a larger population and more samples, such as California, Texas, Florida, and New York, more coverage proportions are concentrated in the 0.8-0.95 range. When more information is provided, the government and scholars can assess each state’s performance on medicare coverage.
-
-### GDP vs Covered Discharge
-We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. 
-
-```{r, include = FALSE}
-library(tidyverse)
-data <- read_csv("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/medicare_GDP_combined.csv", col_types=cols(GDP=col_number(),Mean_Medicare_Payment=col_number(),Rndrng_Prvdr_State_Abrvtn=col_character()))
-data %>% arrange(desc(GDP))
-```
-```{r }
-ggplot(data)+geom_point(aes(x=log(GDP), y=log(Mean_Covered) ,color=Rndrng_Prvdr_State_Abrvtn))
-```
-
-```{r}
-fit <- lm(log(Mean_Covered) ~ log(GDP), data = data)
+Medicare_Data_clean <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
+GDP <- read_csv(here::here("dataset", "GDP.csv"))
+data <- merge(GDP,Medicare_Data_clean) %>% group_by(Rndrng_Prvdr_State_Abrvtn) %>% summarize(Medicare_Coverage=mean(Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt),GDP=mean(GDP))
+#Observe whether there is a pattern 
+data<-data %>% arrange(desc(GDP))
+ggplot(data)+geom_point(aes(x=log(GDP), y=Medicare_Coverage,color=Rndrng_Prvdr_State_Abrvtn))+labs(y="Medicare_Coverage in %",x="log(GDP) in log($)")
+# Fit linear regression between the two variables
+fit <- lm(Medicare_Coverage ~ log(GDP), data = data)
 beta <- coef(fit)
 var <- sigma(fit)
-ggplot(data, aes(x=log(GDP), y=log(Mean_Covered))) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
+ggplot(data, aes(x=log(GDP), y=Medicare_Coverage)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
+summary(fit)
 ```
-
-We used log transformation to both variables since GDP and Coverage in dollars are big amounts, making it hard to observe patterns or trends without log-transformation. We then fit a linear regression line between the two variables and find a weak positive linear correlation between them. The slope is 0.1281689 and the intercept is 9.4635316. There are few outliers with relatively high leverage and high influence hence might impact our model a lot, so we decide to move those outliers later.
-
-We want to figure out whether there are some trends in medicare payment, total payment, and medicare covered throughout the years, so we obtain the raw data from 2014-2020 and clean them in the same way to obtain the mean medicare payment, mean total payment, and mean medicare covered of each state for each year.
-
-### Mean_Medicare_Payment over Mean_Total_Payment from 2014 to 2020
-
-```{r, eval = FALSE}
-ggplot(medicare_data_sum_total, aes(group=year, x = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. However, there is no obvious pattern observed in the model as medicare coverage does not change as GDP increases.
+ 
+###  Medicare Payment vs Hierarchical Condition Category (HCC) 
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+HCC_Readmission <- read_csv(here::here("dataset/Medicare_Geographic_Variation_by_National_State_County.csv"),col_types = cols(BENE_AVG_RISK_SCRE = col_double(),ACUTE_HOSP_READMSN_PCT = col_double()))
+Medicare_Payment <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
 ```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image1.png")
-```
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+HCC_Readmission_clean <- HCC_Readmission %>% filter(BENE_AGE_LVL == 'All' & YEAR == 2020 & BENE_GEO_LVL == 'State') %>% filter(BENE_GEO_DESC!= c('PR','VI'))%>% mutate(state = BENE_GEO_DESC)
+HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+ 
+Medicare_Payment_only <- Medicare_Payment%>% mutate(Med_payment = Avg_Mdcr_Pymt_Amt) %>% mutate(state = Rndrng_Prvdr_State_Abrvtn) %>% group_by(state) %>% summarize(Med_payment = mean(Med_payment))
 
-First, we made a boxplot to show the trend of Mean_Medicare_Payment over Mean_Total_Payment from 2014 to 2020.  The figure above reflects the percentage of doctors' salaries that Medicare pays to doctors. The higher this percentage, the smaller the percentage of wages paid to doctors by patients. The boxplot shows that the mean percentage of wages paid to doctors by patients was slowly increasing between 2014-2019, but this trend changed in 2020. Combined with the fact that Covid-19 pandemic explodes in 2020, we can see that more people with better medicare plans are seeking health care in 2020, which leads to an increase in the percentage of wages paid to doctors by Medicare.
-
-### Mean_Medicare_Payment/Mean_Covered from 2014 to 2020 
-
-```{r, eval = FALSE}
-ggplot(medicare_data_sum_total, aes(group=year, Mean_Medicare_Payment/Mean_Covered)) + geom_boxplot()+ coord_flip() + labs(y = "year")
+MC_HCC_Readmission <- inner_join(HCC_Readmission_Only,Medicare_Payment_only,by = 'state') 
+#HCC_coef <- coef(lm(BENE_AVG_RISK_SCRE ~ Medicare_Coverage, data = MC_HCC_Readmission))
+#Readmission_coef <- coef(lm(ACUTE_HOSP_READMSN_PCT ~ Medicare_Coverage, data = MC_HCC_Readmission))
 ```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image2.png")
-```
-In addition to the percentage of salaries of doctors paid by Medicare, we would like to know what percentage of total medicare is used to pay doctors' salaries. Mean_Covered is the total amount of money covered by medicare, which includes payments to doctors, medical devices, medicines, and other aspects of payments in health care. The graph shows that the ratio of Mean_Medicare_Payment over Mean_Covered has been decreasing since 2014, indicating that money spent on medical devices and medicines is gradually becoming a more dominant part of the total amount of Medicare.
-
-```{r, eval = FALSE}
-medicare_data_sum_total_withoutMD <- medicare_data_sum_total %>% subset(Rndrng_Prvdr_State_Abrvtn != "MD")
-ggplot(medicare_data_sum_total_withoutMD, aes(group=year, Mean_Medicare_Payment/Mean_Covered)) + geom_boxplot()+ coord_flip() + labs(y = "year")
-```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image3.png")
-```
-However this graph does not show this trend very clearly, because there's an outlier in the plot. Maryland is an outlier because it is the only state where hospitals are accountable for the health of their communities. When we exclude Maryland's data, this decreasing year-by-year trend becomes even more apparent.
-
-### Pearson Correlation Plot
-
-```{r Data_Prep, eval = FALSE,include = FALSE }
-library(dendextend)
-library(ComplexHeatmap)
-library(RColorBrewer)
-library(tidyverse)
-library(circlize)
-
-medicare_premium_heatmap <- as.data.frame(origin_with_premium) %>%
-  mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment, Total_Premium = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>%
-  dplyr::rename(State = Rndrng_Prvdr_State_Abrvtn) %>%
-  column_to_rownames("State") %>%
-  as.matrix()
-medicare_premium_heatmap_cor <- cor(medicare_premium_heatmap, method = "pearson")
-```
-
-```{r Cor_Heatmap,include = FALSE,eval = FALSE}
-dimension <- 3.5
-p <- ComplexHeatmap::Heatmap(medicare_premium_heatmap_cor,
-                             name = "Pearson",
-                             column_title = "Pearson Correlation Heatmap of Medicare Coverage Part A",
-                             row_title = NULL,
-                             column_title_gp = gpar(fontsize = 20, fontface = "bold"),
-                             row_names_side = "left",
-                             cell_fun = function(j, i, x, y, w, h, fill) {
-                               grid.text(sprintf("%.1f", as.data.frame.matrix(medicare_premium_heatmap_cor)[i, j]), x, y, gp = gpar(fontsize = 10))
-                            }, # this line displays number in cells
-                            col = circlize::colorRamp2(c(-0.4,
-                                                         0,
-                                                         quantile(medicare_premium_heatmap_cor, 0.99, na.rm = TRUE)),
-                                                         c("#1E90FF", "white", "firebrick3")),
-                            column_names_rot = 60,
-                            cluster_columns = TRUE, cluster_rows = TRUE,
-                            show_row_names = TRUE, show_column_names = TRUE,
-                            width = unit(dimension, "in"),
-                            height = unit(dimension, "in"),
-                            heatmap_width = unit(1, "npc"),
-                            heatmap_height = unit(1, "npc"),)
-print(p)
-```
-```{r echo = FALSE}
-knitr::include_graphics("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/image4.png")
-```
-
-### Drug Cost per Utilizer with Various Demographic Characters
-```{r include = FALSE}
-library(tidyverse)
-PARTD <- read_csv("~/Desktop/MA415/ma4615-fa22-final-project-hello-world/dataset/DRUG_PARTD.csv")
-```
-### 
-```{r }
-pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[8:17],PARTD$`Demographic Characteristics`[8:17],main = 'Average Drug Cost Per Part D Utilizer by Age')
-pie(PARTD$`Overall Part D  Average Gross Drug Cost Per Utilizer`[24:30],PARTD$`Demographic Characteristics`[24:30],main = 'Average Drug Cost Per Part D Utilizer by Race')
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(MC_HCC_Readmission,aes(x = BENE_AVG_RISK_SCRE ,y = Med_payment)) + geom_point() + labs(x = 'HCC', y = 'Medicare Payment') +  ggtitle("Medicare Payment vs HCC") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
 
 ```
 
-People who are under 65 years old has more drug expenditure than people who are over 65 years old. People under 18 years has the highest drug cost compared to rest of age group. The average drug cost is relatively even for different races. 
+Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare.Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.  
 
-```{r}
-library(tidyverse)
+### Readmission Rate vs Medicare Payment 
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(MC_HCC_Readmission,aes(x = Med_payment,y = ACUTE_HOSP_READMSN_PCT)) + geom_point() + labs(x = 'Medicare Payment', y = 'Readmission Rate') + ggtitle("Readmission Rate vs Medicare payment") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
+```
+
+Readmission rate is the percentage of patients who are admitted to a hospital again within a certain period of time after being discharged. This rate is often used as a measure of the quality of care provided by a hospital, as higher readmission rates may indicate that patients are not receiving the care they need to prevent their condition from worsening or recurring. Starting 2012, the Hospital Readmissions Reduction Program (HRRP) reduces at max three percent of Medicare payment for hopsitals that have high 30 days readmission rate. There is also limited relationship between Readmission Rate and Medicare Payment shown in this graph. 
+
+### Medicare Coverage vs Length of Stay 
+```{R echo = FALSE, warning = FALSE,message = FALSE}
 Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
 save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
 medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
@@ -179,8 +128,8 @@ medicare_data_sum<- medicare_data_clean %>%
  
 colnames(medicare_data_sum)[1] ="state"
 LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
-LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
-
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage") + ggtitle(" Medicare Coverage vs Length of Stay") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
+We further examined the relationship between medicare coverage and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
 
