@@ -1,0 +1,15 @@
+---
+title: Model&Prediction
+description:
+toc: true
+authors: []
+tags: []
+categories: []
+series: []
+date: 2022-12-12T19:58:14-05:00
+lastmod: 2022-12-12T19:58:14-05:00
+featuredVideo:
+featuredImage:
+draft: false
+---
+
