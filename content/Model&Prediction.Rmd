@@ -16,8 +16,9 @@ draft: false
 library(tidyverse)
 Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Medicare_Coverage=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
 Train <- Train %>% filter(year==2019)
-hs_Train <- read_csv(here::here("dataset","hs2019.csv"),col_types = cols_only(state=col_character(),status=col_number()))
-GDP_Train <- read_csv(here::here("dataset","GDP2019.csv"),col_types = cols_only(state=col_character(),GDP=col_number()))
+hs_Train <- read_csv(here::here("dataset","HS2019.csv"))
+GDP_Train <- read_csv(here::here("dataset","GDP2019.csv"))
 GPCI_Train<-GPCI2019 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
-Train <- Train %>% merge(GPCI_Train,Train,hs_Train,GDP_Train)
+df_list <- list(GPCI_Train,Train,hs_Train,GDP_Train)
+Train <- df_list %>% reduce(full_join,by='state')
 ```
