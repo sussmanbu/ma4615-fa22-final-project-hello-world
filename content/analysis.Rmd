@@ -7,7 +7,7 @@ featuredImage: https://www.kff.org/wp-content/uploads/2018/10/9256-figure-1.png
 draft: false
 ---
 
-## Motivation for our Data Analysis (DA)
+## Motivation for our Data Analysis (EDA)
 Medicare is a national health insurance program in the United States that provides coverage to the elderly and people with disabilities. To be eligible for Medicare coverage, individuals must be 65 years of age or older and have paid into the Medicare system through their taxes while working. We are interested in medicare payment because Medicare spending in the United States has increased significantly in recent years –– increased by more than $200 billion since 2010. In addition, it is also a significant part (15.3%) of the overall healthcare spending. With the aging population, Medicare spending is projected to increase significantly over the next decade. 
 
 Thus, in the project, we aim to explore factors that make U.S. healthcare so expensive by focusing on medicare spending because it is one of the largest sources of healthcare funding in the country. To make the project manageable, we decided to focus on inpatient Medicare spending due to data availability. 
