@@ -65,3 +65,86 @@ All lab required posts are present.
 Each page (including the home page) has a nice featured image associated with it.
 Your about page is up to date and clean.
 You have removed the generic posts from the initial site template.
+
+```{r}
+library(tidyverse)
+library(shiny)
+df <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
+Data <- df%>% mutate(Medicare_Coverage =Avg_Mdcr_Pymt_Amt/ Avg_Tot_Pymt_Amt) %>% filter(Tot_Dschrgs <100)
+Data_state <- Data %>% pull(state) %>% unique() %>% sort()
+which_count <- c("Medicare_Coverage")
+ui <- fluidPage(
+    titlePanel("Data"),
+    selectInput(inputId = "state", label = "State", choices = Data_state),
+    selectInput(inputId= "which", label = "Count", choices = which_count),
+    plotOutput("distPlot")
+)
+server <- function(input, output) {
+    output$distPlot <- renderPlot({
+        Data %>% filter(state == input$state) %>%
+            ggplot(aes_string(x = "Tot_Dschrgs", y = input$which)) +
+            geom_point() + geom_smooth()
+}) }
+shinyApp(ui = ui, server = server)
+
+```
+
+```{r}
+library(tidyverse)
+library(shiny)
+
+Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+medicare_data_sum<- medicare_data_clean %>%
+  group_by(state) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+ 
+colnames(medicare_data_sum)[1] ="state"
+LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
+LOS_plot <- LOS_plot %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+
+States <- LOS_plot %>% pull(state) %>% unique() %>% sort()
+which_count <- c("LOS")
+ui <- fluidPage(
+    titlePanel("LOS_plot"),
+    selectInput(inputId = "state", label = "State", choices = States),
+    selectInput(inputId= "which", label = "Count", choices = which_count),
+    plotOutput("distPlot")
+)
+server <- function(input, output) {
+    output$distPlot <- renderPlot({
+        LOS_plot %>% filter(state == input$state) %>%
+            ggplot(aes_string(x = "Medicare_Coverage", y = input$which)) +
+            geom_line()
+}) }
+shinyApp(ui = ui, server = server)
+
+
+```
+
+```{r}
+###Main
+library(tidyverse)
+library(shiny)
+df <- read_csv(here::here("dataset/total.csv"))
+Data <- df%>% mutate(Medicare_Coverage =Mean_Medicare_Payment/Mean_Total_Payment)
+Data_state <- Data %>% pull(year) %>% unique() %>% sort()
+which_count <- c("Medicare_Coverage")
+ui <- fluidPage(
+    titlePanel("Data"),
+    selectInput(inputId = "year", label = "year", choices = Data_state),
+    selectInput(inputId= "which", label = "Count", choices = which_count),
+    plotOutput("distPlot")
+)
+server <- function(input, output) {
+    output$distPlot <- renderPlot({
+        Data %>% filter(year == input$year) %>%
+            ggplot(aes_string(x = "LOS", y = input$which)) +
+            geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
+}) }
+shinyApp(ui = ui, server = server)
+```
+
