@@ -21,4 +21,27 @@ GDP_Train <- read_csv(here::here("dataset","GDP2019.csv"))
 GPCI_Train<-GPCI2019 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
 df_list <- list(GPCI_Train,Train,hs_Train,GDP_Train)
 Train <- df_list %>% reduce(full_join,by='state')
+Train <- Train %>% mutate(GDP=log(log(GDP))) %>% select(PW_GPCI:Medicare_Coverage,status,GDP) %>% head(-1)
 ```
+We first collect all out 2019 datasets and combine them together to create the trainning dataset called "Train"
+
+```{r}
+library(GGally)
+ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+        lower = list(continuous = wrap('cor', size = 4)))
+```
+We then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage. According to the graph, Los seems like the one with the highest correlation.
+
+```{r}
+fit1 <- lm(Medicare_Coverage~.,data=Train)
+summary(fit1)
+```
+
+```{r}
+aic<-step(fit1,direction='both')
+```
+```{r}
+fit2<-lm(Medicare_Coverage ~ PW_GPCI + LOS,data=Train)
+summary(fit2)
+```
+
