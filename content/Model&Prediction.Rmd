@@ -1,5 +1,5 @@
 ---
-title: Model&Prediction
+title: Model & Prediction
 description:
 toc: true
 authors: []
@@ -60,11 +60,4 @@ qqnorm(sdres1)
 qqline(sdres1)
 ggplot(data = data.frame(sdres1), aes(x = sdres1)) + geom_histogram(bins = 30) +
   ggtitle("Histogram MLS Plot")
-```
-
-```{r}
-
-Resfit <- resid(fit2)
-output1<-predict(fit2, se.fit = TRUE)
-ResfitValidation <- Medicare_Coverage - output1$fit
 ```

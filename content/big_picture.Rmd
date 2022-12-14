@@ -2,149 +2,104 @@
 title: Big Picture
 description:
 toc: true
-featuredImage: /images/The_Big_Picture_2.jpeg
+featuredImage: /images/shutterstock_1173232960.jpg
 featuredVideo:
 draft: false
 ---
 
-This comes from the file `content/big_picture.Rmd`.
 
-Think of this page as your 538/Upshot style article. This means that you should try to tell a story through the data and your analysis. Read articles from those sites and similar sites to get a feeling for what they are like. Importantly, these should be geared towards the general public. You shouldn't assume the reader understands how to interpret a linear regression. Focus on interpretation and visualizations.
+## What can our website tell you about?
 
----
+### The proportion of Medicare Coverage is different across the country
+```{r, echo=FALSE}
+#Run the packages
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(sf))
+suppressPackageStartupMessages(library(tmap))
+suppressPackageStartupMessages(library(USAboundaries))
+medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
+                          col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), 
+                                            Avg_Tot_Pymt_Amt=col_number(), 
+                                            Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean <- medicare_data %>% 
+  filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
+  drop_na() %>%      
+  select(-Rndrng_Prvdr_CCN, 
+         -Rndrng_Prvdr_St, 
+         -Rndrng_Prvdr_State_FIPS, 
+         -Rndrng_Prvdr_Zip5, 
+         -Rndrng_Prvdr_RUCA_Desc)
+medicare_data_sum<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
+            Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+#Create a map for the US
+epsg_us <- 2163
+us_states <- st_read("C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp") %>%
+  st_transform(epsg_us)
 
-## Rubric: On this page
+not_contiguous <-
+  c("Guam", "Commonwealth of the Northern Mariana Islands",
+    "American Samoa", "Puerto Rico", "United States Virgin Islands")
+us_cont <- us_states %>%
+  filter(!(NAME %in% not_contiguous)) %>%
+  select(STATEFP, STUSPS, NAME)
 
-You will
+#Plot a map colored with medicare coverage level
+cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "Rndrng_Prvdr_State_Abrvtn"))
 
-
-
-* Title
-  * Your big picture page should have a creative/click-baity title/headline that provides a hint about your thesis.
-* Clarity of Explanation
-  * You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible).
-* Quality of Figures
-  * Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
-* Creativity
-  * Do your best to make things interesting. Think of a story. Think of how each part of your analysis supports the previous part or provides a different perspective.
-  
-**Note**: This page should have no code visible, i.e. use `echo=FALSE`.  
-
----
-
-## Rubric: Other components
-
-### Interactive
-
-You will also be required to make an interactive dashboard like [this one](/flex/flex.html).
-
-Your Big Data page should include a link to an interactive dashboard. The dashboard should be created either using Shiny or FlexDashboard (or another tool with professor's approval). This interactive component should in some way support your thesis from your big picture page. Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.
-
-* Quality and ease of use of the interactive components.
-Is it clear what can be explored using your interactive components?
-Does it enhance and reinforce your conclusions from the Big Picture?
-Plotly with default hover text will get no credit. Be creative!
-
-
-### Video Recording
-
-Make a video recording (probably using Zoom) demonstrating your interactive components.
-You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA.
-This video should be no longer than 4 minutes.
-Include a link to your video (and password if needed) in your README.md file on your Github repository. You are not required to provide a link on the website.
-This can be presented by any subset of the team members.
-
-
-### Rest of the Site
-
-Finally, here are important things to keep in mind for the rest of the site. 
-
-The main title of your page is informative.
-Each post has an author/description/informative title.
-All lab required posts are present.
-Each page (including the home page) has a nice featured image associated with it.
-Your about page is up to date and clean.
-You have removed the generic posts from the initial site template.
-
-```{r}
-library(tidyverse)
-library(shiny)
-df <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
-Data <- df%>% mutate(Medicare_Coverage =Avg_Mdcr_Pymt_Amt/ Avg_Tot_Pymt_Amt) %>% filter(Tot_Dschrgs <100)
-Data_state <- Data %>% pull(state) %>% unique() %>% sort()
-which_count <- c("Medicare_Coverage")
-ui <- fluidPage(
-    titlePanel("Data"),
-    selectInput(inputId = "state", label = "State", choices = Data_state),
-    selectInput(inputId= "which", label = "Count", choices = which_count),
-    plotOutput("distPlot")
-)
-server <- function(input, output) {
-    output$distPlot <- renderPlot({
-        Data %>% filter(state == input$state) %>%
-            ggplot(aes_string(x = "Tot_Dschrgs", y = input$which)) +
-            geom_point() + geom_smooth()
-}) }
-shinyApp(ui = ui, server = server)
-
+tm_shape(cont_medicare_coverage) + tm_polygons(col = "Medicare_Coverage", palette = "RdBu", title = "Medicare Coverage", n = 9) + tm_shape(us_cont) + tm_borders(lwd = 2)  
 ```
 
-```{r}
-library(tidyverse)
-library(shiny)
+According to the graph ploting medicare coverage proportions in each state, you can see that there is discrepancies among the states when the coverage rates should be identical since Medicare is a federal program. From red to blue, red indicates lower medicare coverage, and blue indicates higher medicare coverage. There are several states on the eastern part of the US that provide relatively lower medicare coverage medical services to the patients, while other states provide relatively higher medicare coverage. This suggests that there may be differences in the way that Medicare is implemented in different states, or that there are other factors at play that affect the federal reimbursement of Medicare services. It is also possible that the data used to create the graph is not entirely accurate, or that it does not capture the full picture of Medicare coverage in each state. Regardless, it is clear that there is a need for further investigation into the disparities in Medicare coverage among the states.
 
+### What factors can affect Medicare Coverage proportions?
+#### Length of Stay
+```{r, echo=FALSE}
+library(cowplot)
 Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
 medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
 medicare_data_sum<- medicare_data_clean %>%
-  group_by(state) %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
             Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
             Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
  
 colnames(medicare_data_sum)[1] ="state"
-LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
-LOS_plot <- LOS_plot %>% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
-
-States <- LOS_plot %>% pull(state) %>% unique() %>% sort()
-which_count <- c("LOS")
-ui <- fluidPage(
-    titlePanel("LOS_plot"),
-    selectInput(inputId = "state", label = "State", choices = States),
-    selectInput(inputId= "which", label = "Count", choices = which_count),
-    plotOutput("distPlot")
-)
-server <- function(input, output) {
-    output$distPlot <- renderPlot({
-        LOS_plot %>% filter(state == input$state) %>%
-            ggplot(aes_string(x = "Medicare_Coverage", y = input$which)) +
-            geom_line()
-}) }
-shinyApp(ui = ui, server = server)
-
-
+LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state") %>% mutate(medicare_coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + 
+  geom_point() + 
+  geom_smooth(color = "pink", method = lm) + 
+  labs(x = "Length of Stay (days)", y = "Medicare Coverage") + 
+  ggtitle(" Medicare Coverage vs Length of Stay") + 
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.5), panel.grid.minor = element_blank())
+p1 <- ggplot(LOS_plot, aes(x = reorder(state, medicare_coverage), y = medicare_coverage, group = 1)) + 
+  geom_point(size = 3, alpha = 0.3) +  
+  geom_line(color = "#3E9ABD", size = 1) + 
+  theme_bw() + 
+  theme(axis.ticks.x = element_blank(), axis.text.x = element_blank(), axis.title.x = element_blank(), panel.grid.minor = element_blank())
+p2 <- ggplot(LOS_plot, aes(x = reorder(state, medicare_coverage), y = LOS, group = 1)) + 
+  geom_point(size = 3, alpha = 0.3) +
+  geom_line(color = "pink", size = 1) +
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 60), panel.grid.minor = element_blank(), plot.title = element_text(hjust = 0.5)) 
+plot_grid(p1, p2, ncol = 1, align = "v")
 ```
 
-```{r}
-###Main
-library(tidyverse)
-library(shiny)
-df <- read_csv(here::here("dataset/total.csv"))
-Data <- df%>% mutate(Medicare_Coverage =Mean_Medicare_Payment/Mean_Total_Payment)
-Data_state <- Data %>% pull(year) %>% unique() %>% sort()
-which_count <- c("Medicare_Coverage")
-ui <- fluidPage(
-    titlePanel("Data"),
-    selectInput(inputId = "year", label = "year", choices = Data_state),
-    selectInput(inputId= "which", label = "Count", choices = which_count),
-    plotOutput("distPlot")
-)
-server <- function(input, output) {
-    output$distPlot <- renderPlot({
-        Data %>% filter(year == input$year) %>%
-            ggplot(aes_string(x = "LOS", y = input$which)) +
-            geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
-}) }
-shinyApp(ui = ui, server = server)
-```
+As you can see from the plot above, as the medicare coverage increases, the length of stay generally decreases, meaning that the time that a patient spend in hospital is negatively related to medicare coverage proportion. This relationship may suggest that patients who have higher levels of Medicare coverage are able to access more timely and efficient medical care, leading to shorter hospital stays. On the other hand, patients with lower levels of Medicare coverage may face barriers to accessing care, leading to longer hospital stays. It is also possible that other factors, such as the availability of other forms of health insurance or the presence of chronic health conditions, may play a role in this relationship. Further research and analysis would be needed to determine the exact cause of this relationship and its implications for healthcare policy.
+
+## Interactivity
+
+### Linear Regressions
+
+The [Linear Regressions](https://hello-world-415.shinyapps.io/Linear_Regression_Interactive) interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.
+
+### Medicare Coverage for Each Disease
+The [Medicare Coverage for Each Disease](https://hello-world-415.shinyapps.io/medicare_coverage/) interactive board shows the medicare coverage pattern based on each kind of disease that is categorized as DRG by the Medicare program. Using this board, you can visualize medicare coverage for each DRG you are interested in and consider how much you are benefiting from Medicare for a certain total payment.
 
