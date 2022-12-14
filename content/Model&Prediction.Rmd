@@ -23,7 +23,7 @@ GPCI_Train <- read_csv(here::here("dataset","GPCI2019.csv"))
 GPCI_Train<-GPCI_Train %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
 df_list <- list(GPCI_Train,Train,hs_Train,GDP_Train,population_Train)
 Train <- df_list %>% reduce(full_join,by='state')
-Train <- Train%>% select(PW_GPCI:Medicare_Coverage,status,GDP) %>% head(-1)
+Train <- Train%>% select(PW_GPCI:Medicare_Coverage,status,GDP,Year2019) %>% head(-1)
 write_csv(Train, file = here::here("dataset", "Training.csv"))
 save(Train, file = here::here("dataset/Training.RData"))
 
