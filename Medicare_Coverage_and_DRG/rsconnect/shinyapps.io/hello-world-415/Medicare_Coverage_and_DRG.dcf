@@ -1,0 +1,13 @@
+name: Medicare_Coverage_and_DRG
+title: Medicare_Coverage_and_DRG
+username:
+account: hello-world-415
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7890429
+bundleId: 6637097
+url: https://hello-world-415.shinyapps.io/Medicare_Coverage_and_DRG/
+when: 1671040740.06074
+lastSyncTime: 1671040740.06075
+asMultiple: FALSE
+asStatic: FALSE
