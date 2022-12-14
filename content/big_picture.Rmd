@@ -101,5 +101,5 @@ As you can see from the plot above, as the medicare coverage increases, the leng
 The [Linear Regressions](https://hello-world-415.shinyapps.io/Linear_Regression_Interactive) interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.
 
 ### Medicare Coverage for Each Disease
-The [Medicare Coverage for Each Disease](https://hello-world-415.shinyapps.io/medicare_coverage/) interactive board shows the medicare coverage pattern based on each kind of disease that is categorized as DRG by the Medicare program. Using this board, you can visualize medicare coverage for each DRG you are interested in and consider how much you are benefiting from Medicare for a certain total payment.
+The [Medicare Coverage by Hospital]( https://hello-world-415.shinyapps.io/Medicare_Coverage_by_Hospital/) interactive board shows the medicare coverage pattern based on each kind of disease that is categorized as DRG by the Medicare program. Using this board, you can visualize medicare coverage for each DRG you are interested in and consider how much you are benefiting from Medicare for a certain total payment.
 
