@@ -192,3 +192,5 @@ Train <- merge(GPCI_Train,medicare_train) %>% select(PW_GPCI:Medicare_Coverage_T
 ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
 
+write_csv(Train, file = here::here("dataset", "Training.csv"))
+save(Train, file = here::here("dataset/Training.RData"))
