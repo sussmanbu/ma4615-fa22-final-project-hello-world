@@ -132,4 +132,3 @@ LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) 
 ```
 
 We further examined the relationship between medicare coverage and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
-
