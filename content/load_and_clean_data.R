@@ -43,6 +43,8 @@ medicare_data_sum<- medicare_data_clean %>%
             Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
             Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
 
+medicare_data_clean <- medicare_data_clean %>%
+  rename(state = Rndrng_Prvdr_State_Abrvtn)
 ##Store the data for further usage.
 
 write_csv(medicare_data_sum, file = here::here("dataset", "Medicare_Data_sum.csv"))
@@ -111,7 +113,7 @@ write_csv(Medicare_Geographic_Variation, file = here::here("dataset", "Medicare_
 save(Medicare_Geographic_Variation, file = here::here("dataset/Medicare_Geographic_Variation.RData"))
 
 
-##Dataset 5: GPCI201802020 by states
+##Dataset 5: GPCI2018-2020 by states
 GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"), 
                 col_types = cols_only(state = col_character(),
                                       PW_GPCI =col_number(),  
@@ -120,16 +122,16 @@ GPCI2020 <- read_csv(here::here("dataset", "GPCI2020.csv"),
 GPCI2020 <- GPCI2020 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
 GPCI2019 <- read_csv(here::here("dataset", "GPCI2019.csv"), 
                      col_types = cols_only(state = col_character(),
-                                           PW2019 =col_number(),  
-                                           PE2019 =col_number(),
-                                           MP2019 =col_number()))
-GPCI2019 <- GPCI2019 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW2019),PE_GPCI=mean(PE2019),MP_GPCI=mean(MP2019))
+                                           PW_GPCI =col_number(),  
+                                           PE_GPCI =col_number(),
+                                           MP_GPCI =col_number()))
+GPCI2019 <- GPCI2019 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI)) %>% drop_na()
 GPCI2018 <- read_csv(here::here("dataset", "GPCI2018.csv"), 
                      col_types = cols_only(state = col_character(),
-                                           PW2018 =col_number(),  
-                                           PE2018 =col_number(),
-                                           MP2018 =col_number()))
-GPCI2018 <- GPCI2018 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW2018),PE_GPCI=mean(PE2018),MP_GPCI=mean(MP2018))
+                                           PW_GPCI =col_number(),  
+                                           PE_GPCI =col_number(),
+                                           MP_GPCI =col_number()))
+GPCI2018 <- GPCI2018 %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI)) %>% drop_na()
 
 ## Store the dataset for further usage.
 write_csv(GPCI2020, file = here::here("dataset", "GPCI2020.csv"))

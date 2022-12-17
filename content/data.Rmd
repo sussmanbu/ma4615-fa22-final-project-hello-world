@@ -75,7 +75,7 @@ origin_with_premium <- medicare_data_clean %>%
 write_csv(origin_with_premium, file = here::here("dataset", "origin_with_premium.csv"))
 save(origin_with_premium, file = here::here("dataset/origin_with_premium.csv.RData"))
 
-health_status_state <- read.csv(here::here("dataset", "Health_Status_State.csv"))
+health_status_state <- read.csv(here::here("dataset", "Health_Status_2020.csv"))
 colnames(health_status_state)[1] = "Rndrng_Prvdr_State_Abrvtn"
 origin_with_hs_state <- medicare_data_sum %>%
   left_join(health_status_state,by="Rndrng_Prvdr_State_Abrvtn",all=TRUE)
