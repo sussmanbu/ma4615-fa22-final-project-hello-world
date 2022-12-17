@@ -8,15 +8,17 @@ draft: false
 ---
 
 ## Motivation for our Data Analysis (EDA)
-Medicare is a national health insurance program in the United States that provides coverage to the elderly and people with disabilities. To be eligible for Medicare coverage, individuals must be 65 years of age or older and have paid into the Medicare system through their taxes while working. We are interested in medicare payment because Medicare spending in the United States has increased significantly in recent years –– increased by more than $200 billion since 2010. In addition, it is also a significant part (15.3%) of the overall healthcare spending. With the aging population, Medicare spending is projected to increase significantly over the next decade. 
 
-Thus, in the project, we aim to explore factors that make U.S. healthcare so expensive by focusing on medicare spending because it is one of the largest sources of healthcare funding in the country. To make the project manageable, we decided to focus on inpatient Medicare spending due to data availability. 
+Medicare is a national health insurance program in the United States that provides coverage to the elderly and people with disabilities. To be eligible for Medicare coverage, individuals must be 65 years of age or older and have paid into the Medicare system through their taxes while working. We are interested in medicare payment because Medicare spending in the United States has increased significantly in recent years ---- increased by more than \$200 billion since 2010. In addition, it is also a significant part (15.3%) of the overall healthcare spending. With the aging population, Medicare spending is projected to increase significantly over the next decade.
 
-## Breadth of EDA 
+Thus, in the project, we aim to explore factors that make U.S. healthcare so expensive by focusing on medicare spending because it is one of the largest sources of healthcare funding in the country. To make the project manageable, we decided to focus on inpatient Medicare spending due to data availability.
 
-During initial data analysis, we analyzed [Medicare Inpatient Hospitals by Provider and Service](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service). We first explored the relationship between Average medicare Payment and average total payments. 
+## Breadth of EDA
+
+During initial data analysis, we analyzed [Medicare Inpatient Hospitals by Provider and Service](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service). We first explored the relationship between Average medicare Payment and average total payments.
 
 ### Plot 1: The relationship between Average Medicare Payments and Average Total Payments
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 suppressPackageStartupMessages(library(tidyverse))
 Medicare_Coverage <- read_csv(here::here("dataset", "total.csv"))
@@ -25,36 +27,39 @@ ggplot(Medicare_Coverage,aes(x = Mean_Medicare_Payment,y = Mean_Total_Payment)) 
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-The Medicare covered payment increases as the total payment increases. This makes sense because Medicare covers payment mostly by a certain percentage, but may vary depending on differences in hospital charge structures. In the graph, each datapoint represents one state. From the graph, you can see Mean Medicare Payment varies in states with some states' values cluster together. If you examine closely, you will realize the ratio of Medicare Payment and Total Payment also varies by state. For the next two plots, we explored Medicare payments and the ratio between Medicare payment and Total Payment in each states. 
+The Medicare covered payment increases as the total payment increases. This makes sense because Medicare covers payment mostly by a certain percentage, but may vary depending on differences in hospital charge structures. In the graph, each datapoint represents one state. From the graph, you can see Mean Medicare Payment varies in states with some states' values cluster together. If you examine closely, you will realize the ratio of Medicare Payment and Total Payment also varies by state. For the next two plots, we explored Medicare payments and the ratio between Medicare payment and Total Payment in each states.
 
 ### Plot 2: The ratio of medicare payment and total payment for each state
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment/Mean_Total_Payment),y = Mean_Medicare_Payment/Mean_Total_Payment)) +geom_point() +
   scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x='State',y='The ratio of Mean Medicare payment and Mean Total Payment') + ggtitle("The ratio of medicare payment and total payment for each states") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-Washington DC and Hawaii have the lowest ratio of medical payment and total payment while South Dakota and Maryland have the highest ratio. From the above graph that describes the percentage the Medicare payment in the total payment, it’s quite clear that there’s a standard of 85% that can be found within all the states in the U.S. However, it’s quite surprising to find that there are almost half of the states do not fulfill this standard. To be more specific, it means the residents of these states have to afford 15-25% of the total payment even if they have medicare covered. Also, there are states that covered more than 90% of the payment which means the person only has to afford less than 10% of the total payment. The disparity is visually huge among all the states and it is something that could be further analyzed to see if there’s a need to improve the Medicare system in each state.
+Washington DC and Hawaii have the lowest ratio of medical payment and total payment while South Dakota and Maryland have the highest ratio. From the above graph that describes the percentage the Medicare payment in the total payment, it's quite clear that there's a standard of 85% that can be found within all the states in the U.S. However, it's quite surprising to find that there are almost half of the states do not fulfill this standard. To be more specific, it means the residents of these states have to afford 15-25% of the total payment even if they have medicare covered. Also, there are states that covered more than 90% of the payment which means the person only has to afford less than 10% of the total payment. The disparity is visually huge among all the states and it is something that could be further analyzed to see if there's a need to improve the Medicare system in each state.
 
 ### Plot 3: Mean Medicare payment in U.S. States
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment),y = Mean_Medicare_Payment)) +geom_point() +
   scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x='State',y='Mean Medicare payment') + ggtitle("Mean Medicare payment in U.S. States") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-Theoretically, Medicare coverage should be the same across all states in the United States. Since it is a national program, the benefits and services it covers should be standardized, meaning that an individual who is enrolled in Medicare in one state will have the same coverage as someone who is enrolled in Medicare in another state. However, during initial exploratory data analysis, we found that average medicare payment varies greatly from state to state. As a result, we decided to shift our focus to understand the sources of variation in medicare payment across different geographic areas and identify sources that have the largest impact on medicare payment variations. We conducted some literature reviews and identified various possible factors including premium, geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, GDP, cover charged, and hierarchical condition category (HCC). 
+Theoretically, Medicare coverage should be the same across all states in the United States. Since it is a national program, the benefits and services it covers should be standardized, meaning that an individual who is enrolled in Medicare in one state will have the same coverage as someone who is enrolled in Medicare in another state. However, during initial exploratory data analysis, we found that average medicare payment varies greatly from state to state. As a result, we decided to shift our focus to understand the sources of variation in medicare payment across different geographic areas and identify sources that have the largest impact on medicare payment variations. We conducted some literature reviews and identified various possible factors including premium, geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, GDP, cover charged, and hierarchical condition category (HCC).
 
-## Depth of EDA 
+## Depth of EDA
 
 ### Medicare Payment vs. Premium
- 
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 premium_combined <- read_csv(here::here("dataset/origin_with_premium.csv"))
  
 ggplot(premium_combined) +
   geom_smooth(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt), method = "lm") + labs(x = "Premium", y  = "Medicare Payment") + ggtitle("Medicare payment vs Premium") + theme(plot.title = element_text(hjust = 0.5))
 ```
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 premium_combined <- premium_combined %>%
   mutate(test = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries) %>%
@@ -69,6 +74,7 @@ ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=
 The first plot shows the regression plot between premium and medicare coverage. There is a positive regression relationship between the two variables, indicating that Medicare Coverage increases as Premium increases. However, when we wanted to explore Medicare Coverage data for each state and reordered by premium, we saw no apparent patterns among the states. Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare coverage goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare coverage, and cheaper premium does not lower the coverage either.
 
 ### Medicare Coverage vs. GDP
+
 ```{r,eval = FALSE}
 Medicare_Data_clean <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
 GDP <- read_csv(here::here("dataset", "GDP.csv"))
@@ -83,13 +89,16 @@ var <- sigma(fit)
 ggplot(data, aes(x=log(GDP), y=Medicare_Coverage)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
 summary(fit)
 ```
+
 We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. However, there is no obvious pattern observed in the model as medicare coverage does not change as GDP increases.
- 
-###  Medicare Payment vs Hierarchical Condition Category (HCC) 
+
+### Medicare Payment vs Hierarchical Condition Category (HCC)
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 HCC_Readmission <- read_csv(here::here("dataset/Medicare_Geographic_Variation_by_National_State_County.csv"),col_types = cols(BENE_AVG_RISK_SCRE = col_double(),ACUTE_HOSP_READMSN_PCT = col_double()))
 Medicare_Payment <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
 ```
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 HCC_Readmission_clean <- HCC_Readmission %>% filter(BENE_AGE_LVL == 'All' & YEAR == 2020 & BENE_GEO_LVL == 'State') %>% filter(BENE_GEO_DESC!= c('PR','VI'))%>% mutate(state = BENE_GEO_DESC)
 HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
@@ -100,21 +109,24 @@ MC_HCC_Readmission <- inner_join(HCC_Readmission_Only,Medicare_Payment_only,by =
 #HCC_coef <- coef(lm(BENE_AVG_RISK_SCRE ~ Medicare_Coverage, data = MC_HCC_Readmission))
 #Readmission_coef <- coef(lm(ACUTE_HOSP_READMSN_PCT ~ Medicare_Coverage, data = MC_HCC_Readmission))
 ```
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(MC_HCC_Readmission,aes(x = BENE_AVG_RISK_SCRE ,y = Med_payment)) + geom_point() + labs(x = 'HCC', y = 'Medicare Payment') +  ggtitle("Medicare Payment vs HCC") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
 
 ```
 
-Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare.Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.  
+Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare.Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.
 
-### Readmission Rate vs Medicare Payment 
+### Readmission Rate vs Medicare Payment
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(MC_HCC_Readmission,aes(x = Med_payment,y = ACUTE_HOSP_READMSN_PCT)) + geom_point() + labs(x = 'Medicare Payment', y = 'Readmission Rate') + ggtitle("Readmission Rate vs Medicare payment") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
 ```
 
-Readmission rate is the percentage of patients who are admitted to a hospital again within a certain period of time after being discharged. This rate is often used as a measure of the quality of care provided by a hospital, as higher readmission rates may indicate that patients are not receiving the care they need to prevent their condition from worsening or recurring. Starting 2012, the Hospital Readmissions Reduction Program (HRRP) reduces at max three percent of Medicare payment for hopsitals that have high 30 days readmission rate. There is also limited relationship between Readmission Rate and Medicare Payment shown in this graph. 
+Readmission rate is the percentage of patients who are admitted to a hospital again within a certain period of time after being discharged. This rate is often used as a measure of the quality of care provided by a hospital, as higher readmission rates may indicate that patients are not receiving the care they need to prevent their condition from worsening or recurring. Starting 2012, the Hospital Readmissions Reduction Program (HRRP) reduces at max three percent of Medicare payment for hopsitals that have high 30 days readmission rate. There is also limited relationship between Readmission Rate and Medicare Payment shown in this graph.
 
-### Medicare Coverage vs Length of Stay 
+### Medicare Coverage vs Length of Stay
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
 save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
@@ -132,4 +144,3 @@ LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) 
 ```
 
 We further examined the relationship between medicare coverage and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
-

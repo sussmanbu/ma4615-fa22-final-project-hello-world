@@ -74,3 +74,22 @@ mutate(percent_payment=Mean_Medicare_Payment/Mean_Total_Payment)%>%
 
 Washington DC and Hawaii have the lowest ratio of medical payment and total payment while South Dakota and Maryland have the highest ratio. From the above graph that describes the percentage the Medicare payment in the total payment, it’s quite clear that there’s a standard of 85% that can be found within all the states in the U.S. However, it’s quite surprising to find that there are almost half of the states do not fulfill this standard. To be more specific, it means the residents of these states have to afford 15-25% of the total payment even if they have medicare covered. Also, there are states that covered more than 90% of the payment which means the person only has to afford less than 10% of the total payment. The disparity is visually huge among all the states and it is something that could be further analyzed to see if there’s a need to improve the Medicare system in each state.
 
+```{R echo = FALSE}
+HCC_Readmission <- read_csv(here::here("dataset/Medicare_Geographic_Variation_by_National_State_County.csv"),col_types = cols(BENE_AVG_RISK_SCRE = col_double(),ACUTE_HOSP_READMSN_PCT = col_double()))
+Medicare_Payment <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
+```
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+HCC_Readmission_clean <- HCC_Readmission %>% filter(BENE_AGE_LVL == 'All' & YEAR == 2020 & BENE_GEO_LVL == 'State') %>% filter(BENE_GEO_DESC!= c('PR','VI'))%>% mutate(state = BENE_GEO_DESC)
+HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+ 
+Medicare_Payment_only <- Medicare_Coverage%>% mutate(Med_payment = Avg_Mdcr_Pymt_Amt) %>% mutate(state = Rndrng_Prvdr_State_Abrvtn) %>% group_by(state) %>% summarize(Med_payment = mean(Med_payment))
+
+ 
+MC_HCC_Readmission <- inner_join(HCC_Readmission_Only,Medicare_Payment_only,by = 'state') 
+#HCC_coef <- coef(lm(BENE_AVG_RISK_SCRE ~ Medicare_Coverage, data = MC_HCC_Readmission))
+#Readmission_coef <- coef(lm(ACUTE_HOSP_READMSN_PCT ~ Medicare_Coverage, data = MC_HCC_Readmission))
+```
+```{R echo = FALSE}
+ggplot(MC_HCC_Readmission,aes(x = BENE_AVG_RISK_SCRE ,y = Med_payment)) + geom_point() + labs(x = 'HCC', y = 'Medicare Payment') +  ggtitle("Medicare Payment vs HCC") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
+
+```
