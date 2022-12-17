@@ -5,7 +5,7 @@ library(dplyr)
 
 ## Below is how we load and clean our data set.
 
-## Main Dataset: Medicare Impatient Hospitals - By Providers and Service
+## Dataset 1: Medicare Impatient Hospitals - By Providers and Service
 ## Load Main Dataset 
 ## Remove dollar signs to make data available
 
@@ -55,7 +55,8 @@ premiumA <- read_csv(here::here("dataset", "PremiumA.csv"),
                      col_types = cols(Total_Premium_Amount =col_number(),  
                                       Reduced_Base_Premium_Amount=col_number(), 
                                       Standard_Base_Premium_Amount = col_number())) %>%
-  rename(state = Rndrng_Prvdr_State_Abrvtn)
+  rename(state = Rndrng_Prvdr_State_Abrvtn) %>%
+  mutate(premium_avg = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
 
 ## Create a new global variable for the merged dataset)
 
@@ -163,12 +164,13 @@ medicare_train <- medicare_train %>% mutate(state=Rndrng_Prvdr_State_Abrvtn) %>%
 
 ##Dataset9: Combined dataset for year 2020
 Avg_LOS <- read_csv(here::here("dataset","Avg_LOS.csv"))
+health_status <- read_csv(here::here("dataset", "Health_Status_2020.csv")) %>% rename(state = STATE)
 HCC_Readmission_Only <- read_csv(here::here("dataset","HCC_Readmission_Only.csv"))
 GPCI2020 <- read_csv(here::here("dataset","GPCI2020.csv"))
 GDP <- read_csv(here::here("dataset","GDP.csv"))
 population <- read_csv(here::here("dataset","population.csv"),col_types=cols_only(state=col_character(),Year2020=col_number()))
 medicare_data_sum <- medicare_data_sum %>% rename(state = Rndrng_Prvdr_State_Abrvtn)
-df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population, premiumA)
+df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population, premiumA, health_status)
 Data_Combined <- df_list %>% reduce(inner_join, by='state')
 write_csv(Data_Combined, file = here::here("dataset", "Data_Combined.csv"))
 save(Data_Combined, file = here::here("dataset/Data_Combined.RData"))
@@ -199,7 +201,7 @@ ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
 write_csv(Train, file = here::here("dataset", "Training.csv"))
 save(Train, file = here::here("dataset/Training.RData"))
 
-#Dataset10: Medicare Coverage and US map
+##Dataset11: Medicare Coverage and US map
 #Run the packages
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(sf))
