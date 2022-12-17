@@ -88,11 +88,6 @@ write_csv(origin_with_hs, file = here::here("dataset", "origin_with_hs.csv"))
 save(origin_with_hs, file = here::here("dataset/origin_with_hs.csv.RData"))
 
 ```
-```{r}
-origin_with_hs %>%
-  mutate(coverage=)
-
-```
 
 ```{r}
 data19 <- read_csv(here::here("dataset", "medicare-19.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))

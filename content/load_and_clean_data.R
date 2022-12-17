@@ -43,8 +43,6 @@ medicare_data_sum<- medicare_data_clean %>%
             Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
             Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
 
-medicare_data_clean <- medicare_data_clean %>%
-  rename(state = Rndrng_Prvdr_State_Abrvtn)
 ##Store the data for further usage.
 
 write_csv(medicare_data_sum, file = here::here("dataset", "Medicare_Data_sum.csv"))
@@ -168,19 +166,20 @@ HCC_Readmission_Only <- read_csv(here::here("dataset","HCC_Readmission_Only.csv"
 GPCI2020 <- read_csv(here::here("dataset","GPCI2020.csv"))
 GDP <- read_csv(here::here("dataset","GDP.csv"))
 population <- read_csv(here::here("dataset","population.csv"),col_types=cols_only(state=col_character(),Year2020=col_number()))
-medicare_data_sum <- read_csv(here::here("dataset","medicare_data_sum.csv"),col_types=cols_only(Medicare_Coverage=col_number(),state=col_character()))
+medicare_data_sum <- medicare_data_sum %>% rename(state = Rndrng_Prvdr_State_Abrvtn)
 df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population)
-Data_Combined <- df_list %>% reduce(full_join, by='state')
-Data_Combined<-Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020)
+Data_Combined <- df_list %>% reduce(inner_join, by='state')
+
+Data_Combined_fit <-Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020)
 library(GGally)
-ggpairs(Data_Combined,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+ggpairs(Data_Combined_fit,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
-fit1<-lm(Medicare_Coverage~.,data=Data_Combined)
+fit1<-lm(Medicare_Coverage~.,data=Data_Combined_fit)
 summary(fit1)
 Data_Combined$Medicare_Coverage
 plot(fit1)
 aic<-step(fit1,direction='both')
-view(Data_Combined)
+view(Data_Combined_fit)
 
 medicare_data_clean<-read_csv(here::here("dataset","medicare_data_clean.csv"),col_types = cols_only(state=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
 medicare_data_clean<-medicare_data_clean %>% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %>% select(Medicare_Coverage,state)
