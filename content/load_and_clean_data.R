@@ -54,7 +54,8 @@ save(medicare_data_sum, file = here::here("dataset/Medicare_Data.RData"))
 premiumA <- read_csv(here::here("dataset", "PremiumA.csv"), 
                      col_types = cols(Total_Premium_Amount =col_number(),  
                                       Reduced_Base_Premium_Amount=col_number(), 
-                                      Standard_Base_Premium_Amount = col_number()))
+                                      Standard_Base_Premium_Amount = col_number())) %>%
+  rename(state = Rndrng_Prvdr_State_Abrvtn)
 
 ## Create a new global variable for the merged dataset)
 
@@ -167,7 +168,7 @@ GPCI2020 <- read_csv(here::here("dataset","GPCI2020.csv"))
 GDP <- read_csv(here::here("dataset","GDP.csv"))
 population <- read_csv(here::here("dataset","population.csv"),col_types=cols_only(state=col_character(),Year2020=col_number()))
 medicare_data_sum <- medicare_data_sum %>% rename(state = Rndrng_Prvdr_State_Abrvtn)
-df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population)
+df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population, premiumA)
 Data_Combined <- df_list %>% reduce(inner_join, by='state')
 write_csv(Data_Combined, file = here::here("dataset", "Data_Combined.csv"))
 save(Data_Combined, file = here::here("dataset/Data_Combined.RData"))
@@ -184,7 +185,7 @@ aic<-step(fit1,direction='both')
 view(Data_Combined_fit)
 
 medicare_data_clean<-read_csv(here::here("dataset","medicare_data_clean.csv"),col_types = cols_only(state=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
-medicare_data_clean<-medicare_data_clean %>% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %>% select(Medicare_Coverage,state)
+medicare_data_clean<-medicare_data_clean %>% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %>% select(Medicare_Coverage,Rndrng_Prvdr_State_Abrvtn)
 df_list2<-list(medicare_data_clean,GDP,Avg_LOS,HCC_Readmission_Only,GPCI2020,population)
 Data_Combined2<-df_list2 %>% reduce(full_join,by='state')
 ggpairs(Data_Combined2 %>% select(Medicare_Coverage,GDP:Year2020),upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
@@ -204,25 +205,7 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(sf))
 suppressPackageStartupMessages(library(tmap))
 suppressPackageStartupMessages(library(USAboundaries))
-medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
-                          col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), 
-                                            Avg_Tot_Pymt_Amt=col_number(), 
-                                            Avg_Submtd_Cvrd_Chrg=col_number()))
-medicare_data_clean <- medicare_data %>% 
-  filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
-  drop_na() %>%      
-  select(-Rndrng_Prvdr_CCN, 
-         -Rndrng_Prvdr_St, 
-         -Rndrng_Prvdr_State_FIPS, 
-         -Rndrng_Prvdr_Zip5, 
-         -Rndrng_Prvdr_RUCA_Desc)
-medicare_data_sum<- medicare_data_clean %>%
-  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
-            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
-            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
-            Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+
 #Create a map for the US
 epsg_us <- 2163
 us_states <- st_read("C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp") %>%
@@ -236,7 +219,7 @@ us_cont <- us_states %>%
   select(STATEFP, STUSPS, NAME)
 
 #Plot a map colored with medicare coverage level
-cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "Rndrng_Prvdr_State_Abrvtn"))
+cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "state"))
 
 write_csv(cont_medicare_coverage, file = here::here("dataset", "cont_medicare_coverage.csv"))
 save(cont_medicare_coverage, file = here::here("dataset/cont_medicare_coverage.RData"))
