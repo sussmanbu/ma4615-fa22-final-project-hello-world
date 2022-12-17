@@ -169,6 +169,8 @@ population <- read_csv(here::here("dataset","population.csv"),col_types=cols_onl
 medicare_data_sum <- medicare_data_sum %>% rename(state = Rndrng_Prvdr_State_Abrvtn)
 df_list<- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population)
 Data_Combined <- df_list %>% reduce(inner_join, by='state')
+write_csv(Data_Combined, file = here::here("dataset", "Data_Combined.csv"))
+save(Data_Combined, file = here::here("dataset/Data_Combined.RData"))
 
 Data_Combined_fit <-Data_Combined %>% select(BENE_AVG_RISK_SCRE:Year2020)
 library(GGally)
