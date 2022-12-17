@@ -6,8 +6,6 @@ featuredImage:
 draft: false
 ---
 
-This comes from the file `content/about.md`.
-
 This is a website for the final project for MA415 Data Science with R by Team "Hello, World!".
 The members of this team are below.
 
