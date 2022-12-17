@@ -12,12 +12,14 @@ featuredVideo:
 featuredImage:
 draft: false
 ---
+
+## Create training and testing datasets
 ```{r}
 library(tidyverse)
 Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Medicare_Coverage=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
 Train <- Train %>% filter(year==2019)
 population_Train <- read_csv(here::here("dataset","population.csv"),col_types = cols_only(state=col_character(),Year2019=col_number()))
-hs_Train <- read_csv(here::here("dataset","HS2019.csv"), )
+hs_Train <- read_csv(here::here("dataset","HS2019.csv"))
 GDP_Train <- read_csv(here::here("dataset","GDP2019.csv"))
 GPCI_Train <- read_csv(here::here("dataset","GPCI2019.csv"))
 GPCI_Train<-GPCI_Train %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
@@ -26,15 +28,25 @@ Train <- df_list %>% reduce(full_join,by='state')
 Train <- Train%>% select(PW_GPCI:Medicare_Coverage,status,GDP,Year2019) %>% head(-1)
 write_csv(Train, file = here::here("dataset", "Training.csv"))
 save(Train, file = here::here("dataset/Training.RData"))
+GDP_Test <- read_csv(here::here("dataset","GDP.csv"))
+GPCI_Test <- read_csv(here::here("dataset","GPCI2020.csv"))
+hs_Test <- read_csv(here::here("dataset","HS2020.csv"))
+population_Test <- read_csv(here::here("dataset","population.csv"),col_types = cols_only(state=col_character(),Year2020=col_number()))
+LOS_Test <- read_csv(here::here("dataset","Avg_LOS.csv"))
+Medicare_Test <- read_csv(here::here("dataset","Medicare_data_sum.csv"),col_types = cols_only(state=col_character(),Medicare_Coverage=col_number()))
+df_list2 <- list(GPCI_Test,hs_Test,GDP_Test,population_Test,LOS_Test,Medicare_Test)
+Test <- df_list2 %>% reduce(full_join,by='state')
 
 ```
-We first collect all out 2019 datasets and combine them together to create the trainning dataset called "Train"
+
+We first collect all out 2019 datasets and combine them together to create the trainning dataset called "Train".
 
 ```{r}
 library(GGally)
 ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
 ```
+
 We then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage. According to the graph, Los seems like the one with the highest correlation.
 
 ```{r}
@@ -42,6 +54,7 @@ fit1 <- lm(Medicare_Coverage~.,data=Train)
 summary(fit1)
 ```
 
+We first fit a linear regression model on our output Medicare_Coverge with all other x variables, and get an Adjusted R-squared of 0.05534, which is a very low amount
 ```{r}
 aic<-step(fit1,direction='both')
 ```
