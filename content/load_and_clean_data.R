@@ -197,3 +197,46 @@ ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
 
 write_csv(Train, file = here::here("dataset", "Training.csv"))
 save(Train, file = here::here("dataset/Training.RData"))
+
+#Dataset10: Medicare Coverage and US map
+#Run the packages
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(sf))
+suppressPackageStartupMessages(library(tmap))
+suppressPackageStartupMessages(library(USAboundaries))
+medicare_data <- read_csv(here::here("dataset", "Medicare_Data.csv") , 
+                          col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), 
+                                            Avg_Tot_Pymt_Amt=col_number(), 
+                                            Avg_Submtd_Cvrd_Chrg=col_number()))
+medicare_data_clean <- medicare_data %>% 
+  filter(!grepl('Unknown', medicare_data$Rndrng_Prvdr_RUCA_Desc)) %>%
+  drop_na() %>%      
+  select(-Rndrng_Prvdr_CCN, 
+         -Rndrng_Prvdr_St, 
+         -Rndrng_Prvdr_State_FIPS, 
+         -Rndrng_Prvdr_Zip5, 
+         -Rndrng_Prvdr_RUCA_Desc)
+medicare_data_sum<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
+            Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+#Create a map for the US
+epsg_us <- 2163
+us_states <- st_read("C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp") %>%
+  st_transform(epsg_us)
+
+not_contiguous <-
+  c("Guam", "Commonwealth of the Northern Mariana Islands",
+    "American Samoa", "Puerto Rico", "United States Virgin Islands")
+us_cont <- us_states %>%
+  filter(!(NAME %in% not_contiguous)) %>%
+  select(STATEFP, STUSPS, NAME)
+
+#Plot a map colored with medicare coverage level
+cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "Rndrng_Prvdr_State_Abrvtn"))
+
+write_csv(cont_medicare_coverage, file = here::here("dataset", "cont_medicare_coverage.csv"))
+save(cont_medicare_coverage, file = here::here("dataset/cont_medicare_coverage.RData"))
