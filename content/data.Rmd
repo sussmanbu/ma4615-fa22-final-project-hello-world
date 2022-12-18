@@ -1,10 +1,10 @@
 ---
-title: Data
-description:
-toc: true
-featuredVideo:
+title: "Data"
+description: null
+toc: yes
+featuredVideo: null
 featuredImage: images/Data Page.webp
-draft: false
+draft: no
 ---
 
 # Data Source
@@ -12,40 +12,72 @@ In the United States, the government is spending more and more expenditures on h
 Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore, in order to learn more about how well Medicare is benefiting the patients treated Inpatient Prospective Payment System (IPPS) hospitals, we decided to focus on the Medicare data of the beneficiaries with Part A fee-for-service coverage. In this project, we want to study what factors can affect the Medicare coverage, as well as how they can influence the percentage of the expenses covered by Medicare.
 
 ## Dataset 1
-* Link to the original dataset: https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service
+* Link to the original Dataset: https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service
 * The first dataset is Medicare Inpatient Hospitals by Provider and Service, which contains detailed information on Rural-Urban Commuting Area (RUCA) codes, Diagnosis Related Group (DRG) category, total discharges, average covered charges by Medicare, total payment, and Medicare payment for the healthcare providers from more than 3,000 hospitals across 51 states in the US. Each row represents a provider with a certain DRG service provided. This dataset is found by our team member Fangzhou Cheng and is collected based on information gathered by Centers for Medicare & Medicaid Services (CMS) for Original Medicare Part A beneficiaries by IPPS hospitals. The primary source of the data is the CMS’s Medicare Provider Analysis and Review (MEDPAR) inpatient data based on fiscal year (October 1st through September 30th). The inpatient provider name and address are derived from CMS’s Provider of Service (POS) data, a resource that provides characteristics associated with institutional facilities. HRRs are geographic units of analysis based on facility location zip codes that were developed by the Dartmouth Atlas of Health Care to delineate regional health care markets in the United States. The data is collected to summarize the information on services and procedures provided to Medicare beneficiaries by hospital facilities.
 
 ## Dataset 2
-* Link to the original dataset: https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums
+* Link to the original Dataset: https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums
 * The second dataset summarized information on total premium, standard base premium, and reduced base premium for beneficiaries by 51 states across the US. We picked the data from 2020, which is same year as our initial dataset. This dataset is found by our team member Yuke Li and is gathered from CMS data for beneficiaries enrolled in the Medicare program available from the CMS Chronic Conditions Data Warehouse. The data is collected to summarize the premiums that the beneficiaries have to pay for the Medicare services, and we intend to combine this dataset with the first one to analyze the relationship between Medicare coverages and its premiums.
 
+## Dataset 3
+* Link to the original Dataset:
+https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data
+* The third dataset is the Geographic Variation of Medicare Services within the U.S. by nation, state, and county. It shows the geographic differences of the use of health care services. This dataset is based on information gathered from CMS administrative enrollment and claims data for Original Medicare beneficiaries available from the CMS Chronic Conditions Data Warehouse. We intend to combine this dataset with our original dataset to make two analysis: the relationship between Medicare Payment and the medical condition in different states; the relationship between the patient readmission rate and Medicare payment.
+
+## Dataset 4
+* Link to the original Dataset:
+https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d
+* This dataset is an additional dataset based on the final rule of Medicare Physician Fee Schedule(PFS). It is issued by CMS aiming to expand access to behavioral health care, cancer screening coverage, and dental care. Different from the original one, this dataset provides relative values of the payments under Medicare Physician Fee Schedule(PFS). We intend to include this dataset to analyze the ... We have also included 2018 and 2019 version of this dataset. We aim to find some changes across the timeline.
+
+## Dataset 5
+* Link to the original Dataset:
+https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital
+* This dataset summarized information on inpatient hospital use for Medicare Advantage beneficiaries, by type of entitlement, type of hospital, demographics, and geography. The data reported in these inpatient hospital tables are based on information gathered from inpatient hospital encounter records for beneficiaries enrolled in Medicare Advantage available from the CMS Chronic Conditions Data Warehouse. We intend to use this dataset to analyze the relationship between patients' length of stay at hospital and the medicare coverage.
+
+## Dataset 6
+* Link to the original Dataset:
+https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020
+*  This dataset shows each state's statistics about the percentage of adults who reported that their health was very good or excellent. The dataset is provided by CDC, Behavioral Risk Factor Surveillance System aiming to find out how individuals perceive their own health. The self perceive health status could be a good measure for government medicare policy since it reflects people's health-related quality of life. We intend to join this dataset with the original dataset to analyze if there's any connection in between.
+
 # Variables
-* Rndrng_Prvdr_Org_Name: rendering provider name; name of the provider.
-* Rndrng_Prvdr_City: rendering provider city; the city in which the provider is physically located.
-* Rndrng_Prvdr_State_Abrvtn: rendering provider state abbreviation; the state abbreviation for the state in which the provider is physically located.
-* Rndrng_Prvdr_RUCA: rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.
-* DRG_Cd: Diagnosis Related Group (DRG) definition; groups similar clinical conditions
-* DRG_Desc: DRG description;description of DRG_Cd.
-* Tot_Dschrgs: total discharges; measures the number of discharges billed by all providers for inpatient hospital services.
-* Avg_Submtd_Cvrd_Chrg: average covered charges; the average charge of all providers' services covered by Medicare for discharges in the DRG.
-* Avg_Tot_Pymt_Amt: average total payments; The average total payments to all providers for the DRG.
-* Avg_Mdcr_Pymt_Amt: average medicare payments; the average amount that Medicare pays to the provider for Medicare's share of the MS-DRG. 
-* Total_Premium_Number_of_Beneficiaries: number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment. 
-* Total_Premium_Amount: total Medicare part A premium paid in a given state 
-* Standard_Base_Premium_Number_of_Beneficiaries: individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment. 
-* Standard_Base_Premium_Amount: total Medicare part A standard premium paid in a given state 
-* Reduced_Base_Premium_Number_of_Beneficiaries: individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium 
-* Reduced_Base_Premium_Amount: total Medicare part A reduced premium paid in a given state 
+* `Rndrng_Prvdr_Org_Name`: Rendering provider name; name of the provider.
+* `Rndrng_Prvdr_City`: Rendering provider city; the city in which the provider is physically located.
+* `Rndrng_Prvdr_State_Abrvtn`: Rendering provider state abbreviation; the state abbreviation for the state in which the provider is physically located.
+* `Rndrng_Prvdr_RUCA`: Rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.
+* `DRG_Cd`: Diagnosis Related Group (DRG) definition; groups similar clinical conditions
+* `DRG_Desc`: DRG description; description of DRG_Cd.
+* `Tot_Dschrgs`: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services.
+* `Avg_Submtd_Cvrd_Chrg`: Average covered charges; the average charge of all providers' services covered by Medicare for discharges in the DRG.
+* `Avg_Tot_Pymt_Amt`: Average total payments; the average total payments to all providers for the DRG.
+* `Avg_Mdcr_Pymt_Amt`: Average medicare payments; the average amount that Medicare pays to the provider for Medicare's share of the MS-DRG. 
+* `Total_Premium_Number_of_Beneficiaries`: Number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment. 
+* `Total_Premium_Amount`: Total Medicare part A premium paid in a given state 
+* `Standard_Base_Premium_Number_of_Beneficiaries`: Individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment. 
+* `Standard_Base_Premium_Amount`: Total Medicare part A standard premium paid in a given state 
+* `Reduced_Base_Premium_Number_of_Beneficiaries`: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium 
+* `Reduced_Base_Premium_Amount`: Total Medicare part A reduced premium paid in a given state 
+*`BENE_AVG_RISK_SCRE`: Average HCC Score; average Hierarchical Condition Category Score (HCC Score)
+*`ACUTE_HOSP_READMSN_PCT`: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year
+*`BENE_AGE_LVL`: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older
+*`BENE_GEO_LVL`:Geographic Level;National, State, County, or HRR
+*`BENE_GEO_DESC`: HRR; Name of HRR
+*`Health_Status`: Percentage of adults who reported that their health was very good or excellent
 
 # Data Import and Cleaning
 In [load_and_clean_data.R](https://hello-world-415.netlify.app/load_and_clean_data.R), we loaded and cleaned our datasets:
 
 ## The first dataset: Medicare Inpatient Hospitals - by Provider and Service
 The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis. 
+
 We first discussed to identify the columns we need for this project. After selecting the required columns for our datasets, we created another global variable dataset by filtering out those datasets with missing and abnormal values. There are mainly two types of missing values in our datasets – “NA” and “Unknown”. “Unknown” only appears in the RUCA variable and “NA” only appears in the numeric value. After dropping these values, we made some further decisions on the columns that will be needed for our EDA process. In the end, we dropped those variables with repetitive meanings such as the name and code for providers. After testing the availability of the test and making some basic coding on the cleaned dataset, we created our finalized dataset for future usage.
  
 ## The second dataset: CMS Program Statistics - Medicare Premiums
-While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recoded the file under CSV format and finalized the merging data into another file.
+While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recorded the file under CSV format and finalized the merging data into another file.
+
+## The third dataset: Geographic Variation of Medicare Services
+
+
+## The fourth dataset: 
 
 # Datasets Combination
 In order to combine the two datasets, we used function `group_by` to sort the first dataset by states , and used function `merge()` to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.
@@ -93,6 +125,7 @@ save(origin_with_hs, file = here::here("dataset/origin_with_hs.csv.RData"))
 data19 <- read_csv(here::here("dataset", "medicare-19.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
 data_clean19 <- data19 %>% filter(!grepl('Unknown', data19$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 datasum19<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -108,6 +141,7 @@ data18 <- read_csv(here::here("dataset", "medicare-18.csv"),col_types = cols(Avg
 data_clean18 <- data18 %>% filter(!grepl('Unknown', data18$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 colnames(data_clean18)[3] ="state"
 datasum18<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -125,6 +159,7 @@ data17 <- read_csv(here::here("dataset", "medicare-17.csv"),col_types = cols(Avg
 data_clean17 <- data17 %>% filter(!grepl('Unknown', data17$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 colnames(data_clean17)[3] ="state"
 datasum17<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -141,6 +176,7 @@ data16 <- read_csv(here::here("dataset", "medicare-16.csv"),col_types = cols(Avg
 data_clean16 <- data16 %>% filter(!grepl('Unknown', data16$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 colnames(data_clean16)[3] ="state"
 datasum16<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -165,3 +201,22 @@ write_csv(total, file = here::here("dataset", "total.csv"))
 * Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums. 
 * Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020. 
 * Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/ (21 Nov. 2022)
+* Medicare Geographic Variation - by National, State & County, 2020,
+https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data
+* Physician Fee Schedule Value Files, 2020,
+https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d
+* Physician Fee Schedule Value Files, 2019,
+https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C
+* Physician Fee Schedule Value Files, 2018,
+https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D
+* CMS Program Statistics - Medicare Advantage-Inpatient Hospital, 2019,
+https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital 
+* American Health Rankings, High Health Status, 2020,
+https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020
+* American Health Rankings, High Health Status, 2019,
+https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019
+* American Health Rankings, High Health Status, 2018,
+https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018
+
+
+

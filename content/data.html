@@ -1,10 +1,10 @@
 ---
-title: Data
-description:
-toc: true
-featuredVideo:
+title: "Data"
+description: null
+toc: yes
+featuredVideo: null
 featuredImage: images/Data Page.webp
-draft: false
+draft: no
 ---
 
 
@@ -19,37 +19,75 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <div id="dataset-1" class="section level2">
 <h2>Dataset 1</h2>
 <ul>
-<li>Link to the original dataset: <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service" class="uri">https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service</a></li>
+<li>Link to the original Dataset: <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service" class="uri">https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service</a></li>
 <li>The first dataset is Medicare Inpatient Hospitals by Provider and Service, which contains detailed information on Rural-Urban Commuting Area (RUCA) codes, Diagnosis Related Group (DRG) category, total discharges, average covered charges by Medicare, total payment, and Medicare payment for the healthcare providers from more than 3,000 hospitals across 51 states in the US. Each row represents a provider with a certain DRG service provided. This dataset is found by our team member Fangzhou Cheng and is collected based on information gathered by Centers for Medicare &amp; Medicaid Services (CMS) for Original Medicare Part A beneficiaries by IPPS hospitals. The primary source of the data is the CMS’s Medicare Provider Analysis and Review (MEDPAR) inpatient data based on fiscal year (October 1st through September 30th). The inpatient provider name and address are derived from CMS’s Provider of Service (POS) data, a resource that provides characteristics associated with institutional facilities. HRRs are geographic units of analysis based on facility location zip codes that were developed by the Dartmouth Atlas of Health Care to delineate regional health care markets in the United States. The data is collected to summarize the information on services and procedures provided to Medicare beneficiaries by hospital facilities.</li>
 </ul>
 </div>
 <div id="dataset-2" class="section level2">
 <h2>Dataset 2</h2>
 <ul>
-<li>Link to the original dataset: <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a></li>
+<li>Link to the original Dataset: <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a></li>
 <li>The second dataset summarized information on total premium, standard base premium, and reduced base premium for beneficiaries by 51 states across the US. We picked the data from 2020, which is same year as our initial dataset. This dataset is found by our team member Yuke Li and is gathered from CMS data for beneficiaries enrolled in the Medicare program available from the CMS Chronic Conditions Data Warehouse. The data is collected to summarize the premiums that the beneficiaries have to pay for the Medicare services, and we intend to combine this dataset with the first one to analyze the relationship between Medicare coverages and its premiums.</li>
+</ul>
+</div>
+<div id="dataset-3" class="section level2">
+<h2>Dataset 3</h2>
+<ul>
+<li>Link to the original Dataset:
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data</a></li>
+<li>The third dataset is the Geographic Variation of Medicare Services within the U.S. by nation, state, and county. It shows the geographic differences of the use of health care services. This dataset is based on information gathered from CMS administrative enrollment and claims data for Original Medicare beneficiaries available from the CMS Chronic Conditions Data Warehouse. We intend to combine this dataset with our original dataset to make two analysis: the relationship between Medicare Payment and the medical condition in different states; the relationship between the patient readmission rate and Medicare payment.</li>
+</ul>
+</div>
+<div id="dataset-4" class="section level2">
+<h2>Dataset 4</h2>
+<ul>
+<li>Link to the original Dataset:
+<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></li>
+<li>This dataset is an additional dataset based on the final rule of Medicare Physician Fee Schedule(PFS). It is issued by CMS aiming to expand access to behavioral health care, cancer screening coverage, and dental care. Different from the original one, this dataset provides relative values of the payments under Medicare Physician Fee Schedule(PFS). We intend to include this dataset to analyze the … We have also included 2018 and 2019 version of this dataset. We aim to find some changes across the timeline.</li>
+</ul>
+</div>
+<div id="dataset-5" class="section level2">
+<h2>Dataset 5</h2>
+<ul>
+<li>Link to the original Dataset:
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital</a></li>
+<li>This dataset summarized information on inpatient hospital use for Medicare Advantage beneficiaries, by type of entitlement, type of hospital, demographics, and geography. The data reported in these inpatient hospital tables are based on information gathered from inpatient hospital encounter records for beneficiaries enrolled in Medicare Advantage available from the CMS Chronic Conditions Data Warehouse. We intend to use this dataset to analyze the relationship between patients’ length of stay at hospital and the medicare coverage.</li>
+</ul>
+</div>
+<div id="dataset-6" class="section level2">
+<h2>Dataset 6</h2>
+<ul>
+<li>Link to the original Dataset:
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020</a></li>
+<li>This dataset shows each state’s statistics about the percentage of adults who reported that their health was very good or excellent. The dataset is provided by CDC, Behavioral Risk Factor Surveillance System aiming to find out how individuals perceive their own health. The self perceive health status could be a good measure for government medicare policy since it reflects people’s health-related quality of life. We intend to join this dataset with the original dataset to analyze if there’s any connection in between.</li>
 </ul>
 </div>
 </div>
 <div id="variables" class="section level1">
 <h1>Variables</h1>
 <ul>
-<li>Rndrng_Prvdr_Org_Name: rendering provider name; name of the provider.</li>
-<li>Rndrng_Prvdr_City: rendering provider city; the city in which the provider is physically located.</li>
-<li>Rndrng_Prvdr_State_Abrvtn: rendering provider state abbreviation; the state abbreviation for the state in which the provider is physically located.</li>
-<li>Rndrng_Prvdr_RUCA: rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.</li>
-<li>DRG_Cd: Diagnosis Related Group (DRG) definition; groups similar clinical conditions</li>
-<li>DRG_Desc: DRG description;description of DRG_Cd.</li>
-<li>Tot_Dschrgs: total discharges; measures the number of discharges billed by all providers for inpatient hospital services.</li>
-<li>Avg_Submtd_Cvrd_Chrg: average covered charges; the average charge of all providers’ services covered by Medicare for discharges in the DRG.</li>
-<li>Avg_Tot_Pymt_Amt: average total payments; The average total payments to all providers for the DRG.</li>
-<li>Avg_Mdcr_Pymt_Amt: average medicare payments; the average amount that Medicare pays to the provider for Medicare’s share of the MS-DRG.</li>
-<li>Total_Premium_Number_of_Beneficiaries: number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment.</li>
-<li>Total_Premium_Amount: total Medicare part A premium paid in a given state</li>
-<li>Standard_Base_Premium_Number_of_Beneficiaries: individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment.</li>
-<li>Standard_Base_Premium_Amount: total Medicare part A standard premium paid in a given state</li>
-<li>Reduced_Base_Premium_Number_of_Beneficiaries: individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium</li>
-<li>Reduced_Base_Premium_Amount: total Medicare part A reduced premium paid in a given state</li>
+<li><code>Rndrng_Prvdr_Org_Name</code>: Rendering provider name; name of the provider.</li>
+<li><code>Rndrng_Prvdr_City</code>: Rendering provider city; the city in which the provider is physically located.</li>
+<li><code>Rndrng_Prvdr_State_Abrvtn</code>: Rendering provider state abbreviation; the state abbreviation for the state in which the provider is physically located.</li>
+<li><code>Rndrng_Prvdr_RUCA</code>: Rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.</li>
+<li><code>DRG_Cd</code>: Diagnosis Related Group (DRG) definition; groups similar clinical conditions</li>
+<li><code>DRG_Desc</code>: DRG description; description of DRG_Cd.</li>
+<li><code>Tot_Dschrgs</code>: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services.</li>
+<li><code>Avg_Submtd_Cvrd_Chrg</code>: Average covered charges; the average charge of all providers’ services covered by Medicare for discharges in the DRG.</li>
+<li><code>Avg_Tot_Pymt_Amt</code>: Average total payments; the average total payments to all providers for the DRG.</li>
+<li><code>Avg_Mdcr_Pymt_Amt</code>: Average medicare payments; the average amount that Medicare pays to the provider for Medicare’s share of the MS-DRG.</li>
+<li><code>Total_Premium_Number_of_Beneficiaries</code>: Number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment.</li>
+<li><code>Total_Premium_Amount</code>: Total Medicare part A premium paid in a given state</li>
+<li><code>Standard_Base_Premium_Number_of_Beneficiaries</code>: Individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment.</li>
+<li><code>Standard_Base_Premium_Amount</code>: Total Medicare part A standard premium paid in a given state</li>
+<li><code>Reduced_Base_Premium_Number_of_Beneficiaries</code>: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium</li>
+<li><code>Reduced_Base_Premium_Amount</code>: Total Medicare part A reduced premium paid in a given state
+<em><code>BENE_AVG_RISK_SCRE</code>: Average HCC Score; average Hierarchical Condition Category Score (HCC Score)
+</em><code>ACUTE_HOSP_READMSN_PCT</code>: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year
+<em><code>BENE_AGE_LVL</code>: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older
+</em><code>BENE_GEO_LVL</code>:Geographic Level;National, State, County, or HRR
+<em><code>BENE_GEO_DESC</code>: HRR; Name of HRR
+</em><code>Health_Status</code>: Percentage of adults who reported that their health was very good or excellent</li>
 </ul>
 </div>
 <div id="data-import-and-cleaning" class="section level1">
@@ -57,31 +95,45 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <p>In <a href="https://hello-world-415.netlify.app/load_and_clean_data.R">load_and_clean_data.R</a>, we loaded and cleaned our datasets:</p>
 <div id="the-first-dataset-medicare-inpatient-hospitals---by-provider-and-service" class="section level2">
 <h2>The first dataset: Medicare Inpatient Hospitals - by Provider and Service</h2>
-<p>The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis.
-We first discussed to identify the columns we need for this project. After selecting the required columns for our datasets, we created another global variable dataset by filtering out those datasets with missing and abnormal values. There are mainly two types of missing values in our datasets – “NA” and “Unknown”. “Unknown” only appears in the RUCA variable and “NA” only appears in the numeric value. After dropping these values, we made some further decisions on the columns that will be needed for our EDA process. In the end, we dropped those variables with repetitive meanings such as the name and code for providers. After testing the availability of the test and making some basic coding on the cleaned dataset, we created our finalized dataset for future usage.</p>
+<p>The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis.</p>
+<p>We first discussed to identify the columns we need for this project. After selecting the required columns for our datasets, we created another global variable dataset by filtering out those datasets with missing and abnormal values. There are mainly two types of missing values in our datasets – “NA” and “Unknown”. “Unknown” only appears in the RUCA variable and “NA” only appears in the numeric value. After dropping these values, we made some further decisions on the columns that will be needed for our EDA process. In the end, we dropped those variables with repetitive meanings such as the name and code for providers. After testing the availability of the test and making some basic coding on the cleaned dataset, we created our finalized dataset for future usage.</p>
 </div>
 <div id="the-second-dataset-cms-program-statistics---medicare-premiums" class="section level2">
 <h2>The second dataset: CMS Program Statistics - Medicare Premiums</h2>
-<p>While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recoded the file under CSV format and finalized the merging data into another file.</p>
+<p>While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recorded the file under CSV format and finalized the merging data into another file.</p>
+</div>
+<div id="the-third-dataset-geographic-variation-of-medicare-services" class="section level2">
+<h2>The third dataset: Geographic Variation of Medicare Services</h2>
+</div>
+<div id="the-fourth-dataset" class="section level2">
+<h2>The fourth dataset:</h2>
 </div>
 </div>
 <div id="datasets-combination" class="section level1">
 <h1>Datasets Combination</h1>
 <p>In order to combine the two datasets, we used function <code>group_by</code> to sort the first dataset by states , and used function <code>merge()</code> to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.</p>
-<pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))
-premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), 
+<pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;tidyverse&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;ggplot2&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;tidyr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;readr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;purrr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;dplyr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre><code>## Warning: ³Ì¼­°ü&#39;forcats&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
+<pre class="r"><code>premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), 
                      col_types = cols(Total_Premium_Amount =col_number(),  
                     Reduced_Base_Premium_Amount=col_number(), 
                     Standard_Base_Premium_Amount = col_number()))
+
 medicare_data_clean &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Data_clean.csv&quot;))</code></pre>
 <pre><code>## Rows: 164520 Columns: 10
-## ── Column specification ────────────────────────────────────────────────────────
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr (4): Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_City, Rndrng_Prvdr_State_Abrvtn...
 ## dbl (6): Rndrng_Prvdr_RUCA, DRG_Cd, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_T...
 ## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>medicare_data_sum&lt;- medicare_data_clean %&gt;%
   group_by(Rndrng_Prvdr_State_Abrvtn) %&gt;%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
@@ -89,7 +141,151 @@ medicare_data_clean &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicar
             Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
             Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
 medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum) %&gt;%
-    mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)</code></pre>
+    mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
+
+write_csv(medicare_premium_combined, file = here::here(&quot;dataset&quot;, &quot;origin_with_premium_state.csv&quot;))
+save(medicare_premium_combined, file = here::here(&quot;dataset/origin_with_premium_state.csv.RData&quot;))
+
+origin_with_premium &lt;- medicare_data_clean %&gt;%
+  left_join(premiumA,by=&quot;Rndrng_Prvdr_State_Abrvtn&quot;,all=TRUE)
+write_csv(origin_with_premium, file = here::here(&quot;dataset&quot;, &quot;origin_with_premium.csv&quot;))
+save(origin_with_premium, file = here::here(&quot;dataset/origin_with_premium.csv.RData&quot;))
+
+health_status_state &lt;- read.csv(here::here(&quot;dataset&quot;, &quot;Health_Status_2020.csv&quot;))
+colnames(health_status_state)[1] = &quot;Rndrng_Prvdr_State_Abrvtn&quot;
+origin_with_hs_state &lt;- medicare_data_sum %&gt;%
+  left_join(health_status_state,by=&quot;Rndrng_Prvdr_State_Abrvtn&quot;,all=TRUE)
+write_csv(origin_with_hs_state, file = here::here(&quot;dataset&quot;, &quot;origin_with_hs_state.csv&quot;))
+save(origin_with_hs_state, file = here::here(&quot;dataset/origin_with_hs_state.csv.RData&quot;))
+
+origin_with_hs &lt;- medicare_data_clean %&gt;%
+  left_join(health_status_state,by=&quot;Rndrng_Prvdr_State_Abrvtn&quot;,all=TRUE)
+write_csv(origin_with_hs, file = here::here(&quot;dataset&quot;, &quot;origin_with_hs.csv&quot;))
+save(origin_with_hs, file = here::here(&quot;dataset/origin_with_hs.csv.RData&quot;))</code></pre>
+<pre class="r"><code>data19 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-19.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean19 &lt;- data19 %&gt;% filter(!grepl(&#39;Unknown&#39;, data19$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+datasum19&lt;- medicare_data_clean %&gt;%
+  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
+  group_by(state) %&gt;%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+Avg_LOS19 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS19.csv&quot;))</code></pre>
+<pre><code>## Rows: 51 Columns: 2
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (1): state
+## dbl (1): LOS
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>LOS_plot19 &lt;- merge(datasum19, Avg_LOS19, by = &quot;state&quot;)
+LOS_plot19 &lt;- LOS_plot19 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot19$year &lt;- c(2019)
+
+data18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-18.csv&quot;))</code></pre>
+<pre><code>## Rows: 193003 Columns: 15
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (10): Rndrng_Prvdr_CCN, Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_St, Rndrng_P...
+## dbl  (5): Rndrng_Prvdr_RUCA, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_Tot_Pymt...
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>data18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-18.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean18 &lt;- data18 %&gt;% filter(!grepl(&#39;Unknown&#39;, data18$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+colnames(data_clean18)[3] =&quot;state&quot;
+datasum18&lt;- medicare_data_clean %&gt;%
+  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
+  group_by(state) %&gt;%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+Avg_LOS18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS.csv&quot;))</code></pre>
+<pre><code>## Rows: 51 Columns: 2
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (1): state
+## dbl (1): LOS
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>LOS_plot18 &lt;- merge(datasum18, Avg_LOS18, by = &quot;state&quot;)
+LOS_plot18 &lt;- LOS_plot18 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot18$year &lt;- c(2018)
+
+
+data17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-17.csv&quot;))</code></pre>
+<pre><code>## Rows: 196325 Columns: 15
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (10): Rndrng_Prvdr_CCN, Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_St, Rndrng_P...
+## dbl  (5): Rndrng_Prvdr_RUCA, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_Tot_Pymt...
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>data17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-17.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean17 &lt;- data17 %&gt;% filter(!grepl(&#39;Unknown&#39;, data17$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+colnames(data_clean17)[3] =&quot;state&quot;
+datasum17&lt;- medicare_data_clean %&gt;%
+  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
+  group_by(state) %&gt;%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+Avg_LOS17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS17.csv&quot;))</code></pre>
+<pre><code>## Rows: 51 Columns: 2
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (1): state
+## dbl (1): LOS
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>LOS_plot17 &lt;- merge(datasum17, Avg_LOS17, by = &quot;state&quot;)
+LOS_plot17 &lt;- LOS_plot17 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot17$year &lt;- c(2017)
+
+data16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-16.csv&quot;))</code></pre>
+<pre><code>## Rows: 197283 Columns: 15
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (10): Rndrng_Prvdr_CCN, Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_St, Rndrng_P...
+## dbl  (5): Rndrng_Prvdr_RUCA, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_Tot_Pymt...
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>data16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-16.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
+data_clean16 &lt;- data16 %&gt;% filter(!grepl(&#39;Unknown&#39;, data16$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
+colnames(data_clean16)[3] =&quot;state&quot;
+datasum16&lt;- medicare_data_clean %&gt;%
+  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
+  group_by(state) %&gt;%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+
+Avg_LOS16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS16.csv&quot;))</code></pre>
+<pre><code>## Rows: 51 Columns: 2
+## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (1): state
+## dbl (1): LOS
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>LOS_plot16 &lt;- merge(datasum16, Avg_LOS16, by = &quot;state&quot;)
+LOS_plot16 &lt;- LOS_plot16 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
+LOS_plot16$year &lt;- c(2016)</code></pre>
+<pre class="r"><code>### merge 18 and 19
+total &lt;- rbind(LOS_plot16,LOS_plot17,LOS_plot18, LOS_plot19)
+write_csv(total, file = here::here(&quot;dataset&quot;, &quot;total.csv&quot;))</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
@@ -98,5 +294,21 @@ medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum) %&gt;%
 <li>Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a>.</li>
 <li>Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, <a href="https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020" class="uri">https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020</a>.</li>
 <li>Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) <a href="https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/" class="uri">https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/</a> (21 Nov. 2022)</li>
+<li>Medicare Geographic Variation - by National, State &amp; County, 2020,
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data</a></li>
+<li>Physician Fee Schedule Value Files, 2020,
+<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></li>
+<li>Physician Fee Schedule Value Files, 2019,
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C</a></li>
+<li>Physician Fee Schedule Value Files, 2018,
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D</a></li>
+<li>CMS Program Statistics - Medicare Advantage-Inpatient Hospital, 2019,
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital</a></li>
+<li>American Health Rankings, High Health Status, 2020,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020</a></li>
+<li>American Health Rankings, High Health Status, 2019,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019</a></li>
+<li>American Health Rankings, High Health Status, 2018,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018</a></li>
 </ul>
 </div>
