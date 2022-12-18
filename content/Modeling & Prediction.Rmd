@@ -26,8 +26,6 @@ GPCI_Train<-GPCI_Train %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),P
 df_list <- list(GPCI_Train,Train,hs_Train,GDP_Train,population_Train)
 Train <- df_list %>% reduce(full_join,by='state')
 Train <- Train%>% select(PW_GPCI:Medicare_Coverage,status,GDP,Year2019) %>% head(-1)
-write_csv(Train, file = here::here("dataset", "Training.csv"))
-save(Train, file = here::here("dataset/Training.RData"))
 GDP_Test <- read_csv(here::here("dataset","GDP.csv"))
 GPCI_Test <- read_csv(here::here("dataset","GPCI2020.csv"))
 hs_Test <- read_csv(here::here("dataset","HS2020.csv"))
@@ -40,6 +38,14 @@ Test <- df_list2 %>% reduce(full_join,by='state')
 ```
 
 We first collect all out 2019 datasets and combine them together to create the trainning dataset called "Train".
+
+##Create testing dataset
+```{r}
+Test <- read_csv(here::here("dataset","Data_Combined.csv"))
+HCC_Test <- read_csv(here::here("dataset","HCC.csv"),col_types=cols_only(BENE_AVG_RISK_SCRE=col_number(),ACUTE_HOSP_READMSN_PCT=col_number(),state=col_character()))
+HCC_Test <- na.omit(HCC_Test)
+problems(HCC_Test)
+```
 
 ```{r}
 library(GGally)
@@ -58,10 +64,12 @@ We first fit a linear regression model on our output Medicare_Coverge with all o
 ```{r}
 aic<-step(fit1,direction='both')
 ```
+
 ```{r}
 fit2<-lm(Medicare_Coverage ~ PW_GPCI + LOS,data=Train)
 summary(fit2)
 ```
+
 ```{r}
 sdres1 = rstandard(fit2)
 yhat1 = fit1$fitted.values
@@ -75,6 +83,7 @@ qqline(sdres1)
 ggplot(data = data.frame(sdres1), aes(x = sdres1)) + geom_histogram(bins = 30) +
   ggtitle("Histogram MLS Plot")
 ```
+
 ```{r}
 #Resfit <- resid(fit2)
 #output1<-predict(fit2, se.fit = TRUE)
