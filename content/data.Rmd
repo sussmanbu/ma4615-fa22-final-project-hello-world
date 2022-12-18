@@ -1,10 +1,10 @@
 ---
-title: Data
-description:
-toc: true
-featuredVideo:
+title: "Data"
+description: null
+toc: yes
+featuredVideo: null
 featuredImage: images/Data Page.webp
-draft: false
+draft: no
 ---
 
 # Data Source
@@ -126,6 +126,7 @@ save(origin_with_hs, file = here::here("dataset/origin_with_hs.csv.RData"))
 data19 <- read_csv(here::here("dataset", "medicare-19.csv"),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
 data_clean19 <- data19 %>% filter(!grepl('Unknown', data19$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 datasum19<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -141,6 +142,7 @@ data18 <- read_csv(here::here("dataset", "medicare-18.csv"),col_types = cols(Avg
 data_clean18 <- data18 %>% filter(!grepl('Unknown', data18$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 colnames(data_clean18)[3] ="state"
 datasum18<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -158,6 +160,7 @@ data17 <- read_csv(here::here("dataset", "medicare-17.csv"),col_types = cols(Avg
 data_clean17 <- data17 %>% filter(!grepl('Unknown', data17$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 colnames(data_clean17)[3] ="state"
 datasum17<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
@@ -174,6 +177,7 @@ data16 <- read_csv(here::here("dataset", "medicare-16.csv"),col_types = cols(Avg
 data_clean16 <- data16 %>% filter(!grepl('Unknown', data16$Rndrng_Prvdr_RUCA_Desc)) %>% drop_na() %>% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
 colnames(data_clean16)[3] ="state"
 datasum16<- medicare_data_clean %>%
+  rename('state'='Rndrng_Prvdr_State_Abrvtn') %>%
   group_by(state) %>%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
