@@ -51,13 +51,13 @@ Theoretically, Medicare coverage should be the same across all states in the Uni
 
 ## Depth of EDA
 
-### Medicare Payment vs. Premium
+### Factor I: Medicare Payment vs. Premium
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 premium_combined <- read_csv(here::here("dataset/origin_with_premium.csv"))
  
 ggplot(premium_combined) +
-  geom_smooth(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt), method = "lm") + labs(x = "Premium", y  = "Medicare Payment") + ggtitle("Medicare payment vs Premium") + theme(plot.title = element_text(hjust = 0.5))
+  geom_smooth(aes(Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries, Avg_Mdcr_Pymt_Amt), method = "lm") + labs(x = "Premium ($)", y  = "Medicare Payment ($)") + ggtitle("Medicare payment vs Premium") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
@@ -66,33 +66,26 @@ premium_combined <- premium_combined %>%
   arrange(test) %>%
   filter(!Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt < 0.8)
   
-ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=TRUE), y = Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt)) +
-  geom_boxplot() +  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x = "State", y  = "Medicare Coverage") + ggtitle("Medicare Coverage in States (ordered by increaasing Premium") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=TRUE), y = log(Avg_Mdcr_Pymt_Amt))) +
+  geom_boxplot() +  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x = "State", y  = "log(Medicare Payment) ") + ggtitle("Medicare Payment in States (ordered by increaasing Premium)") + theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
-The first plot shows the regression plot between premium and medicare coverage. There is a positive regression relationship between the two variables, indicating that Medicare Coverage increases as Premium increases. However, when we wanted to explore Medicare Coverage data for each state and reordered by premium, we saw no apparent patterns among the states. Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare coverage goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare coverage, and cheaper premium does not lower the coverage either.
+The first plot shows the regression plot between premium and medicare Payment. There is a positive regression relationship between the two variables, indicating that Medicare Payment increases as Premium increases. However, when we wanted to explore Medicare payment data for each state and reordered by premium, we saw no apparent patterns among the states. Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare Payment goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare Payment, and cheaper premium does not lower the payment either.
 
-### Medicare Coverage vs. GDP
+###  Factor II: Medicare Payment vs. GDP
 
-```{r,eval = FALSE}
-Medicare_Data_clean <- read_csv(here::here("dataset/Medicare_Data_clean.csv"))
-GDP <- read_csv(here::here("dataset", "GDP.csv"))
-data <- merge(GDP,Medicare_Data_clean) %>% group_by(Rndrng_Prvdr_State_Abrvtn) %>% summarize(Medicare_Coverage=mean(Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt),GDP=mean(GDP))
-#Observe whether there is a pattern 
-data<-data %>% arrange(desc(GDP))
-ggplot(data)+geom_point(aes(x=log(GDP), y=Medicare_Coverage,color=Rndrng_Prvdr_State_Abrvtn))+labs(y="Medicare_Coverage in %",x="log(GDP) in log($)")
-# Fit linear regression between the two variables
-fit <- lm(Medicare_Coverage ~ log(GDP), data = data)
-beta <- coef(fit)
-var <- sigma(fit)
-ggplot(data, aes(x=log(GDP), y=Medicare_Coverage)) + geom_point() + geom_abline(intercept = beta[1], slope = beta[2], color = "red")
-summary(fit)
+```{r}
+TOTAL <- read_csv(here::here("dataset", "Data_Combined.csv"))
+ggplot(TOTAL,aes(x = log(GDP),y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle("Medicare Payment vs GDP") + labs(x = "log(GDP)",y = "Medicare Payment ($)") +
+  theme(plot.title = element_text(hjust = 0.5))
+ 
 ```
 
-We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. However, there is no obvious pattern observed in the model as medicare coverage does not change as GDP increases.
 
-### Medicare Payment vs Hierarchical Condition Category (HCC)
+We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. However, there is no obvious pattern observed in the model as medicare Payment does not change as GDP increases.
+
+###  Factor III: Medicare Payment vs Hierarchical Condition Category (HCC)
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 HCC_Readmission <- read_csv(here::here("dataset/Medicare_Geographic_Variation_by_National_State_County.csv"),col_types = cols(BENE_AVG_RISK_SCRE = col_double(),ACUTE_HOSP_READMSN_PCT = col_double()))
@@ -106,26 +99,25 @@ HCC_Readmission_Only <- HCC_Readmission_clean %>% select(state, BENE_AVG_RISK_SC
 Medicare_Payment_only <- Medicare_Payment%>% mutate(Med_payment = Avg_Mdcr_Pymt_Amt) %>% mutate(state = Rndrng_Prvdr_State_Abrvtn) %>% group_by(state) %>% summarize(Med_payment = mean(Med_payment))
 
 MC_HCC_Readmission <- inner_join(HCC_Readmission_Only,Medicare_Payment_only,by = 'state') 
-#HCC_coef <- coef(lm(BENE_AVG_RISK_SCRE ~ Medicare_Coverage, data = MC_HCC_Readmission))
-#Readmission_coef <- coef(lm(ACUTE_HOSP_READMSN_PCT ~ Medicare_Coverage, data = MC_HCC_Readmission))
+
 ```
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
-ggplot(MC_HCC_Readmission,aes(x = BENE_AVG_RISK_SCRE ,y = Med_payment)) + geom_point() + labs(x = 'HCC', y = 'Medicare Payment') +  ggtitle("Medicare Payment vs HCC") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
+ggplot(MC_HCC_Readmission,aes(x = BENE_AVG_RISK_SCRE ,y = Med_payment)) + geom_point() + labs(x = 'HCC', y = 'Medicare Payment ($)') +  ggtitle("Medicare Payment vs HCC") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
 
 ```
 
 Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare.Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.
 
-### Readmission Rate vs Medicare Payment
+###  Factor IV: Medicare Payment vs Readmission Rate
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
-ggplot(MC_HCC_Readmission,aes(x = Med_payment,y = ACUTE_HOSP_READMSN_PCT)) + geom_point() + labs(x = 'Medicare Payment', y = 'Readmission Rate') + ggtitle("Readmission Rate vs Medicare payment") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
+ggplot(MC_HCC_Readmission,aes(x = ACUTE_HOSP_READMSN_PCT ,y = Med_payment)) + geom_point() + labs(x = 'Readmission Rate (%)' , y = 'Medicare Payment ($)') + ggtitle(" Medicare payment VS Readmission Rate") + theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method = lm)
 ```
 
 Readmission rate is the percentage of patients who are admitted to a hospital again within a certain period of time after being discharged. This rate is often used as a measure of the quality of care provided by a hospital, as higher readmission rates may indicate that patients are not receiving the care they need to prevent their condition from worsening or recurring. Starting 2012, the Hospital Readmissions Reduction Program (HRRP) reduces at max three percent of Medicare payment for hopsitals that have high 30 days readmission rate. There is also limited relationship between Readmission Rate and Medicare Payment shown in this graph.
 
-### Medicare Coverage vs Length of Stay
+###  Factor V: Medicare Payment vs Length of Stay
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
@@ -140,7 +132,22 @@ medicare_data_sum<- medicare_data_clean %>%
  
 colnames(medicare_data_sum)[1] ="state"
 LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
-LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage") + ggtitle(" Medicare Coverage vs Length of Stay") + theme(plot.title = element_text(hjust = 0.5))
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Payment ($)") + ggtitle(" Medicare Payment  vs Length of Stay") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-We further examined the relationship between medicare coverage and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
+We further examined the relationship between medicare payment and length of stay in hospital. We summarized the medicare payment of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare payment and average length of stay. As shown above, there is a negative relationship between Medicare payment and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
+
+### Factor VI: Medicare Payment VS Health Status 
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(TOTAL,aes(x = Health_Status,y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle("Medicare Payment vs Health Status") + labs(x = "Health Status",y = "Medicare Payment ($)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The result is surprising. We expect a negative relationship because the health status of an individual should affect the overall cost of the care. People with chronic illness may require more frequently and costly medical intervention than people whoare in good health, thus their medicare payment should be higher. But the graph shows opposite relationship that better health status results in higher medicare payment. 
+
+### Factor VII: Medicare Payment VS Geographic Practice Cost Index
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(TOTAL,aes(x = PE_GPCI,y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle("Medicare Payment vs Geographical Practice Cost Index (GPCI)") + labs(x = "Geographical Practice Cost Index (GPCI)",y = "Medicare Payment ($)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+The Geographic Practice Cost Index (GPCI) is the factor used by the Centers for Medicare & Medicaid Services (CMS) to adjust payment rates based on the relative cost of providing these services in different areas of the country. The GPCI takes into account differences in the cost of labor, rent, and other expenses associated with providing medical services in different regions. The graph shows a positive relationship, meaning that if the GPCI for a certain area is higher than the national average, Medicare payment will be adjusted upward to reflect the higher cost of providing those services in that location. Conversely, if the GPCI for a certain area is lower than the national average,Medicare payment for services provided in that area will be adjusted downward.
