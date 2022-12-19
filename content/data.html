@@ -128,180 +128,233 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 </div>
 <div id="datasets-combination" class="section level1">
 <h1>Datasets Combination</h1>
-<pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;tidyverse&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;ggplot2&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;tidyr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;readr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;purrr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;dplyr&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre><code>## Warning: ³Ì¼­°ü&#39;forcats&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
-<pre class="r"><code>premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), 
-                     col_types = cols(Total_Premium_Amount =col_number(),  
-                    Reduced_Base_Premium_Amount=col_number(), 
-                    Standard_Base_Premium_Amount = col_number()))
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
 
-medicare_data_clean &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Data_clean.csv&quot;))</code></pre>
-<pre><code>## Rows: 164520 Columns: 10
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (4): Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_City, Rndrng_Prvdr_State_Abrvtn...
-## dbl (6): Rndrng_Prvdr_RUCA, DRG_Cd, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_T...
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>medicare_data_sum&lt;- medicare_data_clean %&gt;%
+
+
+## Below is how we load and clean our data set.
+
+## Dataset 1: Medicare Impatient Hospitals - By Providers and Service
+## Load Main Dataset 
+## Remove dollar signs to make data available
+
+medicare_data &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Data.csv&quot;) , 
+                          col_types = cols( Avg_Mdcr_Pymt_Amt=col_number(), 
+                                            Avg_Tot_Pymt_Amt=col_number(), 
+                                            Avg_Submtd_Cvrd_Chrg=col_number()))
+
+## Create a new global variable with the raw dataset. 
+## Filter out the missing values and problems within the datasets.
+## Select the data we need for analysis
+
+medicare_data_clean &lt;- medicare_data %&gt;% 
+  filter(!grepl(&#39;Unknown&#39;, medicare_data$Rndrng_Prvdr_RUCA_Desc)) %&gt;%
+  drop_na() %&gt;%      
+  select(-Rndrng_Prvdr_CCN, 
+         -Rndrng_Prvdr_St, 
+         -Rndrng_Prvdr_State_FIPS, 
+         -Rndrng_Prvdr_Zip5, 
+         -Rndrng_Prvdr_RUCA_Desc)
+
+##Store the data for further usage.
+
+write_csv(medicare_data_clean, file = here::here(&quot;dataset&quot;, &quot;Medicare_Data_clean.csv&quot;))
+save(medicare_data_clean, file = here::here(&quot;dataset/Medicare_Data.RData&quot;))
+
+## Sub Dataset:  Medicare data listed by 52 groups of states
+## Based on the main dataset, a new dataset is created to further analyze the data for each state.
+
+medicare_data_sum&lt;- medicare_data_clean %&gt;%
   group_by(Rndrng_Prvdr_State_Abrvtn) %&gt;%
   summarize(Mean_Discharge = mean(Tot_Dschrgs), 
             Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
             Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
-medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum) %&gt;%
-    mutate(premium_individual = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt),
+            Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
 
-write_csv(medicare_premium_combined, file = here::here(&quot;dataset&quot;, &quot;origin_with_premium_state.csv&quot;))
-save(medicare_premium_combined, file = here::here(&quot;dataset/origin_with_premium_state.csv.RData&quot;))
+##Store the data for further usage.
 
-origin_with_premium &lt;- medicare_data_clean %&gt;%
-  left_join(premiumA,by=&quot;Rndrng_Prvdr_State_Abrvtn&quot;,all=TRUE)
-write_csv(origin_with_premium, file = here::here(&quot;dataset&quot;, &quot;origin_with_premium.csv&quot;))
-save(origin_with_premium, file = here::here(&quot;dataset/origin_with_premium.csv.RData&quot;))
+write_csv(medicare_data_sum, file = here::here(&quot;dataset&quot;, &quot;Medicare_Data_sum.csv&quot;))
+save(medicare_data_sum, file = here::here(&quot;dataset/Medicare_Data.RData&quot;))
 
-health_status_state &lt;- read.csv(here::here(&quot;dataset&quot;, &quot;Health_Status_2020.csv&quot;))
-colnames(health_status_state)[1] = &quot;Rndrng_Prvdr_State_Abrvtn&quot;
-origin_with_hs_state &lt;- medicare_data_sum %&gt;%
-  left_join(health_status_state,by=&quot;Rndrng_Prvdr_State_Abrvtn&quot;,all=TRUE)
-write_csv(origin_with_hs_state, file = here::here(&quot;dataset&quot;, &quot;origin_with_hs_state.csv&quot;))
-save(origin_with_hs_state, file = here::here(&quot;dataset/origin_with_hs_state.csv.RData&quot;))
+## Dataset 2: Medicare Premiums
+## Load dataset 2 with the columns we need for dataset merge process.
 
-origin_with_hs &lt;- medicare_data_clean %&gt;%
-  left_join(health_status_state,by=&quot;Rndrng_Prvdr_State_Abrvtn&quot;,all=TRUE)
-write_csv(origin_with_hs, file = here::here(&quot;dataset&quot;, &quot;origin_with_hs.csv&quot;))
-save(origin_with_hs, file = here::here(&quot;dataset/origin_with_hs.csv.RData&quot;))</code></pre>
-<pre class="r"><code>data19 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-19.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
-data_clean19 &lt;- data19 %&gt;% filter(!grepl(&#39;Unknown&#39;, data19$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
-datasum19&lt;- medicare_data_clean %&gt;%
-  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
-  group_by(state) %&gt;%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
-            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
-            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
-Avg_LOS19 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS19.csv&quot;))</code></pre>
-<pre><code>## Rows: 51 Columns: 2
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (1): state
-## dbl (1): LOS
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>LOS_plot19 &lt;- merge(datasum19, Avg_LOS19, by = &quot;state&quot;)
-LOS_plot19 &lt;- LOS_plot19 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
-LOS_plot19$year &lt;- c(2019)
+premiumA &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;PremiumA.csv&quot;), 
+                     col_types = cols(Total_Premium_Amount =col_number(),  
+                                      Reduced_Base_Premium_Amount=col_number(), 
+                                      Standard_Base_Premium_Amount = col_number())) %&gt;%
+  rename(state = Rndrng_Prvdr_State_Abrvtn) %&gt;%
+  mutate(premium_avg = Total_Premium_Amount/Total_Premium_Number_of_Beneficiaries)
 
-data18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-18.csv&quot;))</code></pre>
-<pre><code>## Rows: 193003 Columns: 15
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (10): Rndrng_Prvdr_CCN, Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_St, Rndrng_P...
-## dbl  (5): Rndrng_Prvdr_RUCA, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_Tot_Pymt...
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>data18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-18.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
-data_clean18 &lt;- data18 %&gt;% filter(!grepl(&#39;Unknown&#39;, data18$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
-colnames(data_clean18)[3] =&quot;state&quot;
-datasum18&lt;- medicare_data_clean %&gt;%
-  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
-  group_by(state) %&gt;%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
-            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
-            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+## Create a new global variable for the merged dataset)
 
-Avg_LOS18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS.csv&quot;))</code></pre>
-<pre><code>## Rows: 51 Columns: 2
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (1): state
-## dbl (1): LOS
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>LOS_plot18 &lt;- merge(datasum18, Avg_LOS18, by = &quot;state&quot;)
-LOS_plot18 &lt;- LOS_plot18 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
-LOS_plot18$year &lt;- c(2018)
+medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum)
+## Store the dataset for further usage.
+
+write_csv(medicare_premium_combined, file = here::here(&quot;dataset&quot;, &quot;medicare_premium_combined.csv&quot;))
+save(medicare_premium_combined, file = here::here(&quot;dataset/Medicare_Data.RData&quot;))
+
+##Dataset 3: GDP by states
+GDP &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;GDP.csv&quot;), 
+                col_types = cols_only(GDP=col_number(),  
+                                      state =col_character()))
+## Store the dataset for further usage.
+write_csv(GDP, file = here::here(&quot;dataset&quot;, &quot;GDP.csv&quot;))
+save(GDP, file = here::here(&quot;dataset/GDP.RData&quot;))
+##Create a merged dataset
+medicare_GDP_combined &lt;- merge(GDP,medicare_data_sum)
+write_csv(medicare_GDP_combined, file = here::here(&quot;dataset&quot;, &quot;medicare_GDP_combined.csv&quot;))
+save(medicare_GDP_combined, file = here::here(&quot;dataset/medicare_GDP_combined.RData&quot;))
+
+medicare_data19 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-19.csv&quot;))
+save(medicare_data19, file = here::here(&quot;dataset/medicare-19.RData&quot;))
+medicare_data18 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-18.csv&quot;))
+save(medicare_data18, file = here::here(&quot;dataset/medicare-18.RData&quot;))
+medicare_data17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-17.csv&quot;))
+save(medicare_data17, file = here::here(&quot;dataset/medicare-17.RData&quot;))
+medicare_data16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-16.csv&quot;))
+save(medicare_data16, file = here::here(&quot;dataset/medicare-16.RData&quot;))
+medicare_data15 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-15.csv&quot;))
+save(medicare_data15, file = here::here(&quot;dataset/medicare-15.RData&quot;))
+medicare_data14 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-14.csv&quot;))
+save(medicare_data14, file = here::here(&quot;dataset/medicare-14.RData&quot;))
+
+##Dataset 4: Medicare Geographic Variation
+Medicare_Geographic_Variation &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Medicare_Geographic_Variation.csv&quot;), 
+                col_types = cols(IP_MDCR_PYMT_AMT=col_number(),  
+                                      IP_MDCR_PYMT_PCT =col_number(),
+                                      IP_MDCR_PYMT_PC =col_number(),
+                                      IP_MDCR_PYMT_PER_USER=col_number(),
+                                      IP_MDCR_STDZD_PYMT_AMT=col_number(),
+                                      IP_MDCR_STDZD_PYMT_PCT=col_number(),
+                                      IP_MDCR_STDZD_PYMT_PC=col_number(),
+                                      IP_MDCR_STDZD_PYMT_PER_USER=col_number(),
+                                      BENES_IP_CVRD_STAY_CNT=col_number(),
+                                      BENES_IP_PCT=col_number(),
+                                      IP_CVRD_STAYS_PER_1000_BENES=col_number(),
+                                      IP_CVRD_DAYS_PER_1000_BENES=col_number(),
+                                      ACUTE_HOSP_READMSN_CNT=col_number(),
+                                      ACUTE_HOSP_READMSN_PCT=col_number()
+                                      ))
+## Store the dataset for further usage.
+write_csv(Medicare_Geographic_Variation, file = here::here(&quot;dataset&quot;, &quot;Medicare_Geographic_Variation.csv&quot;))
+save(Medicare_Geographic_Variation, file = here::here(&quot;dataset/Medicare_Geographic_Variation.RData&quot;))
 
 
-data17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-17.csv&quot;))</code></pre>
-<pre><code>## Rows: 196325 Columns: 15
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (10): Rndrng_Prvdr_CCN, Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_St, Rndrng_P...
-## dbl  (5): Rndrng_Prvdr_RUCA, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_Tot_Pymt...
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>data17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-17.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
-data_clean17 &lt;- data17 %&gt;% filter(!grepl(&#39;Unknown&#39;, data17$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
-colnames(data_clean17)[3] =&quot;state&quot;
-datasum17&lt;- medicare_data_clean %&gt;%
-  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
-  group_by(state) %&gt;%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
-            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
-            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+##Dataset 5: GPCI2018-2020 by states
+GPCI2020 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;GPCI2020.csv&quot;), 
+                col_types = cols_only(state = col_character(),
+                                      PW_GPCI =col_number(),  
+                                      PE_GPCI =col_number(),
+                                      MP_GPCI =col_number()))
+GPCI2020 &lt;- GPCI2020 %&gt;% group_by(state) %&gt;% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
+GPCI2019 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;GPCI2019.csv&quot;), 
+                     col_types = cols_only(state = col_character(),
+                                           PW_GPCI =col_number(),  
+                                           PE_GPCI =col_number(),
+                                           MP_GPCI =col_number()))
+GPCI2019 &lt;- GPCI2019 %&gt;% group_by(state) %&gt;% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI)) %&gt;% drop_na()
+GPCI2018 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;GPCI2018.csv&quot;), 
+                     col_types = cols_only(state = col_character(),
+                                           PW_GPCI =col_number(),  
+                                           PE_GPCI =col_number(),
+                                           MP_GPCI =col_number()))
+GPCI2018 &lt;- GPCI2018 %&gt;% group_by(state) %&gt;% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI)) %&gt;% drop_na()
 
-Avg_LOS17 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS17.csv&quot;))</code></pre>
-<pre><code>## Rows: 51 Columns: 2
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (1): state
-## dbl (1): LOS
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>LOS_plot17 &lt;- merge(datasum17, Avg_LOS17, by = &quot;state&quot;)
-LOS_plot17 &lt;- LOS_plot17 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
-LOS_plot17$year &lt;- c(2017)
+## Store the dataset for further usage.
+write_csv(GPCI2020, file = here::here(&quot;dataset&quot;, &quot;GPCI2020.csv&quot;))
+save(GPCI2020, file = here::here(&quot;dataset/GPCI2020.RData&quot;))
+write_csv(GPCI2019, file = here::here(&quot;dataset&quot;, &quot;GPCI2019.csv&quot;))
+save(GPCI2019, file = here::here(&quot;dataset/GPCI2019.RData&quot;))
+write_csv(GPCI2018, file = here::here(&quot;dataset&quot;, &quot;GPCI2018.csv&quot;))
+save(GPCI2018, file = here::here(&quot;dataset/GPCI2018.RData&quot;))
 
-data16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-16.csv&quot;))</code></pre>
-<pre><code>## Rows: 197283 Columns: 15
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (10): Rndrng_Prvdr_CCN, Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_St, Rndrng_P...
-## dbl  (5): Rndrng_Prvdr_RUCA, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_Tot_Pymt...
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>data16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;medicare-16.csv&quot;),col_types = cols(Avg_Mdcr_Pymt_Amt=col_number(), Avg_Tot_Pymt_Amt=col_number(), Avg_Submtd_Cvrd_Chrg=col_number()))
-data_clean16 &lt;- data16 %&gt;% filter(!grepl(&#39;Unknown&#39;, data16$Rndrng_Prvdr_RUCA_Desc)) %&gt;% drop_na() %&gt;% select(-Rndrng_Prvdr_CCN, -Rndrng_Prvdr_St, -Rndrng_Prvdr_State_FIPS, -Rndrng_Prvdr_Zip5, -Rndrng_Prvdr_RUCA_Desc) 
-colnames(data_clean16)[3] =&quot;state&quot;
-datasum16&lt;- medicare_data_clean %&gt;%
-  rename(&#39;state&#39;=&#39;Rndrng_Prvdr_State_Abrvtn&#39;) %&gt;%
-  group_by(state) %&gt;%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
-            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
-            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+##Dataset 6: HCC_Readmission_Only
+HCC_Readmission &lt;- read_csv(here::here(&quot;dataset/Medicare_Geographic_Variation_by_National_State_County.csv&quot;),
+                            col_types = cols(BENE_AVG_RISK_SCRE = col_double(),ACUTE_HOSP_READMSN_PCT = col_double()))
+HCC_Readmission_clean &lt;- HCC_Readmission %&gt;% filter(BENE_AGE_LVL == &#39;All&#39; &amp; YEAR == 2020 &amp; BENE_GEO_LVL == &#39;State&#39;) %&gt;% filter(BENE_GEO_DESC!= c(&#39;PR&#39;,&#39;VI&#39;))%&gt;% mutate(state = BENE_GEO_DESC)
+HCC_Readmission_Only &lt;- HCC_Readmission_clean %&gt;% select(state, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+##Store the dataset for further usage
+write_csv(HCC_Readmission_Only, file = here::here(&quot;dataset&quot;, &quot;HCC_Readmission_Only.csv&quot;))
+save(HCC_Readmission_Only, file = here::here(&quot;dataset/HCC_Readmission_Only.RData&quot;))
 
-Avg_LOS16 &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Avg_LOS16.csv&quot;))</code></pre>
-<pre><code>## Rows: 51 Columns: 2
-## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (1): state
-## dbl (1): LOS
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>LOS_plot16 &lt;- merge(datasum16, Avg_LOS16, by = &quot;state&quot;)
-LOS_plot16 &lt;- LOS_plot16 %&gt;% mutate(Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
-LOS_plot16$year &lt;- c(2016)</code></pre>
-<pre class="r"><code>### merge 18 and 19
-total &lt;- rbind(LOS_plot16,LOS_plot17,LOS_plot18, LOS_plot19)
-write_csv(total, file = here::here(&quot;dataset&quot;, &quot;total.csv&quot;))</code></pre>
+##Dataset7: Population
+population &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;population.csv&quot;))
+##Store the dataset for further usage
+write_csv(population, file = here::here(&quot;dataset&quot;, &quot;population.csv&quot;))
+save(population, file = here::here(&quot;dataset/population.RData&quot;))
+
+##Dataset8: Combined dataset for year 2018-2019
+medicare18 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;medicare-18.csv&quot;),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
+medicare19 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;medicare-19.csv&quot;),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
+medicare_train &lt;- rbind(medicare18,medicare19)
+medicare_train &lt;- medicare_train %&gt;% mutate(state=Rndrng_Prvdr_State_Abrvtn) %&gt;% group_by(state)%&gt;% summarize(Medicare_Coverage_Train=mean(Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt))
+
+##Dataset9: Combined dataset for year 2020
+Avg_LOS &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;Avg_LOS.csv&quot;))
+health_status &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Health_Status_2020.csv&quot;)) %&gt;% rename(state = STATE)
+HCC_Readmission_Only &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;HCC_Readmission_Only.csv&quot;))
+GPCI2020 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;GPCI2020.csv&quot;))
+GDP &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;GDP.csv&quot;))
+population &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;population.csv&quot;),col_types=cols_only(state=col_character(),Year2020=col_number()))
+medicare_data_sum &lt;- medicare_data_sum %&gt;% rename(state = Rndrng_Prvdr_State_Abrvtn)
+df_list&lt;- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population, premiumA, health_status)
+Data_Combined &lt;- df_list %&gt;% reduce(inner_join, by=&#39;state&#39;)
+write_csv(Data_Combined, file = here::here(&quot;dataset&quot;, &quot;Data_Combined.csv&quot;))
+save(Data_Combined, file = here::here(&quot;dataset/Data_Combined.RData&quot;))
+
+Data_Combined_fit &lt;-Data_Combined %&gt;% select(BENE_AVG_RISK_SCRE:Year2020)
+library(GGally)
+ggpairs(Data_Combined_fit,upper = list(continuous = wrap(&quot;points&quot;, alpha = 0.3,size=0.1)),
+        lower = list(continuous = wrap(&#39;cor&#39;, size = 4)))
+fit1&lt;-lm(Medicare_Coverage~.,data=Data_Combined_fit)
+summary(fit1)
+Data_Combined$Medicare_Coverage
+plot(fit1)
+aic&lt;-step(fit1,direction=&#39;both&#39;)
+view(Data_Combined_fit)
+
+medicare_data_clean&lt;-read_csv(here::here(&quot;dataset&quot;,&quot;medicare_data_clean.csv&quot;),col_types = cols_only(state=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
+medicare_data_clean&lt;-medicare_data_clean %&gt;% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %&gt;% select(Medicare_Coverage,Rndrng_Prvdr_State_Abrvtn)
+df_list2&lt;-list(medicare_data_clean,GDP,Avg_LOS,HCC_Readmission_Only,GPCI2020,population)
+Data_Combined2&lt;-df_list2 %&gt;% reduce(full_join,by=&#39;state&#39;)
+ggpairs(Data_Combined2 %&gt;% select(Medicare_Coverage,GDP:Year2020),upper = list(continuous = wrap(&quot;points&quot;, alpha = 0.3,size=0.1)),
+         lower = list(continuous = wrap(&#39;cor&#39;, size = 4)))
+
+GPCI_Train&lt;-GPCI_Train %&gt;% rbind(GPCI2018,GPCI2019) %&gt;% group_by(state) %&gt;% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
+Train &lt;- merge(GPCI_Train,medicare_train) %&gt;% select(PW_GPCI:Medicare_Coverage_Train)
+ggpairs(Train,upper = list(continuous = wrap(&quot;points&quot;, alpha = 0.3,size=0.1)),
+        lower = list(continuous = wrap(&#39;cor&#39;, size = 4)))
+
+write_csv(Train, file = here::here(&quot;dataset&quot;, &quot;Training.csv&quot;))
+save(Train, file = here::here(&quot;dataset/Training.RData&quot;))
+
+##Dataset11: Medicare Coverage and US map
+#Run the packages
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(sf))
+suppressPackageStartupMessages(library(tmap))
+suppressPackageStartupMessages(library(USAboundaries))
+
+#Create a map for the US
+epsg_us &lt;- 2163
+us_states &lt;- st_read(&quot;C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp&quot;) %&gt;%
+  st_transform(epsg_us)
+
+not_contiguous &lt;-
+  c(&quot;Guam&quot;, &quot;Commonwealth of the Northern Mariana Islands&quot;,
+    &quot;American Samoa&quot;, &quot;Puerto Rico&quot;, &quot;United States Virgin Islands&quot;)
+us_cont &lt;- us_states %&gt;%
+  filter(!(NAME %in% not_contiguous)) %&gt;%
+  select(STATEFP, STUSPS, NAME)
+
+#Plot a map colored with medicare coverage level
+cont_medicare_coverage &lt;- inner_join(us_cont, medicare_data_sum, by = c(&quot;STUSPS&quot; = &quot;state&quot;))
+
+write_csv(cont_medicare_coverage, file = here::here(&quot;dataset&quot;, &quot;cont_medicare_coverage.csv&quot;))
+save(cont_medicare_coverage, file = here::here(&quot;dataset/cont_medicare_coverage.RData&quot;))</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
