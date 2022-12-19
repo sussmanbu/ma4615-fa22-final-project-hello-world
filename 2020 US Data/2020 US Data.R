@@ -24,16 +24,22 @@ us_cont <- us_states %>%
 
 #Plot a map colored with medicare coverage level
 medicare_data_sum <- read_csv(here::here("medicare_data_sum.csv"))
-cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "Rndrng_Prvdr_State_Abrvtn"))
+cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "state"))
 
-Data_Combined <- read_csv(here::here("Data_Combined.csv"))
+Data_Combined <- read_csv(here::here("Data_Combined.csv")) %>%
+  rename(Hierarchical_Condition_Category_Score = BENE_AVG_RISK_SCRE, Hospital_Readmission_Rate = ACUTE_HOSP_READMSN_PCT, Geographic_Practice_Cost_Index = PE_GPCI, Length_of_Stay = LOS, Premium = premium_avg)
+
+Data_Table <- Data_Combined %>%
+  select(state, Mean_Medicare_Payment,Hierarchical_Condition_Category_Score, Hospital_Readmission_Rate, Geographic_Practice_Cost_Index, Length_of_Stay, GDP, Premium, Health_Status)
 
 lin_reg <- cont_medicare_coverage %>%
   inner_join(Data_Combined, by = c("STUSPS" = "state")) %>%
   relocate(NAME, .before = STATEFP) %>%
-  relocate(geometry, .before = STATEFP)
+  relocate(geometry, .before = STATEFP) %>%
+  select(-Mean_Medicare_Payment.y) %>%
+  rename(Mean_Medicare_Payment = Mean_Medicare_Payment.x)
 
-which_count <- c("BENE_AVG_RISK_SCRE", "ACUTE_HOSP_READMSN_PCT", "Mean_Discharge", "PW_GPCI", "PE_GPCI", "MP_GPCI", "LOS", "GDP", "premium_avg", "Health_Status")
+which_count <- c("Mean_Medicare_Payment", "Hierarchical_Condition_Category_Score", "Hospital_Readmission_Rate", "Geographic_Practice_Cost_Index", "Length_of_Stay", "GDP", "Premium", "Health_Status")
 
 ui <- fluidPage(
   fluidRow(
@@ -45,17 +51,21 @@ ui <- fluidPage(
     column(6, 
            h2("2020 Data"),
            DT::dataTableOutput("mytable")))
-  )
+)
 
 server <- function(input, output) {
   output$tmapMap <- renderTmap({
     tm_shape(lin_reg, class = "sf") +
       tm_view(set.view = c(usaLon, usaLat, usaZoom)) +
-      tm_polygons(col = input$which, palette = "RdBu", title = "Variable Selected", n = 9)
+      tm_polygons(col = input$which, palette = "Blues", title = "Variable Selected", n = 9)
   })
   output$mytable = DT::renderDataTable({
-    Data_Combined
+    Data_Table
   })
-  }
+}
 
 shinyApp(ui, server)
+
+
+
+

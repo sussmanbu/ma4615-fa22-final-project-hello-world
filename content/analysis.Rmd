@@ -24,7 +24,7 @@ We first examined the relationship between medicare payment and total payment.
 suppressPackageStartupMessages(library(tidyverse))
 Medicare_Coverage <- read_csv(here::here("dataset", "total.csv"))
 ggplot(Medicare_Coverage,aes(x = Mean_Medicare_Payment,y = Mean_Total_Payment)) +geom_point() +
-  ggtitle("Total Payment vs Medicare Payment") + labs(x = "Mean Medicare Payment",y = "Mean Total Payment") +
+  ggtitle("Total Payment vs Medicare Payment") + labs(x = "Mean Medicare Payment ($)",y = "Mean Total Payment ($)") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
@@ -45,7 +45,7 @@ Washington DC and Hawaii have the lowest ratio of medical payment and total paym
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment),y = Mean_Medicare_Payment)) +geom_point() +
-  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x='State',y='Mean Medicare payment') + ggtitle("Mean Medicare payment in U.S. States") +
+  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x='State',y='Mean Medicare payment ($)') + ggtitle("Mean Medicare payment in U.S. States") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
@@ -69,7 +69,7 @@ premium_combined <- premium_combined %>%
   filter(!Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt < 0.8)
   
 ggplot(premium_combined, aes(x = reorder(Rndrng_Prvdr_State_Abrvtn, test, na.rm=TRUE), y = log(Avg_Mdcr_Pymt_Amt))) +
-  geom_boxplot() +  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x = "State", y  = "log(Medicare Payment) ") + ggtitle("Medicare Payment in States (ordered by increaasing Premium)") + theme(plot.title = element_text(hjust = 0.5))
+  geom_boxplot() +  scale_x_discrete(guide = guide_axis(n.dodge=2)) + labs(x = "State", y  = "log(Medicare Payment) ($)") + ggtitle("Medicare Payment in States (ordered by increaasing Premium)") + theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
@@ -81,7 +81,6 @@ The first plot shows the regression plot between premium and medicare Payment. T
 TOTAL <- read_csv(here::here("dataset", "Data_Combined.csv"))
 ggplot(TOTAL,aes(x = log(GDP),y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle("Medicare Payment vs GDP") + labs(x = "log(GDP)",y = "Medicare Payment ($)") +
   theme(plot.title = element_text(hjust = 0.5))
- 
 ```
 
 Then We decide to investigate the relationship between GDP and Medicare Payment since we believe that a state with higher GDP has more expensive medical care, and medicare payment should also rise to cover the corresponding inflation. According to the plot above, medicare payment increases as GDP goes up, which means that the average medicare payment for each beneficiary is positively correlated with the GDP of the state where the beneficiary resides. This observation could be potentially explained by the fact that GDP could impact the cost of living. As GDP increases, the cost of living may also increase, which could lead to higher prices for medical goods and services. If the cost of providing medical care increases, Medicare may need to adjust its payment rates in order to cover these costs.
