@@ -132,7 +132,7 @@ During our investigation into Medicare Payment, we also want to look into how me
 
 ### 2020 US Data Board
 
-The [2020 US Data Board](https://hello-world-415.shinyapps.io/2020_US_Data/) interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.
+The [2020 US Data Board](https://hello-world-415.shinyapps.io/2020_US_Data/) interactive board provides the data for each state regarding medicare payments and all the variables we explored. There is a US map visualizing the data, and a DT table that contains all the data we analyzed.
 
 ### Medicare Coverage for Each Disease
 The [Medicare Coverage by Hospital](https://hello-world-415.shinyapps.io/Medicare_Coverage_by_Hospital/) interactive board shows the medicare coverage pattern for each hospital. You can select the hospital(s) in the state(s) and the city(ies) you are interested in and look at or compare them. This interactive board can give you information on how medicare covers for a specific hospital, which may alter your choice of where to look for medical services out of your benefit. 
