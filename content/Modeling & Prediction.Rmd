@@ -2,14 +2,8 @@
 title: Model & Prediction
 description:
 toc: true
-authors: []
-tags: []
-categories: []
-series: []
-date: 2022-12-12T19:58:14-05:00
-lastmod: 2022-12-12T19:58:14-05:00
 featuredVideo:
-featuredImage:
+featuredImage: https://www.kff.org/wp-content/uploads/2018/10/9256-figure-1.png
 draft: false
 ---
 ## Motivations for modeling
@@ -18,8 +12,13 @@ After observing the relationships between variables through EDA,
 
 ## Create training and testing datasets
 
+<<<<<<< HEAD
 We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S. We choose Medicare Coverage as our output, aim to figure out which variables affect Medicare Coverage the most, and use the optimal model to predict Medicare Coverage. Our initial x variables include GDP, all the GPCI's, Lenth of state (LOS), Health_Status, Average Hierarchical Condition Category variables BENE_AVG_RISK_SCRE and ACUTE_HOSP_READMSN_PCT.
 ```{r}
+=======
+We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S.
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+>>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
 library(tidyverse)
 Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Medicare_Coverage=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
 Train <- Train %>% filter(year==2019)
@@ -46,7 +45,14 @@ Test <- read_csv(here::here("dataset","Data_Combined.csv"))
 Test <- Test %>% select(BENE_AVG_RISK_SCRE:GDP,Medicare_Coverage:LOS,Health_Status)
 ```
 
+<<<<<<< HEAD
 ```{r}
+=======
+
+
+
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+>>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
 library(GGally)
 ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
@@ -54,36 +60,41 @@ ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
 
 We then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage. According to the graph, BENE_AVG_RISK_SCRE seems like the one with the highest correlation with Medicare Coverage, with 0.416. Los and ACUTE_HOSP_READMSN_PCT are another variables that also indicate strong relationships with Medicare Coverage.
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 fit1 <- lm(Medicare_Coverage~.,data=Train)
 summary(fit1)
 ```
 
+<<<<<<< HEAD
 We first fit a linear regression model on our output Medicare_Coverge with all other x variables. We get a F-statistics of 2.05 p-value of 0.06286, which is roughly close to 0.05. The adjusted R-squared of 0.1443, which says that 14.43% of the variance in the training set is explained by the model. According to the t-test, most of the p-values are greater than 0.05, such as those of GPCI, indicating that they have little impact of Medicare Coverage. 
 ```{r}
+=======
+We first fit a linear regression model on our output Medicare_Coverge with all other x variables, and get an Adjusted R-squared of 0.05534, which is a very low amount
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+>>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
 aic<-step(fit1,direction='both')
 ```
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 fit2<-lm(Medicare_Coverage ~ LOS + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT,data=Train)
 summary(fit2)
 ```
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 sdres1 = rstandard(fit2)
 yhat1 = fit2$fitted.values
 plot(yhat1, sdres1)
 ```
 
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 qqnorm(sdres1)
 qqline(sdres1)
 ggplot(data = data.frame(sdres1), aes(x = sdres1)) + geom_histogram(bins = 30) +
   ggtitle("Histogram MLS Plot")
 ```
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 #Residual for training data
 Resfit <- resid(fit2)
 attach(Test)
@@ -94,7 +105,7 @@ MSE<-mean((ResfitValidation)^2)
 RMSE<-mean((ResfitValidation)^2) / mean((Test$Medicare_Coverage)^2)
 ```
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 tested = data.frame(Test$Medicare_Coverage,output$fit, 1:length(output$fit));
 colnames(tested)[1] = "Medicare_Coverage"
 colnames(tested)[2] = "Prediction"
@@ -104,12 +115,16 @@ ggplot(data = tested, aes(x = Medicare_Coverage, y = Prediction)) + geom_point()
   ggtitle("Validation Medicare Coverage vs Prediction")
 ```
 
-```{r}
+```{r echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(data = tested, aes(x = Index)) +
   geom_line(aes(y = Medicare_Coverage, color = "Medicare_Coverage")) + 
   geom_line(aes(y = Prediction, color = "Prediction_Medicare_Coverage"), linetype="twodash") +  
   scale_color_manual(name = element_blank(), labels = c("Prediction of Medicare Coverage", "Medicare Coverage"),
                      values = c("darkred", "steelblue")) + labs(y = "") + 
   ggtitle("Linear regression Prediction vs. Validation")
+<<<<<<< HEAD
 ```
 
+=======
+```
+>>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7

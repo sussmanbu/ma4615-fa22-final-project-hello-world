@@ -48,25 +48,13 @@ draft: false
 </div>
 <div id="factor-ii-medicare-payment-vs.-gdp" class="section level3">
 <h3>Factor II: Medicare Payment vs. GDP</h3>
-<pre class="r"><code>TOTAL &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Data_Combined.csv&quot;))</code></pre>
-<pre><code>## Rows: 51 Columns: 22
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (1): state
-## dbl (21): BENE_AVG_RISK_SCRE, ACUTE_HOSP_READMSN_PCT, PW_GPCI, PE_GPCI, MP_G...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>ggplot(TOTAL,aes(x = log(GDP),y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle(&quot;Medicare Payment vs GDP&quot;) + labs(x = &quot;log(GDP)&quot;,y = &quot;Medicare Payment ($)&quot;) +
-  theme(plot.title = element_text(hjust = 0.5))</code></pre>
-<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>We decide to investigate the relationship between GDP and Covered discharge since we believe a state with higher GPD tends to cover more for their medical patients. However, there is no obvious pattern observed in the model as medicare Payment does not change as GDP increases.</p>
+<p>Then We decide to investigate the relationship between GDP and Medicare Payment since we believe that a state with higher GDP has more expensive medical care, and medicare payment should also rise to cover the corresponding inflation. According to the plot above, medicare payment increases as GDP goes up, which means that the average medicare payment for each beneficiary is positively correlated with the GDP of the state where the beneficiary resides. This observation could be potentially explained by the fact that GDP could impact the cost of living. As GDP increases, the cost of living may also increase, which could lead to higher prices for medical goods and services. If the cost of providing medical care increases, Medicare may need to adjust its payment rates in order to cover these costs.</p>
 </div>
 <div id="factor-iii-medicare-payment-vs-hierarchical-condition-category-hcc" class="section level3">
 <h3>Factor III: Medicare Payment vs Hierarchical Condition Category (HCC)</h3>
 <p><img src="/analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare.Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.</p>
+<p>Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare. Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.</p>
 </div>
 <div id="factor-iv-medicare-payment-vs-readmission-rate" class="section level3">
 <h3>Factor IV: Medicare Payment vs Readmission Rate</h3>
@@ -81,18 +69,19 @@ draft: false
 <div id="factor-vi-medicare-payment-vs-health-status" class="section level3">
 <h3>Factor VI: Medicare Payment VS Health Status</h3>
 <p><img src="/analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>The result is surprising. We expect a negative relationship because the health status of an individual should affect the overall cost of the care. People with chronic illness may require more frequently and costly medical intervention than people whoare in good health, thus their medicare payment should be higher. But the graph shows opposite relationship that better health status results in higher medicare payment.</p>
+<p>The result is surprising. We expect a negative relationship because the health status of an individual should affect the overall cost of the care. People with chronic illness may require more frequently and costly medical intervention than people who are in good health, thus their medicare payment should be higher. But the graph shows opposite relationship that better health status results in higher medicare payment.</p>
 </div>
 <div id="factor-vii-medicare-payment-vs-geographic-practice-cost-index" class="section level3">
 <h3>Factor VII: Medicare Payment VS Geographic Practice Cost Index</h3>
 <p><img src="/analysis_files/figure-html/unnamed-chunk-13-1.png" width="672" />
 The Geographic Practice Cost Index (GPCI) is the factor used by the Centers for Medicare &amp; Medicaid Services (CMS) to adjust payment rates based on the relative cost of providing these services in different areas of the country. The GPCI takes into account differences in the cost of labor, rent, and other expenses associated with providing medical services in different regions. The graph shows a positive relationship, meaning that if the GPCI for a certain area is higher than the national average, Medicare payment will be adjusted upward to reflect the higher cost of providing those services in that location. Conversely, if the GPCI for a certain area is lower than the national average,Medicare payment for services provided in that area will be adjusted downward.</p>
 </div>
-<div id="modeling" class="section level3">
-<h3>Modeling</h3>
 </div>
-<div id="flaws-and-limitations-of-eda" class="section level3">
-<h3>Flaws and Limitations of EDA</h3>
+<div id="modeling" class="section level2">
+<h2>Modeling</h2>
+<p><a href="/Modeling%20&amp;%20Prediction/">Modeling &amp; Prediction</a></p>
+</div>
+<div id="flaws-and-limitations-of-eda" class="section level2">
+<h2>Flaws and Limitations of EDA</h2>
 <p>First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our dataset not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.</p>
-</div>
 </div>

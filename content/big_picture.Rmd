@@ -7,11 +7,14 @@ featuredVideo:
 draft: false
 ---
 
+## Have you ever wondered how Medicare pays for your or your loved ones medical bills?
+
+
 
 ## What can our website tell you about?
 
 ### The proportion of Medicare Coverage is different across the country
-```{r, echo=FALSE}
+```{r, echo = FALSE, warning = FALSE,message = FALSE}
 #Run the packages
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(sf))
@@ -58,7 +61,7 @@ According to the graph ploting medicare coverage proportions in each state, you 
 
 ### What factors can affect Medicare Coverage proportions?
 #### Length of Stay
-```{r, echo=FALSE}
+```{r, echo = FALSE, warning = FALSE,message = FALSE}
 library(cowplot)
 Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
 save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
@@ -96,9 +99,9 @@ As you can see from the plot above, as the medicare coverage increases, the leng
 
 ## Interactivity
 
-### Linear Regressions
+### 2020 US Data Board
 
-The [Linear Regressions](https://hello-world-415.shinyapps.io/Linear_Regression_Interactive) interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.
+The [2020 US Data Board](https://hello-world-415.shinyapps.io/2020_US_Data/) interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.
 
 ### Medicare Coverage for Each Disease
 The [Medicare Coverage by Hospital](https://hello-world-415.shinyapps.io/Medicare_Coverage_by_Hospital/) interactive board shows the medicare coverage pattern for each hospital. You can select the hospital(s) in the state(s) and the city(ies) you are interested in and look at or compare them. This interactive board can give you information on how medicare covers for a specific hospital, which may alter your choice of where to look for medical services out of your benefit. 

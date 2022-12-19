@@ -12,17 +12,13 @@ draft: false
 
 </div>
 
+<div id="have-you-ever-wondered-how-medicare-pays-for-your-or-your-loved-ones-medical-bills" class="section level2">
+<h2>Have you ever wondered how Medicare pays for your or your loved ones medical bills?</h2>
+</div>
 <div id="what-can-our-website-tell-you-about" class="section level2">
 <h2>What can our website tell you about?</h2>
 <div id="the-proportion-of-medicare-coverage-is-different-across-the-country" class="section level3">
 <h3>The proportion of Medicare Coverage is different across the country</h3>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;purrr&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;tmap&#39; was built under R version 4.2.2</code></pre>
-<pre><code>## Warning: package &#39;USAboundaries&#39; was built under R version 4.2.2</code></pre>
 <pre><code>## Reading layer `cb_2019_us_state_20m&#39; from data source 
 ##   `C:\Users\Lena\Desktop\MA415\R\ma4615-fa22-final-project-hello-world\dataset\cb_2019_us_state_20m\cb_2019_us_state_20m.shp&#39; 
 ##   using driver `ESRI Shapefile&#39;
@@ -38,36 +34,16 @@ draft: false
 <h3>What factors can affect Medicare Coverage proportions?</h3>
 <div id="length-of-stay" class="section level4">
 <h4>Length of Stay</h4>
-<pre><code>## Rows: 51 Columns: 2
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (1): state
-## dbl (1): LOS
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-## Rows: 164520 Columns: 10
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (4): Rndrng_Prvdr_Org_Name, Rndrng_Prvdr_City, Rndrng_Prvdr_State_Abrvtn...
-## dbl (6): Rndrng_Prvdr_RUCA, DRG_Cd, Tot_Dschrgs, Avg_Submtd_Cvrd_Chrg, Avg_T...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="/big_picture_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-## ℹ Please use `linewidth` instead.</code></pre>
-<p><img src="/big_picture_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p><img src="/big_picture_files/figure-html/unnamed-chunk-2-1.png" width="672" /><img src="/big_picture_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
 <p>As you can see from the plot above, as the medicare coverage increases, the length of stay generally decreases, meaning that the time that a patient spend in hospital is negatively related to medicare coverage proportion. This relationship may suggest that patients who have higher levels of Medicare coverage are able to access more timely and efficient medical care, leading to shorter hospital stays. On the other hand, patients with lower levels of Medicare coverage may face barriers to accessing care, leading to longer hospital stays. It is also possible that other factors, such as the availability of other forms of health insurance or the presence of chronic health conditions, may play a role in this relationship. Further research and analysis would be needed to determine the exact cause of this relationship and its implications for healthcare policy.</p>
 </div>
 </div>
 </div>
 <div id="interactivity" class="section level2">
 <h2>Interactivity</h2>
-<div id="linear-regressions" class="section level3">
-<h3>Linear Regressions</h3>
-<p>The <a href="https://hello-world-415.shinyapps.io/Linear_Regression_Interactive">Linear Regressions</a> interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.</p>
+<div id="us-data-board" class="section level3">
+<h3>2020 US Data Board</h3>
+<p>The <a href="https://hello-world-415.shinyapps.io/2020_US_Data/">2020 US Data Board</a> interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.</p>
 </div>
 <div id="medicare-coverage-for-each-disease" class="section level3">
 <h3>Medicare Coverage for Each Disease</h3>
