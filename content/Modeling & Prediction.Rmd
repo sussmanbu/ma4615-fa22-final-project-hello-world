@@ -14,11 +14,11 @@ draft: false
 ---
 ## Motivations for modeling
 
-After observing 
+After observing the relationships between variables through EDA, 
 
 ## Create training and testing datasets
 
-We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S.
+We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S. We choose Medicare Coverage as our output, aim to figure out which variables affect Medicare Coverage the most, and use the optimal model to predict Medicare Coverage. Our initial x variables include GDP, all the GPCI's, Lenth of state (LOS), Health_Status, Average Hierarchical Condition Category variables BENE_AVG_RISK_SCRE and ACUTE_HOSP_READMSN_PCT.
 ```{r}
 library(tidyverse)
 Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Medicare_Coverage=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
@@ -46,23 +46,20 @@ Test <- read_csv(here::here("dataset","Data_Combined.csv"))
 Test <- Test %>% select(BENE_AVG_RISK_SCRE:GDP,Medicare_Coverage:LOS,Health_Status)
 ```
 
-
-
-
 ```{r}
 library(GGally)
 ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
 ```
 
-We then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage. According to the graph, Los seems like the one with the highest correlation.
+We then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage. According to the graph, BENE_AVG_RISK_SCRE seems like the one with the highest correlation with Medicare Coverage, with 0.416. Los and ACUTE_HOSP_READMSN_PCT are another variables that also indicate strong relationships with Medicare Coverage.
 
 ```{r}
 fit1 <- lm(Medicare_Coverage~.,data=Train)
 summary(fit1)
 ```
 
-We first fit a linear regression model on our output Medicare_Coverge with all other x variables, and get an Adjusted R-squared of 0.05534, which is a very low amount
+We first fit a linear regression model on our output Medicare_Coverge with all other x variables. We get a F-statistics of 2.05 p-value of 0.06286, which is roughly close to 0.05. The adjusted R-squared of 0.1443, which says that 14.43% of the variance in the training set is explained by the model. According to the t-test, most of the p-values are greater than 0.05, such as those of GPCI, indicating that they have little impact of Medicare Coverage. 
 ```{r}
 aic<-step(fit1,direction='both')
 ```
@@ -116,6 +113,3 @@ ggplot(data = tested, aes(x = Index)) +
   ggtitle("Linear regression Prediction vs. Validation")
 ```
 
-```{r}
-
-```
