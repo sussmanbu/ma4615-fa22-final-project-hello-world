@@ -50,23 +50,24 @@ https://www.americashealthrankings.org/explore/annual/measure/Health_Status/stat
 * `Avg_Submtd_Cvrd_Chrg`: Average covered charges; the average charge of all providers' services covered by Medicare for discharges in the DRG.(for each hospital)
 * `Avg_Tot_Pymt_Amt`: Average total payments; the average total payments to all providers for the DRG. (for each hospital)
 * `Avg_Mdcr_Pymt_Amt`: Average medicare payments; the average amount that Medicare pays to the provider for Medicare's share of the MS-DRG. (for each hospital)
-*`Mean_Discharge`: The mean value of total number of patient discharges for each state; A processed variable based on `Tot_Dschrgs`.
-* `Mean_Covered`: The mean value of covered payments for each state; A processed variable based on `Avg_Submtd_Cvrd_Chrg`.
+* `Mean_Discharge`: The mean value of total number of patient discharges for each state; A processed variable based on `Tot_Dschrgs`. 
+* `Mean_Covered`: The mean value of covered payments for each state; A processed variable based on `Avg_Submtd_Cvrd_Chrg`. 
 * `Mean_Total_Payment`: The mean value of total payments for each state; A processed variable based on `Avg_Tot_Pymt_Amt`.
-*`Mean_Medicare_Payment`: The mean value of medicare payments for each state; A processed variable based on `Avg_Mdcr_Pymt_Amt`.
+* `Mean_Medicare_Payment`: The mean value of medicare payments for each state; A processed variable based on `Avg_Mdcr_Pymt_Amt`.
 * `Total_Premium_Number_of_Beneficiaries`: Number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment. 
 * `Total_Premium_Amount`: Total Medicare part A premium paid in a given state.
 * `Standard_Base_Premium_Number_of_Beneficiaries`: Individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment. 
 * `Standard_Base_Premium_Amount`: Total Medicare part A standard premium paid in a given state.
 * `Reduced_Base_Premium_Number_of_Beneficiaries`: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium.
 * `Reduced_Base_Premium_Amount`: Total Medicare part A reduced premium paid in a given state.
-*`BENE_AVG_RISK_SCRE`: Average HCC Score; average Hierarchical Condition Category Score (HCC Score).
+* `BENE_AVG_RISK_SCRE`: Average HCC Score; average Hierarchical Condition Category Score (HCC Score).
 * `ACUTE_HOSP_READMSN_PCT`: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year.
-*`BENE_AGE_LVL`: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older.
+* `BENE_AGE_LVL`: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older.
 * `BENE_GEO_LVL`:Geographic Level;National, State, County, or HRR.
 * `BENE_GEO_DESC`: HRR; Name of HRR.
 * `Avg_LOS`: Average Length of Stay; The average days the patients would stay in hospitals for each state.
 * `Health_Status`: Percentage of adults who reported that their health was very good or excellent.
+* `GDP`: Gross Domestic Product; value based on each state.
 
 # Data Import and Cleaning
 In [load_and_clean_data.R](https://hello-world-415.netlify.app/load_and_clean_data.R), we loaded and cleaned our datasets:
