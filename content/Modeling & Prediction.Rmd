@@ -12,8 +12,13 @@ featuredVideo:
 featuredImage:
 draft: false
 ---
+## Motivations for modeling
+
+After observing 
 
 ## Create training and testing datasets
+
+We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S.
 ```{r}
 library(tidyverse)
 Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Medicare_Coverage=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
@@ -29,7 +34,7 @@ HCC_Train$state<-substr(HCC_Train$state,0,2)
 HCC_Train<-HCC_Train %>% filter(YEAR==2019) %>% group_by(state) %>%  summarise(BENE_AVG_RISK_SCRE=mean(BENE_AVG_RISK_SCRE),ACUTE_HOSP_READMSN_PCT=mean(ACUTE_HOSP_READMSN_PCT))
 df_list <- list(GPCI_Train,Train,hs_Train,GDP_Train,population_Train,HCC_Train)
 Train <- df_list %>% reduce(full_join,by='state')
-Train <- Train%>% select(PW_GPCI:Medicare_Coverage,status,GDP,Year2019,BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT) %>% head(-3)
+Train <- Train%>% select(PW_GPCI:Medicare_Coverage,Health_Status,GDP,BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT) %>% head(-3)
 # GDP_Test <- read_csv(here::here("dataset","GDP.csv"))
 # GPCI_Test <- read_csv(here::here("dataset","GPCI2020.csv"))
 # hs_Test <- read_csv(here::here("dataset","HS2020.csv"))
@@ -37,15 +42,12 @@ Train <- Train%>% select(PW_GPCI:Medicare_Coverage,status,GDP,Year2019,BENE_AVG_
 # LOS_Test <- read_csv(here::here("dataset","Avg_LOS.csv"))
 # Medicare_Test <- read_csv(here::here("dataset","Medicare_data_sum.csv"),col_types = cols_only(state=col_character(),Medicare_Coverage=col_number()))
 # df_list2 <- list(GPCI_Test,hs_Test,GDP_Test,population_Test,LOS_Test,Medicare_Test,Hcc_Test)
-```
-
-We first collect all out 2019 datasets and combine them together to create the trainning dataset called "Train".
-
-##Create testing dataset
-```{r}
 Test <- read_csv(here::here("dataset","Data_Combined.csv"))
-Test <- Test %>% select(BENE_AVG_RISK_SCRE:GDP,Medicare_Coverage:Year2020,Health_Status)
+Test <- Test %>% select(BENE_AVG_RISK_SCRE:GDP,Medicare_Coverage:LOS,Health_Status)
 ```
+
+
+
 
 ```{r}
 library(GGally)
@@ -87,16 +89,33 @@ ggplot(data = data.frame(sdres1), aes(x = sdres1)) + geom_histogram(bins = 30) +
 ```{r}
 #Residual for training data
 Resfit <- resid(fit2)
-output1<-predict(fit2, se.fit = TRUE, newdata=data.frame(Test$BENE_AVG_RISK_SCRE,Test$LOS,Test$ACUTE_HOSP_READMSN_PCT))
-Resfit2Validation <- Working2$Medicare_Coverage - output1$fit
-mean((Resfit)^2)
-mean((ResfitValidation)^2)
+attach(Test)
+new_data=data.frame(LOS,BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+output<-predict(fit2, se.fit = TRUE, newdata=new_data)
+ResfitValidation <- Test$Medicare_Coverage - output$fit
+MSE<-mean((ResfitValidation)^2)
 RMSE<-mean((ResfitValidation)^2) / mean((Test$Medicare_Coverage)^2)
 ```
 
 ```{r}
-tested1 = data.frame(Test$Medicare_Coverage,output1$fit2, 1:length(output1$fit2));
-ggplot(data = tested1, aes(x = Medicare_Coverage, y = Prediction_Medicare_Coverage)) + geom_point() + 
+tested = data.frame(Test$Medicare_Coverage,output$fit, 1:length(output$fit));
+colnames(tested)[1] = "Medicare_Coverage"
+colnames(tested)[2] = "Prediction"
+colnames(tested)[3] = "Index"
+ggplot(data = tested, aes(x = Medicare_Coverage, y = Prediction)) + geom_point() +
   geom_abline(intercept = 0, slope = 1) +
   ggtitle("Validation Medicare Coverage vs Prediction")
+```
+
+```{r}
+ggplot(data = tested, aes(x = Index)) +
+  geom_line(aes(y = Medicare_Coverage, color = "Medicare_Coverage")) + 
+  geom_line(aes(y = Prediction, color = "Prediction_Medicare_Coverage"), linetype="twodash") +  
+  scale_color_manual(name = element_blank(), labels = c("Prediction of Medicare Coverage", "Medicare Coverage"),
+                     values = c("darkred", "steelblue")) + labs(y = "") + 
+  ggtitle("Linear regression Prediction vs. Validation")
+```
+
+```{r}
+
 ```
