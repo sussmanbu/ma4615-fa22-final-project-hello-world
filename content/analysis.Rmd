@@ -9,7 +9,7 @@ draft: false
 
 ## Motivation for our Data Analysis (EDA)
 
-Medicare is a national health insurance program in the United States that provides coverage to the elderly and people with disabilities. To be eligible for Medicare coverage, individuals must be 65 years of age or older and have paid into the Medicare system through their taxes while working. We are interested in medicare payment because Medicare spending in the United States has increased significantly in recent years ---- increased by more than \$200 billion since 2010. In addition, it is also a significant part (15.3%) of the overall healthcare spending. With the aging population, Medicare spending is projected to increase significantly over the next decade.
+Medicare is a national health insurance program in the United States that provides coverage to the elderly and people with disabilities. In 1965, after the legislation was signed by President Lyndon B Johnson, Americans started receiving Medicare health coverage and medical insurance benefits first took effect. After more than 5 decades, by august 2022, there were nearly 65 million people receiving health coverage through Medicare. Nowadays, medicare spending account for about 20% of total national health spending per year. To be eligible for Medicare coverage, individuals must be 65 years of age or older and have paid into the Medicare system through their taxes while working. We are interested in medicare payment because Medicare spending in the United States has increased significantly in recent years ---- increased by more than \$200 billion since 2010. In addition, it is also a significant part (15.3%) of the overall healthcare spending. With the aging population, Medicare spending is projected to increase significantly over the next decade.
 
 Thus, in the project, we aim to explore factors that make U.S. healthcare so expensive by focusing on medicare spending because it is one of the largest sources of healthcare funding in the country. To make the project manageable, we decided to focus on inpatient Medicare spending due to data availability.
 
@@ -18,6 +18,7 @@ Thus, in the project, we aim to explore factors that make U.S. healthcare so exp
 During initial data analysis, we analyzed [Medicare Inpatient Hospitals by Provider and Service](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service). We first explored the relationship between Average medicare Payment and average total payments.
 
 ### Plot 1: The relationship between Average Medicare Payments and Average Total Payments
+We first examined the relationship between medicare payment and total payment.
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 suppressPackageStartupMessages(library(tidyverse))
@@ -30,6 +31,7 @@ ggplot(Medicare_Coverage,aes(x = Mean_Medicare_Payment,y = Mean_Total_Payment)) 
 The Medicare covered payment increases as the total payment increases. This makes sense because Medicare covers payment mostly by a certain percentage, but may vary depending on differences in hospital charge structures. In the graph, each datapoint represents one state. From the graph, you can see Mean Medicare Payment varies in states with some states' values cluster together. If you examine closely, you will realize the ratio of Medicare Payment and Total Payment also varies by state. For the next two plots, we explored Medicare payments and the ratio between Medicare payment and Total Payment in each states.
 
 ### Plot 2: The ratio of medicare payment and total payment for each state
+Next, we zoom in to see if the ratio of medicare payment and total payment varies across states.
 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment/Mean_Total_Payment),y = Mean_Medicare_Payment/Mean_Total_Payment)) +geom_point() +
