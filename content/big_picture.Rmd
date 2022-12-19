@@ -7,14 +7,22 @@ featuredVideo:
 draft: false
 ---
 
-## Have you ever wondered how Medicare pays for your or your loved ones medical bills?
+## Medicare Advantage Plans Found to Repeatedly Avoid Documentation Requirements
 
+In April 2016, a review of 90 government audits has revealed that health insurers issuing Medicare Advantage plans have frequently attempted to bypass regulations requiring them to document the medical conditions for which the government paid them to provide treatment. The audits, which covered the period from 2011 to 2013, aimed to validate payments made to Medicare Advantage plans and identified millions of dollars in improper payments, with an average overcharge of more than $1,000 per patient per year. The audit process, which is secret and only affects around 5% of Medicare Advantage plans each year, often revealed little or no support for diagnoses submitted by the plans, and in many cases the medical credentials of the healthcare providers making the diagnoses were unclear or the records provided were unacceptable. Invalid billing codes, which indicate the treatment received by patients, were flagged by auditors more than 8,600 times in the audits, which covered records for 18,090 patients.
 
+Although most Medicare beneficiaries do not have Medicare Advantage plans to cover their medical bills, this incident alerts us about the regulation of Medicare that is one of the largest federal health insurance programs in the United States. If we understand how Medicare program differs across the states, we may be able to know about what factors can affect how Medicare pays for the citizens' medical bills and understand the performance of Medicare coverage for you and your loved ones.
+
+## Background
+
+Medicare is a government-run health insurance program for seniors and certain younger individuals with disabilities or permanent kidney failure. It helps to cover some, but not all, healthcare costs, and does not typically cover long-term care. Individuals with Medicare can opt for Original Medicare, which consists of Part A and Part B coverage, and may also choose to purchase additional coverage through a private insurance company's Medigap policy. If you are enrolled in a Medicare Advantage Plan or another type of Medicare plan, the coverage and rules of your plan may differ from those of Original Medicare. However, your plan is required to provide at least the same level of coverage as Original Medicare. It is possible that some services may only be covered under certain circumstances or in certain facilities.
+
+For example, for Medicare Part A coverage, most people don't have to pay a premium for Medicare benefits because they have worked and paid Medicare taxes for at least 10 years, or they are married to someone who has. However, those who have not worked enough may have to pay a premium for Part A coverage. For the year of 2023, the deductible for Part A coverage for inpatient hospitalizations will be 1,600 dollars. This deductible applies to each hospital stay that occurs within a 60-day benefit period, rather than annually. If a person is frequently admitted to the hospital without staying out of the hospital for at least 60 days, they may be required to pay copayments for additional hospital stays. These copayments include 400 dollars per day for stays between the 61st and 90th day and $800 per day for stays between the 91st and 150th day. Generally, Medicare is a federally administered health insurance program that provides coverage to eligible individuals in the United States. The eligibility requirements and coverage provided by Medicare are generally the same across the country. It is important to note that this is only true for Original Medicare, which includes Part A (hospital insurance) and Part B (medical insurance). If you are enrolled in Original Medicare, you can expect to receive the same coverage regardless of where you live in the US. However, according to our analysis, Medicare payment varies across the state.
 
 ## What can our website tell you about?
 
-### The proportion of Medicare Coverage is different across the country
-```{r, echo = FALSE, warning = FALSE,message = FALSE}
+### Average Medicare Payment is different across the country
+```{r, echo = FALSE, warning = FALSE, message = FALSE, }
 #Run the packages
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(sf))
@@ -41,7 +49,7 @@ medicare_data_sum<- medicare_data_clean %>%
             Medicare_Coverage = Mean_Medicare_Payment/Mean_Total_Payment)
 #Create a map for the US
 epsg_us <- 2163
-us_states <- st_read("C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp") %>%
+us_states <- st_read("C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp", quiet = TRUE) %>%
   st_transform(epsg_us)
 
 not_contiguous <-
@@ -54,13 +62,35 @@ us_cont <- us_states %>%
 #Plot a map colored with medicare coverage level
 cont_medicare_coverage <- inner_join(us_cont, medicare_data_sum, by = c("STUSPS" = "Rndrng_Prvdr_State_Abrvtn"))
 
-tm_shape(cont_medicare_coverage) + tm_polygons(col = "Medicare_Coverage", palette = "RdBu", title = "Medicare Coverage", n = 9) + tm_shape(us_cont) + tm_borders(lwd = 2)  
+tm_shape(cont_medicare_coverage) + tm_polygons(col = "Mean_Medicare_Payment", palette = "Blues", title = "Average Medicare Payment by case ($)", n = 9) + tm_shape(us_cont) + tm_borders(lwd = 2)  
 ```
 
-According to the graph ploting medicare coverage proportions in each state, you can see that there is discrepancies among the states when the coverage rates should be identical since Medicare is a federal program. From red to blue, red indicates lower medicare coverage, and blue indicates higher medicare coverage. There are several states on the eastern part of the US that provide relatively lower medicare coverage medical services to the patients, while other states provide relatively higher medicare coverage. This suggests that there may be differences in the way that Medicare is implemented in different states, or that there are other factors at play that affect the federal reimbursement of Medicare services. It is also possible that the data used to create the graph is not entirely accurate, or that it does not capture the full picture of Medicare coverage in each state. Regardless, it is clear that there is a need for further investigation into the disparities in Medicare coverage among the states.
+Figure 1. Average Medicare Payment by case for each state in the US in 2020
 
-### What factors can affect Medicare Coverage proportions?
-#### Length of Stay
+According to the graph ploting average Medicare payment by case for each state, we can see that there are great discrepancies among the states when the Medicare payment should be held approximately at the same level since Medicare is a federal program. From white to blue, white indicates lower average medicare payment, and blue indicates higher medicare payment There are several states on the eastern part of the US that show relatively lower medicare payment to the cases, while other states display relatively higher medicare payments. For example, medicare payment is as high as over 20,000 dollars per case, compared to that of Virginia that is as low as about 9,000 dollars. This suggests that there may be differences in the way that Medicare is implemented in different states, or that there are other factors at play that affect the federal reimbursement of Medicare services. Also, it is possible that the dataset used to creat the plot cannot summarize the full picture of Medicare payment in each state. Regardless, it is clear that there is a need for further investigation into the disparities in Medicare payment among the states.
+
+### What factors can affect Medicare Payment?
+
+#### GDP
+```{r, echo = FALSE, warning = FALSE,message = FALSE}
+TOTAL <- read_csv(here::here("dataset", "Data_Combined.csv"))
+ggplot(TOTAL,aes(x = log(GDP),y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle("Medicare Payment vs GDP") + labs(x = "log(GDP)",y = "Medicare Payment ($)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+Figure 2. The relationship between Medicare Payment and Gross domestic product (GDP) by states in 2020.
+
+GDP is a measure of the total economic output. It represents the total value of all goods and services produced within a region over a specific period of time, usually a year. Based on Figure 2. shown above, it appears that Medicare payments tend to increase as GDP increases. This suggests that the average Medicare payment for each beneficiary is positively correlated with the GDP of the state where the beneficiary lives. One possible explanation for this relationship is that GDP can affect the cost of living. As GDP increases, the cost of living in a region may also increase, which can lead to higher prices for medical goods and services. As the cost of providing medical care goes up, the federal government needs to adjust medicare payment that can cover the higher expenses due to the rise in over cost of living.
+
+#### Geographic Practice Cost Index
+```{r, echo = FALSE, warning = FALSE,message = FALSE}
+ggplot(TOTAL,aes(x = PE_GPCI,y = Mean_Medicare_Payment)) +geom_point() + geom_smooth(method = lm) + ggtitle("Medicare Payment vs Geographical Practice Cost Index (GPCI)") + labs(x = "Geographical Practice Cost Index (GPCI)",y = "Medicare Payment ($)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+Figure 3. The relationship between Geographic Practice Cost Index and Medicare Payment for each state in 2020.
+
+The Geographic Practice Cost Index (GPCI) is a measure used by Medicare to adjust payment rates based on the location where they are provided. It takes into account differences in the cost of providing medical care in different parts of the country and is used to ensure equal payment for the same services across regions. Based on the result in Figure 3., Medicare Payment increases with the elevation of GPCI, indicating that there is a positive correlation between Medicare payments and the GPCI. This could be interpreted to mean that Medicare payments are higher in regions where the GPCI is higher, which corresponds to the fact that the federal government adjust Medicare Payment to each region based on GPCI.
+
+#### Length of Stay and Medicare Coverage Proportion
 ```{r, echo = FALSE, warning = FALSE,message = FALSE}
 library(cowplot)
 Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
@@ -94,18 +124,24 @@ p2 <- ggplot(LOS_plot, aes(x = reorder(state, medicare_coverage), y = LOS, group
   theme(axis.text.x = element_text(angle = 60), panel.grid.minor = element_blank(), plot.title = element_text(hjust = 0.5)) 
 plot_grid(p1, p2, ncol = 1, align = "v")
 ```
+Figure 4. The relationship between Length of Stay and Medicare Coverage Proportion.
 
-As you can see from the plot above, as the medicare coverage increases, the length of stay generally decreases, meaning that the time that a patient spend in hospital is negatively related to medicare coverage proportion. This relationship may suggest that patients who have higher levels of Medicare coverage are able to access more timely and efficient medical care, leading to shorter hospital stays. On the other hand, patients with lower levels of Medicare coverage may face barriers to accessing care, leading to longer hospital stays. It is also possible that other factors, such as the availability of other forms of health insurance or the presence of chronic health conditions, may play a role in this relationship. Further research and analysis would be needed to determine the exact cause of this relationship and its implications for healthcare policy.
+During our investigation into Medicare Payment, we also want to look into how medicare coverage proportion is influenced. Based on the policies about out-of-pocket expenses that deductibles and copayments come in when a patient reaches certain days of hospital stay, we wanted to investigate whether length of stay impacts medicare coverage proportion. As you can see from Figure 4. above, as the length of stay increases, the medicare coverage generally decreases, meaning that the time that a patient spend in hospital is negatively related to medicare coverage proportion. This negative relationship may be due to the fact that Medicare has limits on the amount of coverage it provides for hospital stays. For example, Medicare Part A covers inpatient hospital stays for a certain number of days, after which beneficiaries may be responsible for paying a daily copayment. Therefore, as the length of a hospital stay increases, the proportion of the stay that is covered by Medicare may decrease, leading to lower medicare coverage proportion.
 
 ## Interactivity
 
 ### 2020 US Data Board
 
-The [2020 US Data Board](https://hello-world-415.shinyapps.io/2020_US_Data/) interactive board provides the trend for each state regarding the relationship between medicare coverage and length of stay.
+The [2020 US Data Board](https://hello-world-415.shinyapps.io/2020_US_Data/) interactive board provides the data for each state regarding medicare payments and all the variables we explored. There is a US map visualizing the data, and a DT table that contains all the data we analyzed.
 
 ### Medicare Coverage for Each Disease
 The [Medicare Coverage by Hospital](https://hello-world-415.shinyapps.io/Medicare_Coverage_by_Hospital/) interactive board shows the medicare coverage pattern for each hospital. You can select the hospital(s) in the state(s) and the city(ies) you are interested in and look at or compare them. This interactive board can give you information on how medicare covers for a specific hospital, which may alter your choice of where to look for medical services out of your benefit. 
 
 # References
+* Schulte, Fred, and Holly  K. Hacker. “How Medicare Advantage Plans Dodged Auditors and Overcharged Taxpayers by Millions.” Https://Www.inquirer.com, The Philadelphia Inquirer, 18 Dec. 2022, https://www.inquirer.com/health/medicare-advantage-plans-overcharged-taxpayers-millions-dodged-auditors-20221218.html. 
+* Social Security Administration. “Medicare Benefits.” SSA, https://www.ssa.gov/benefits/medicare/. 
+* U.S. Centers for Medicare and Medicaid Services. “What Part A Covers.” Medicare, https://www.medicare.gov/what-medicare-covers/what-part-a-covers. 
+* Turner, Terry. “Medicare Plans by State.” RetireGuide, https://www.retireguide.com/medicare/costs-and-coverage/state/. 
+* Committee on Geographic Adjustment Factors in Medicare Payment; Board on Health Care Services; Institute of Medicine; Edmunds M, Sloan FA, editors. Geographic Adjustment in Medicare Payment: Phase I: Improving Accuracy, Second Edition. Washington (DC): National Academies Press (US); 2011 Jun 1. 5, Geographic Practice Cost Indexes. Available from: https://www.ncbi.nlm.nih.gov/books/NBK190061/
 * Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service. 
 * Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums. 
