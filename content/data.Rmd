@@ -46,22 +46,27 @@ https://www.americashealthrankings.org/explore/annual/measure/Health_Status/stat
 * `Rndrng_Prvdr_RUCA`: Rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.
 * `DRG_Cd`: Diagnosis Related Group (DRG) definition; groups similar clinical conditions
 * `DRG_Desc`: DRG description; description of DRG_Cd.
-* `Tot_Dschrgs`: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services.
-* `Avg_Submtd_Cvrd_Chrg`: Average covered charges; the average charge of all providers' services covered by Medicare for discharges in the DRG.
-* `Avg_Tot_Pymt_Amt`: Average total payments; the average total payments to all providers for the DRG.
-* `Avg_Mdcr_Pymt_Amt`: Average medicare payments; the average amount that Medicare pays to the provider for Medicare's share of the MS-DRG. 
+* `Tot_Dschrgs`: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services. (for each hospital)
+* `Avg_Submtd_Cvrd_Chrg`: Average covered charges; the average charge of all providers' services covered by Medicare for discharges in the DRG.(for each hospital)
+* `Avg_Tot_Pymt_Amt`: Average total payments; the average total payments to all providers for the DRG. (for each hospital)
+* `Avg_Mdcr_Pymt_Amt`: Average medicare payments; the average amount that Medicare pays to the provider for Medicare's share of the MS-DRG. (for each hospital)
+*`Mean_Discharge`: The mean value of total number of patient discharges for each state; A processed variable based on `Tot_Dschrgs`.
+* `Mean_Covered`: The mean value of covered payments for each state; A processed variable based on `Avg_Submtd_Cvrd_Chrg`.
+* `Mean_Total_Payment`: The mean value of total payments for each state; A processed variable based on `Avg_Tot_Pymt_Amt`.
+*`Mean_Medicare_Payment`: The mean value of medicare payments for each state; A processed variable based on `Avg_Mdcr_Pymt_Amt`.
 * `Total_Premium_Number_of_Beneficiaries`: Number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment. 
-* `Total_Premium_Amount`: Total Medicare part A premium paid in a given state 
+* `Total_Premium_Amount`: Total Medicare part A premium paid in a given state.
 * `Standard_Base_Premium_Number_of_Beneficiaries`: Individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment. 
-* `Standard_Base_Premium_Amount`: Total Medicare part A standard premium paid in a given state 
-* `Reduced_Base_Premium_Number_of_Beneficiaries`: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium 
-* `Reduced_Base_Premium_Amount`: Total Medicare part A reduced premium paid in a given state 
-*`BENE_AVG_RISK_SCRE`: Average HCC Score; average Hierarchical Condition Category Score (HCC Score)
-*`ACUTE_HOSP_READMSN_PCT`: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year
-*`BENE_AGE_LVL`: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older
-*`BENE_GEO_LVL`:Geographic Level;National, State, County, or HRR
-*`BENE_GEO_DESC`: HRR; Name of HRR
-*`Health_Status`: Percentage of adults who reported that their health was very good or excellent
+* `Standard_Base_Premium_Amount`: Total Medicare part A standard premium paid in a given state.
+* `Reduced_Base_Premium_Number_of_Beneficiaries`: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium.
+* `Reduced_Base_Premium_Amount`: Total Medicare part A reduced premium paid in a given state.
+*`BENE_AVG_RISK_SCRE`: Average HCC Score; average Hierarchical Condition Category Score (HCC Score).
+* `ACUTE_HOSP_READMSN_PCT`: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year.
+*`BENE_AGE_LVL`: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older.
+* `BENE_GEO_LVL`:Geographic Level;National, State, County, or HRR.
+* `BENE_GEO_DESC`: HRR; Name of HRR.
+* `Avg_LOS`: Average Length of Stay; The average days the patients would stay in hospitals for each state.
+* `Health_Status`: Percentage of adults who reported that their health was very good or excellent.
 
 # Data Import and Cleaning
 In [load_and_clean_data.R](https://hello-world-415.netlify.app/load_and_clean_data.R), we loaded and cleaned our datasets:
@@ -75,12 +80,20 @@ We first discussed to identify the columns we need for this project. After selec
 While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recorded the file under CSV format and finalized the merging data into another file.
 
 ## The third dataset: Geographic Variation of Medicare Services
+For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. Based on the evaluation we made, we found two variables HCC and Readmission Rate that could best show the performance of medicare. After sorting out missing and ineffective values, we took these two columns of data out from the dataset and used the inner-join function to create a new dataframe so that we can practice analysis based on the data. 
 
+## The fourth dataset: CMS Program Statistics - Medicare Advantage-Inpatient Hospital
+In the research of this dataset, we wanted to know how length of stay of patients could possibly relate to medicare payment. To make the study of this dataset easier, we first created a global dataframe from the original dataset of medicare payment. We used the function group_by to create a dataset that shows the value given by each state. After this, we selected out the variable we needed from this dataset and merged it with the processed version of original dataset. It gave us a result that's based on each state.
 
-## The fourth dataset: 
+The by-state dataset was then saved for further usage for other datasets like Health Status.
+
+## The fifth dataset: American Health Rankings
+People's personal perception to their health status could be a good implication of how well the medicare services are implemented. For this dataset, we intend to show the relationship between these factors. Fortunately, this dataset has already summed up a variable that tells us what percentage of population perceive themselves to be healthy in each state. After taking out columns we needed from the raw dataset, we used a left-join based on each state. 
+
+## The sixth dataset: GDP
+[...]
 
 # Datasets Combination
-In order to combine the two datasets, we used function `group_by` to sort the first dataset by states , and used function `merge()` to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
 
@@ -218,5 +231,5 @@ https://www.americashealthrankings.org/explore/annual/measure/Health_Status/stat
 * American Health Rankings, High Health Status, 2018,
 https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018
 
-
+* [GDP reference]
 

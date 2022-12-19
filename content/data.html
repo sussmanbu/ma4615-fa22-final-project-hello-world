@@ -72,22 +72,27 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <li><code>Rndrng_Prvdr_RUCA</code>: Rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.</li>
 <li><code>DRG_Cd</code>: Diagnosis Related Group (DRG) definition; groups similar clinical conditions</li>
 <li><code>DRG_Desc</code>: DRG description; description of DRG_Cd.</li>
-<li><code>Tot_Dschrgs</code>: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services.</li>
-<li><code>Avg_Submtd_Cvrd_Chrg</code>: Average covered charges; the average charge of all providers’ services covered by Medicare for discharges in the DRG.</li>
-<li><code>Avg_Tot_Pymt_Amt</code>: Average total payments; the average total payments to all providers for the DRG.</li>
-<li><code>Avg_Mdcr_Pymt_Amt</code>: Average medicare payments; the average amount that Medicare pays to the provider for Medicare’s share of the MS-DRG.</li>
+<li><code>Tot_Dschrgs</code>: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services. (for each hospital)</li>
+<li><code>Avg_Submtd_Cvrd_Chrg</code>: Average covered charges; the average charge of all providers’ services covered by Medicare for discharges in the DRG.(for each hospital)</li>
+<li><code>Avg_Tot_Pymt_Amt</code>: Average total payments; the average total payments to all providers for the DRG. (for each hospital)</li>
+<li><code>Avg_Mdcr_Pymt_Amt</code>: Average medicare payments; the average amount that Medicare pays to the provider for Medicare’s share of the MS-DRG. (for each hospital)
+*<code>Mean_Discharge</code>: The mean value of total number of patient discharges for each state; A processed variable based on <code>Tot_Dschrgs</code>.</li>
+<li><code>Mean_Covered</code>: The mean value of covered payments for each state; A processed variable based on <code>Avg_Submtd_Cvrd_Chrg</code>.</li>
+<li><code>Mean_Total_Payment</code>: The mean value of total payments for each state; A processed variable based on <code>Avg_Tot_Pymt_Amt</code>.
+*<code>Mean_Medicare_Payment</code>: The mean value of medicare payments for each state; A processed variable based on <code>Avg_Mdcr_Pymt_Amt</code>.</li>
 <li><code>Total_Premium_Number_of_Beneficiaries</code>: Number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment.</li>
-<li><code>Total_Premium_Amount</code>: Total Medicare part A premium paid in a given state</li>
+<li><code>Total_Premium_Amount</code>: Total Medicare part A premium paid in a given state.</li>
 <li><code>Standard_Base_Premium_Number_of_Beneficiaries</code>: Individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment.</li>
-<li><code>Standard_Base_Premium_Amount</code>: Total Medicare part A standard premium paid in a given state</li>
-<li><code>Reduced_Base_Premium_Number_of_Beneficiaries</code>: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium</li>
-<li><code>Reduced_Base_Premium_Amount</code>: Total Medicare part A reduced premium paid in a given state
-<em><code>BENE_AVG_RISK_SCRE</code>: Average HCC Score; average Hierarchical Condition Category Score (HCC Score)
-</em><code>ACUTE_HOSP_READMSN_PCT</code>: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year
-<em><code>BENE_AGE_LVL</code>: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older
-</em><code>BENE_GEO_LVL</code>:Geographic Level;National, State, County, or HRR
-<em><code>BENE_GEO_DESC</code>: HRR; Name of HRR
-</em><code>Health_Status</code>: Percentage of adults who reported that their health was very good or excellent</li>
+<li><code>Standard_Base_Premium_Amount</code>: Total Medicare part A standard premium paid in a given state.</li>
+<li><code>Reduced_Base_Premium_Number_of_Beneficiaries</code>: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium.</li>
+<li><code>Reduced_Base_Premium_Amount</code>: Total Medicare part A reduced premium paid in a given state.
+*<code>BENE_AVG_RISK_SCRE</code>: Average HCC Score; average Hierarchical Condition Category Score (HCC Score).</li>
+<li><code>ACUTE_HOSP_READMSN_PCT</code>: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year.
+*<code>BENE_AGE_LVL</code>: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older.</li>
+<li><code>BENE_GEO_LVL</code>:Geographic Level;National, State, County, or HRR.</li>
+<li><code>BENE_GEO_DESC</code>: HRR; Name of HRR.</li>
+<li><code>Avg_LOS</code>: Average Length of Stay; The average days the patients would stay in hospitals for each state.</li>
+<li><code>Health_Status</code>: Percentage of adults who reported that their health was very good or excellent.</li>
 </ul>
 </div>
 <div id="data-import-and-cleaning" class="section level1">
@@ -104,14 +109,24 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 </div>
 <div id="the-third-dataset-geographic-variation-of-medicare-services" class="section level2">
 <h2>The third dataset: Geographic Variation of Medicare Services</h2>
+<p>For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. Based on the evaluation we made, we found two variables HCC and Readmission Rate that could best show the performance of medicare. After sorting out missing and ineffective values, we took these two columns of data out from the dataset and used the inner-join function to create a new dataframe so that we can practice analysis based on the data.</p>
 </div>
-<div id="the-fourth-dataset" class="section level2">
-<h2>The fourth dataset:</h2>
+<div id="the-fourth-dataset-cms-program-statistics---medicare-advantage-inpatient-hospital" class="section level2">
+<h2>The fourth dataset: CMS Program Statistics - Medicare Advantage-Inpatient Hospital</h2>
+<p>In the research of this dataset, we wanted to know how length of stay of patients could possibly relate to medicare payment. To make the study of this dataset easier, we first created a global dataframe from the original dataset of medicare payment. We used the function group_by to create a dataset that shows the value given by each state. After this, we selected out the variable we needed from this dataset and merged it with the processed version of original dataset. It gave us a result that’s based on each state.</p>
+<p>The by-state dataset was then saved for further usage for other datasets like Health Status.</p>
+</div>
+<div id="the-fifth-dataset-american-health-rankings" class="section level2">
+<h2>The fifth dataset: American Health Rankings</h2>
+<p>People’s personal perception to their health status could be a good implication of how well the medicare services are implemented. For this dataset, we intend to show the relationship between these factors. Fortunately, this dataset has already summed up a variable that tells us what percentage of population perceive themselves to be healthy in each state. After taking out columns we needed from the raw dataset, we used a left-join based on each state.</p>
+</div>
+<div id="the-sixth-dataset-gdp" class="section level2">
+<h2>The sixth dataset: GDP</h2>
+<p>[…]</p>
 </div>
 </div>
 <div id="datasets-combination" class="section level1">
 <h1>Datasets Combination</h1>
-<p>In order to combine the two datasets, we used function <code>group_by</code> to sort the first dataset by states , and used function <code>merge()</code> to add the second dataset to the first dataset. After combining the two datasets, we added a new variable called “premium_individual” which is the average premium amount per person in order to analyze how it can influence the Medicare coverage.</p>
 <pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))</code></pre>
 <pre><code>## Warning: ³Ì¼­°ü&#39;tidyverse&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
 <pre><code>## Warning: ³Ì¼­°ü&#39;ggplot2&#39;ÊÇÓÃR°æ±¾4.1.3 À´½¨ÔìµÄ</code></pre>
@@ -290,25 +305,26 @@ write_csv(total, file = here::here(&quot;dataset&quot;, &quot;total.csv&quot;))<
 <div id="references" class="section level1">
 <h1>References</h1>
 <ul>
-<li>Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service" class="uri">https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service</a>.</li>
-<li>Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a>.</li>
-<li>Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, <a href="https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020" class="uri">https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020</a>.</li>
-<li>Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) <a href="https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/" class="uri">https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/</a> (21 Nov. 2022)</li>
-<li>Medicare Geographic Variation - by National, State &amp; County, 2020,
-<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data</a></li>
-<li>Physician Fee Schedule Value Files, 2020,
-<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></li>
-<li>Physician Fee Schedule Value Files, 2019,
-<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C</a></li>
-<li>Physician Fee Schedule Value Files, 2018,
-<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D</a></li>
-<li>CMS Program Statistics - Medicare Advantage-Inpatient Hospital, 2019,
-<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital</a></li>
-<li>American Health Rankings, High Health Status, 2020,
-<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020</a></li>
-<li>American Health Rankings, High Health Status, 2019,
-<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019</a></li>
-<li>American Health Rankings, High Health Status, 2018,
-<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018</a></li>
+<li><p>Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service" class="uri">https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service</a>.</p></li>
+<li><p>Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a>.</p></li>
+<li><p>Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, <a href="https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020" class="uri">https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020</a>.</p></li>
+<li><p>Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) <a href="https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/" class="uri">https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/</a> (21 Nov. 2022)</p></li>
+<li><p>Medicare Geographic Variation - by National, State &amp; County, 2020,
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data</a></p></li>
+<li><p>Physician Fee Schedule Value Files, 2020,
+<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></p></li>
+<li><p>Physician Fee Schedule Value Files, 2019,
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C</a></p></li>
+<li><p>Physician Fee Schedule Value Files, 2018,
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D</a></p></li>
+<li><p>CMS Program Statistics - Medicare Advantage-Inpatient Hospital, 2019,
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital</a></p></li>
+<li><p>American Health Rankings, High Health Status, 2020,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020</a></p></li>
+<li><p>American Health Rankings, High Health Status, 2019,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019</a></p></li>
+<li><p>American Health Rankings, High Health Status, 2018,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018</a></p></li>
+<li><p>[GDP reference]</p></li>
 </ul>
 </div>
