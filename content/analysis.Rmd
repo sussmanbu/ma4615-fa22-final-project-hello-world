@@ -176,7 +176,159 @@ The Geographic Practice Cost Index (GPCI) is the factor used by the Centers for 
 
 ## Modeling
 
-[Modeling & Prediction](/Modeling & Prediction/)
+### Motivations for modeling
+
+After observing the relationships between variables through EDA, we plan to creates a model that could help us predict medicare payment. This modeling&prediction sections involves four main parts: datasets, correlation, optimal model selection, and predicition.
+
+### Create training and testing datasets
+
+We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S. We choose Medicare Payment as our output, aim to figure out which variables affect Medicare Payment the most, and use the optimal model to predict Medicare Payment. Our initial x variables include GDP, all the GPCI's, Lenth of state (LOS), Health_Status, Average Hierarchical Condition Category variables BENE_AVG_RISK_SCRE and ACUTE_HOSP_READMSN_PCT.
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+library(tidyverse)
+Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Mean_Medicare_Payment=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
+Train <- Train %>% filter(year==2019)
+population_Train <- read_csv(here::here("dataset","population.csv"),col_types = cols_only(state=col_character(),Year2019=col_number()))
+hs_Train <- read_csv(here::here("dataset","HS2019.csv"))
+GDP_Train <- read_csv(here::here("dataset","GDP2019.csv"))
+GPCI_Train <- read_csv(here::here("dataset","GPCI2019.csv"))
+GPCI_Train<-GPCI_Train %>% group_by(state) %>% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
+HCC_Train <- read_csv(here::here("dataset","HCC.csv"),col_types=cols_only(BENE_AVG_RISK_SCRE=col_number(),ACUTE_HOSP_READMSN_PCT=col_number(),state=col_character(),YEAR=col_number()))
+HCC_Train <- na.omit(HCC_Train)
+HCC_Train$state<-substr(HCC_Train$state,0,2)
+HCC_Train<-HCC_Train %>% filter(YEAR==2019) %>% group_by(state) %>%  summarise(BENE_AVG_RISK_SCRE=mean(BENE_AVG_RISK_SCRE),ACUTE_HOSP_READMSN_PCT=mean(ACUTE_HOSP_READMSN_PCT))
+df_list <- list(GPCI_Train,Train,hs_Train,GDP_Train,population_Train,HCC_Train)
+Train <- df_list %>% reduce(full_join,by='state')
+Train <- Train%>% select(Mean_Medicare_Payment,LOS,PW_GPCI:MP_GPCI,Health_Status,GDP,BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT) %>% head(-3)
+# GDP_Test <- read_csv(here::here("dataset","GDP.csv"))
+# GPCI_Test <- read_csv(here::here("dataset","GPCI2020.csv"))
+# hs_Test <- read_csv(here::here("dataset","HS2020.csv"))
+# population_Test <- read_csv(here::here("dataset","population.csv"),col_types = cols_only(state=col_character(),Year2020=col_number()))
+# LOS_Test <- read_csv(here::here("dataset","Avg_LOS.csv"))
+# Medicare_Test <- read_csv(here::here("dataset","Medicare_data_sum.csv"),col_types = cols_only(state=col_character(),Medicare_Coverage=col_number()))
+# df_list2 <- list(GPCI_Test,hs_Test,GDP_Test,population_Test,LOS_Test,Medicare_Test,Hcc_Test)
+Test <- read_csv(here::here("dataset","Data_Combined.csv"))
+Test <- Test %>% select(Mean_Medicare_Payment,LOS,PW_GPCI:MP_GPCI,Health_Status,GDP,BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+```
+
+### Correlation Matrix
+
+In order to have a deeper understanding of the correlations between variables, we then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Mean_Medicare_Payment.
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+library(GGally)
+ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
+        lower = list(continuous = wrap('cor', size = 4)))
+```
+
+According to the graph, PE_GPCI seems like the one with the highest correlation with Medicare Payment, with 0.42. GDP, PW_GPCI, and Health Ststus are another variables that also indicate strong relationships with Medicare Payment.
+
+### Simple Linear Regression 1
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+fit1 <- lm(Mean_Medicare_Payment~.,data=Train)
+summary(fit1)
+```
+
+We first fit a linear regression model on our output Medicare Payment with all other x variables. We get a F-statistics of 11.13 p-value of 0.06286, which is much less than 0.05. The adjusted R-squared of 0.6184, which says that 61.84% of the variance in the training set is explained by the model. According to the t-test, most of the p-values are greater than 0.05, such as those of GPCI, indicating that they have little impact of Medicare Payment. However, variables like PW_GPCI and PE_GPCI have very low p-values, which shows that they might have greater affects on Medicare Payment, and it aligns with out conclusions in the scatter matrix part.
+
+### Model Selection
+Model selection is extremely important in modeling analysis since choosing the right variables can help you find the optimal model. Even though we have already done the correlation matrix and T-test to find variables that had big influence on medicare payment, it is still significant to apply more technical methods to find the optimal model. Here we first use the step-wise AIC on our simple regression model 1, which can help us measure the bias-variance trade-off.
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+aic<-step(fit1,direction='both')
+```
+
+The result shows that the optimal model is Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT, with athe lowest AIC of 746.9
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+fit2<-lm(Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + 
+    ACUTE_HOSP_READMSN_PCT,data=Train)
+summary(fit2)
+```
+
+Based on our model selection analysis, we choose Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT as our optimal model and get a p-value of 1.131e-10 in the F-test, which indicates that our model is statistically significant. According to the T-test, all three variables have relatively low p-values, and our adjusted R-squared is 0.6445, which is much higher than the initial model. 
+
+### Constant variance assumption
+It is important to check whether the statistical assumptions hold for our model. We first check the constant variance assumption by plotting standardized residuals with outputs.
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+sdres = rstandard(fit2)
+yhat = fit2$fitted.values
+ggplot() + 
+  geom_point(data=Test, aes(x=yhat, y=sdres), size = 1) +
+  geom_hline(yintercept=2,color='blue') + geom_hline(yintercept=-2, color='blue') +
+  scale_color_manual(name = element_blank(), values = c("blue")) +
+  labs(y = "Standarized Residual") + ggtitle("Standarized Residuals")
+```
+According to the graph, constant variance assumption holds since there is no pattern shown. It is also necessary to check the normality assumption; therefore, we graphed the normal QQ-plot and Histogram plot.
+
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+qqnorm(sdres)
+qqline(sdres)
+ggplot(data = data.frame(sdres), aes(x = sdres)) + geom_histogram(bins = 30) +
+  ggtitle("Histogram Plot")
+```
+
+Based on the normal QQ-plot, there are a few outliers, but the normality assumption is not violated. Even though the histogram does show normality, we think this is because we only have 51 observations.
+
+### Linear Regression Model Prediction
+After checking the statistical assumptions, it's time to perform predictions based on our model Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT.
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+#Residual for training data
+Resfit <- resid(fit2)
+attach(Test)
+new_data=data.frame(PW_GPCI,PE_GPCI,BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
+output<-predict(fit2, se.fit = TRUE, newdata=new_data)
+ResfitValidation <- Test$Mean_Medicare_Payment - output$fit
+MSE<-mean((ResfitValidation)^2)
+RMSE<-mean((ResfitValidation)^2) / mean((Test$Mean_Medicare_Payment)^2)
+tested = data.frame(Test$Mean_Medicare_Payment,output$fit, 1:length(output$fit));
+colnames(tested)[1] = "Mean_Medicare_Payment"
+colnames(tested)[2] = "Prediction"
+colnames(tested)[3] = "Index"
+ggplot(data = tested, aes(x = Mean_Medicare_Payment, y = Prediction)) + geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  ggtitle("Validation Medicare Payment vs Prediction")
+ggplot(data = tested, aes(x = Index)) +
+  geom_line(aes(y = Mean_Medicare_Payment, color = "Mean_Medicare_Payment")) + 
+  geom_line(aes(y = Prediction, color = "Prediction_Medicare_Payment"), linetype="twodash") +  
+  scale_color_manual(name = element_blank(), labels = c("Prediction of Medicare Payment", "Medicare Payment"),
+                     values = c("darkred", "steelblue")) + labs(y = "") + 
+  ggtitle("Linear regression Prediction vs. Actual")
+```
+The linear regression model gives us a MSE of 2199525 and RMSE of 0.01131751. Our prediction in the Validation Medicare Payment vs Prediction graph fits well in the actual data. Also, in the further comparisons, the prediction graph also shows our indication works well since most of the extreme values are captured by our model. Moreover, the low relative mean square error also indicates that our model could make good predictions on medicare payment.
+
+### XGboost Prediction
+We then decide to perform a more advanced prediction method, XGboost regression, to predict medicare payment.
+```{r}
+library(dplyr)
+library(xgboost)
+library(caret)
+set.seed(0)
+train_x = data.matrix(Train[2:9])
+train_y = data.matrix(Train[1])
+test_x = data.matrix(Test[2:9])
+test_y = data.matrix(Test[1])
+xgb_train = xgb.DMatrix(data = train_x, label = train_y)
+xgb_test = xgb.DMatrix(data = test_x, label = test_y)
+final = xgboost(data = xgb_train, max.depth = 3, nrounds = 56, verbose = 0)
+prediction = predict(final,xgb_test)
+
+test_mse = mean((test_y - prediction)^2)
+rmse = test_mse / mean((test_y)^2)
+tested = data.frame(Test$Mean_Medicare_Payment,prediction, 1:length(prediction));
+colnames(tested)[1] = "Mean_Medicare_Payment"
+colnames(tested)[2] = "Prediction"
+colnames(tested)[3] = "Index"
+
+ggplot(data = tested, aes(x = test_y, y = prediction)) + geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  ggtitle("Validation Medicare Payment vs Prediction")
+
+ggplot(data = tested, aes(x = Index)) +
+  geom_line(aes(y = test_y, color = "Mean_Medicare_Payment")) + 
+  geom_line(aes(y = prediction, color = "Prediction_Medicare_Payment"), linetype="twodash") + 
+  scale_color_manual(name = element_blank(), labels = c("Prediction of Medicare Payment", "Medicare Payment"),
+                     values = c("darkred", "steelblue")) + labs(y = "") + 
+  ggtitle("XGboost Prediction vs. Actual")
+```
+This model gives us a MSE of 1033343 and RMSE of 0.005316997, which is much lower than the linear regression one. The graphs also show that XGBoost could catch all the extreme values. However, a drawback of the XGBoost approach is that machine learning models like this one are somewhat opaque in terms of how the algorithm works, making it challenging for us to pinpoint precisely which predictors are the strongest contributors and why.
+
 
 ## Flaws and Limitations of EDA
 First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our dataset not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.

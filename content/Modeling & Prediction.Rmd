@@ -6,7 +6,6 @@ featuredVideo:
 featuredImage: https://www.kff.org/wp-content/uploads/2018/10/9256-figure-1.png
 draft: false
 ---
-<<<<<<< HEAD
 ## Motivations for modeling
 
 After observing the relationships between variables through EDA, we plan to creates a model that could help us predict medicare payment. This modeling&prediction sections involves four main parts: datasets, correlation, optimal model selection, and predicition.
