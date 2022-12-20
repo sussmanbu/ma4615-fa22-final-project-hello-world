@@ -137,6 +137,8 @@ The [2020 US Data Board](https://hello-world-415.shinyapps.io/2020_US_Data/) int
 ### Medicare Coverage for Each Disease
 The [Medicare Coverage by Hospital](https://hello-world-415.shinyapps.io/Medicare_Coverage_by_Hospital/) interactive board shows the medicare coverage pattern for each hospital. You can select the hospital(s) in the state(s) and the city(ies) you are interested in and look at or compare them. This interactive board can give you information on how medicare covers for a specific hospital, which may alter your choice of where to look for medical services out of your benefit. 
 
+The recording for the Interactivity component can be found [here](https://drive.google.com/file/d/1xmBkwWabbpplN60cJuvQSnsa555IOMUT/view?usp=share_link).
+
 # References
 * Schulte, Fred, and Holly  K. Hacker. “How Medicare Advantage Plans Dodged Auditors and Overcharged Taxpayers by Millions.” Https://Www.inquirer.com, The Philadelphia Inquirer, 18 Dec. 2022, https://www.inquirer.com/health/medicare-advantage-plans-overcharged-taxpayers-millions-dodged-auditors-20221218.html. 
 * Social Security Administration. “Medicare Benefits.” SSA, https://www.ssa.gov/benefits/medicare/. 

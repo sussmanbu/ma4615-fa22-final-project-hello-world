@@ -41,8 +41,8 @@ https://www.americashealthrankings.org/explore/annual/measure/Health_Status/stat
 
 ## Dataset 7
 * Link to the original Dataset:
-https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files
-* 
+https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d
+* This dataset contains information on services covered by the Medicare Physician Fee Schedule. It shows how fee schedule amounts are adjusted to reflect the variation in practice costs from area to area. Geographic Practice Cost Indices (GPCIs) are used by the Centers for Medicare and Medicaid Services (CMS) to adjust payment rates for Medicare services based on the cost of providing healthcare in different areas of the United States. The GPCIs take into account factors such as the cost of living, the cost of medical supplies and equipment, and the cost of labor in different regions. There are three GPCIs: one for physician work, one for practice expense, and one for malpractice insurance.
 
 
 # Variables
@@ -74,9 +74,9 @@ https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/
 * `Avg_LOS`: Average Length of Stay; The average days the patients would stay in hospitals for each state.
 * `Health_Status`: Percentage of adults who reported that their health was very good or excellent.
 * `GDP`: Gross Domestic Product; value based on each state.
-* `PW_GPCI`:
-* `PE_GPCI`:
-* `MP_GPCI`:
+* `PW_GPCI`: physician work geographic practice cost index for each state
+* `PE_GPCI`: practice expense geographic practice cost index for each state
+* `MP_GPCI`: malpractice premium geographic practice cost index for each state
 
 
 # Data Import and Cleaning
@@ -99,7 +99,7 @@ For the GDP dataset, we wanted to show the relationship between GDP and medicare
 For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. After sorting out missing and ineffective values, we first took all the columns that could be useful in evaluating the medicare payment out of this dataset. Since the dataset contains a large number of variables, we decided to save the files and test each variable that could be useful for analysis.
 
 ## The fifth dataset: Geographic Practice Cost Indices 
-
+For this dataset, we are interested in geographic practice cost indices (GPCI), which are used to calculate Medicare payment rates, adjusted for geographic variation in the direct and indirect costs of providing services and maintaining clinics. We removed irrelevant columns and extract the state variables. We explored the correlation between GPCI and medicare payment and merged the dataset with other factors for modeling.
 
 ## The sixth dataset: Hierarchical Condition Category & Readmission penalties
 Based on the evaluation we made for the fourth datasets, we found two variables HCC and Readmission Rate that could best show the performance of medicare. We selected these two variables out from the fourth dataset and put them into a new dataset. By putting them into a new datasets, we were then able to indivually comparing these two variables with the main variable: `Mean_Medicare_Payment`.
