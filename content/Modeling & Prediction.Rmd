@@ -6,19 +6,15 @@ featuredVideo:
 featuredImage: https://www.kff.org/wp-content/uploads/2018/10/9256-figure-1.png
 draft: false
 ---
+<<<<<<< HEAD
 ## Motivations for modeling
 
-After observing the relationships between variables through EDA, 
+After observing the relationships between variables through EDA, we plan to creates a model that could help us predict medicare coverage. This modeling&prediction sections involves four main parts: datasets, correlation, optimal model selection, and predicition.
 
 ## Create training and testing datasets
 
-<<<<<<< HEAD
 We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S. We choose Medicare Coverage as our output, aim to figure out which variables affect Medicare Coverage the most, and use the optimal model to predict Medicare Coverage. Our initial x variables include GDP, all the GPCI's, Lenth of state (LOS), Health_Status, Average Hierarchical Condition Category variables BENE_AVG_RISK_SCRE and ACUTE_HOSP_READMSN_PCT.
-```{r}
-=======
-We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S.
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
->>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
 library(tidyverse)
 Train <- read_csv(here::here("dataset","total.csv"),col_types = cols_only(Medicare_Coverage=col_number(),year=col_number(),LOS=col_number(),state=col_character()))
 Train <- Train %>% filter(year==2019)
@@ -45,55 +41,63 @@ Test <- read_csv(here::here("dataset","Data_Combined.csv"))
 Test <- Test %>% select(BENE_AVG_RISK_SCRE:GDP,Medicare_Coverage:LOS,Health_Status)
 ```
 
-<<<<<<< HEAD
-```{r}
-=======
+##Correlation Matrix
 
-
-
+In order to have a deeper understanding of the correlations between variables, we then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage.
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
->>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
 library(GGally)
 ggpairs(Train,upper = list(continuous = wrap("points", alpha = 0.3,size=0.1)),
         lower = list(continuous = wrap('cor', size = 4)))
 ```
 
-We then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Medicare_Coverage. According to the graph, BENE_AVG_RISK_SCRE seems like the one with the highest correlation with Medicare Coverage, with 0.416. Los and ACUTE_HOSP_READMSN_PCT are another variables that also indicate strong relationships with Medicare Coverage.
+According to the graph, BENE_AVG_RISK_SCRE seems like the one with the highest correlation with Medicare Coverage, with 0.416. Los and ACUTE_HOSP_READMSN_PCT are another variables that also indicate strong relationships with Medicare Coverage.
 
+## Simple Linear Regression 1
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
 fit1 <- lm(Medicare_Coverage~.,data=Train)
 summary(fit1)
 ```
 
-<<<<<<< HEAD
-We first fit a linear regression model on our output Medicare_Coverge with all other x variables. We get a F-statistics of 2.05 p-value of 0.06286, which is roughly close to 0.05. The adjusted R-squared of 0.1443, which says that 14.43% of the variance in the training set is explained by the model. According to the t-test, most of the p-values are greater than 0.05, such as those of GPCI, indicating that they have little impact of Medicare Coverage. 
-```{r}
-=======
-We first fit a linear regression model on our output Medicare_Coverge with all other x variables, and get an Adjusted R-squared of 0.05534, which is a very low amount
+We first fit a linear regression model on our output Medicare Coverage with all other x variables. We get a F-statistics of 2.05 p-value of 0.06286, which is roughly close to 0.05. The adjusted R-squared of 0.1443, which says that 14.43% of the variance in the training set is explained by the model. According to the t-test, most of the p-values are greater than 0.05, such as those of GPCI, indicating that they have little impact of Medicare Coverage. However, variables like LOS and BENE_AVG_RISK_SCRE have very low p-values, which shows that they might have greater affects on Medicare Coverage, and it aligns with out conclusions in the scatter matrix part.
+
+##Model Selection
+Model selection is extremely important in modeling analysis since choosing the right variables can help you find the optimal model. Even though we have already done the correlation matrix and T-test to find variables that had big influence on medicare coverage, it is still significant to apply more technical methods to find the optimal model. Here we first use the step-wise AIC on our simple regression model 1, which can help us measure the bias-variance trade-off.
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
->>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
 aic<-step(fit1,direction='both')
 ```
 
+The result shows that the optimal model is Medicare_Coverage ~ LOS + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT, with athe lowest AIC of -364.32
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
 fit2<-lm(Medicare_Coverage ~ LOS + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT,data=Train)
 summary(fit2)
 ```
 
+Based on our model selection analysis, we choose Medicare_Coverage ~ LOS + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT as our optimal model and get a p-value of 0.002526 in the F-test, which indicates that our model is statistically significant. According to the T-test, all three variables have relatively low p-values; however, our adjusted R-squared is 0.2128, which is much higher than the initial model, but still is a relatively low amount. We think this is because we only have 51 observations and also there might be other variables that have great impact on medicare coverage that we didn't find.
+
+## Constant variance assumption
+It is important to check whether the statistical assumptions hold for our model. We first check the constant variance assumption by plotting standardized residuals with outputs.
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
-sdres1 = rstandard(fit2)
-yhat1 = fit2$fitted.values
-plot(yhat1, sdres1)
+sdres = rstandard(fit2)
+yhat = fit2$fitted.values
+ggplot() + 
+  geom_point(data=Test, aes(x=yhat, y=sdres), size = 1) +
+  geom_hline(yintercept=2,color='blue') + geom_hline(yintercept=-2, color='blue') +
+  scale_color_manual(name = element_blank(), labels = c("MLS"), values = c("blue")) +
+  labs(y = "Standarized Residual") + ggtitle("Standarized Residuals")
+```
+According to the graph, constant variance assumption holds since there is no pattern shown. It is also necessary to check the normality assumption; therefore, we graphed the normal QQ-plot and Histogram plot.
+
+```{r echo = FALSE, warning = FALSE,message = FALSE}
+qqnorm(sdres)
+qqline(sdres)
+ggplot(data = data.frame(sdres), aes(x = sdres)) + geom_histogram(bins = 30) +
+  ggtitle("Histogram Plot")
 ```
 
+Based on the normal QQ-plot, there are a few outliers, but the normality assumption is not violated. Even though the histogram does show normality, we think this is because of our low amount of observations.
 
-```{r echo = FALSE, warning = FALSE,message = FALSE}
-qqnorm(sdres1)
-qqline(sdres1)
-ggplot(data = data.frame(sdres1), aes(x = sdres1)) + geom_histogram(bins = 30) +
-  ggtitle("Histogram MLS Plot")
-```
-
+##Prediction
+After checking the statistical assumptions, it's time to perform predictions based on our model Medicare_Coverage ~ LOS + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT.
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
 #Residual for training data
 Resfit <- resid(fit2)
@@ -103,9 +107,6 @@ output<-predict(fit2, se.fit = TRUE, newdata=new_data)
 ResfitValidation <- Test$Medicare_Coverage - output$fit
 MSE<-mean((ResfitValidation)^2)
 RMSE<-mean((ResfitValidation)^2) / mean((Test$Medicare_Coverage)^2)
-```
-
-```{r echo = FALSE, warning = FALSE,message = FALSE}
 tested = data.frame(Test$Medicare_Coverage,output$fit, 1:length(output$fit));
 colnames(tested)[1] = "Medicare_Coverage"
 colnames(tested)[2] = "Prediction"
@@ -113,18 +114,13 @@ colnames(tested)[3] = "Index"
 ggplot(data = tested, aes(x = Medicare_Coverage, y = Prediction)) + geom_point() +
   geom_abline(intercept = 0, slope = 1) +
   ggtitle("Validation Medicare Coverage vs Prediction")
-```
-
-```{r echo = FALSE, warning = FALSE,message = FALSE}
 ggplot(data = tested, aes(x = Index)) +
   geom_line(aes(y = Medicare_Coverage, color = "Medicare_Coverage")) + 
   geom_line(aes(y = Prediction, color = "Prediction_Medicare_Coverage"), linetype="twodash") +  
   scale_color_manual(name = element_blank(), labels = c("Prediction of Medicare Coverage", "Medicare Coverage"),
                      values = c("darkred", "steelblue")) + labs(y = "") + 
   ggtitle("Linear regression Prediction vs. Validation")
-<<<<<<< HEAD
 ```
-
+MSE = 0.0006940557; RMSE = 0.0009771697. Our prediction in the Validation Medicare Coverage vs Prediction graph fits well in the actual data. Also, in the further comparisons, the prediction graph also shows our indication works well since most of the extreme values are captured by our model. Moreover, the low relative mean square error also indicates that our model could make good predictions on medicare coverage.
 =======
-```
 >>>>>>> d703a38bd5a4919a91b7fd9f52a76f031710c2f7
