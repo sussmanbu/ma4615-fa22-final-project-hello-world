@@ -51,6 +51,28 @@ ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment),y = Mean_M
 
 Theoretically, Medicare coverage should be the same across all states in the United States. Since it is a national program, the benefits and services it covers should be standardized, meaning that an individual who is enrolled in Medicare in one state will have the same coverage as someone who is enrolled in Medicare in another state. However, during initial exploratory data analysis, we found that average medicare payment varies greatly from state to state. As a result, we decided to shift our focus to understand the sources of variation in medicare payment across different geographic areas and identify sources that have the largest impact on medicare payment variations. We conducted some literature reviews and identified various possible factors including premium, geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, GDP, cover charged, and hierarchical condition category (HCC).
 
+### Plot 4: Medicare Coverage vs. Length of stay in hospital
+
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+library(tidyverse)
+Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
+medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+medicare_data_sum1<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+ 
+colnames(medicare_data_sum1)[1] ="state"
+LOS_plot <- merge(medicare_data_sum1, Avg_LOS, by = "state")
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
+```
+
+We further examined the relationship between Medicare coverage(Medicare payment/total payment) and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
+
+
 ## Depth of EDA
 
 ### Factor I: Medicare Payment vs. Premium
