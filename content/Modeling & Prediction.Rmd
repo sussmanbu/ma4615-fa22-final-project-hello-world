@@ -6,13 +6,13 @@ featuredVideo:
 featuredImage: https://www.kff.org/wp-content/uploads/2018/10/9256-figure-1.png
 draft: false
 ---
+<<<<<<< HEAD
 ## Motivations for modeling
 
-After observing the relationships between variables through EDA, 
+After observing the relationships between variables through EDA, we plan to creates a model that could help us predict medicare coverage. This modeling&prediction sections involves four main parts: datasets, correlation, optimal model selection, and predicition.
 
 ## Create training and testing datasets
 
-<<<<<<< HEAD
 We first collect all our 2019 datasets and combine them together to create the  trainning dataset called "Train" and combined all our 2020 datasets to create the testing dataset called "Test". Again, we only have 51 observations since we need to merge all out datasets by the common variables "state" and there are only 51 states in the U.S. We choose Medicare Coverage as our output, aim to figure out which variables affect Medicare Coverage the most, and use the optimal model to predict Medicare Coverage. Our initial x variables include GDP, all the GPCI's, Lenth of state (LOS), Health_Status, Average Hierarchical Condition Category variables BENE_AVG_RISK_SCRE and ACUTE_HOSP_READMSN_PCT.
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
 library(tidyverse)
@@ -88,9 +88,9 @@ ggplot() +
 According to the graph, constant variance assumption holds since there is no pattern shown. It is also necessary to check the normality assumption; therefore, we graphed the normal QQ-plot and Histogram plot.
 
 ```{r echo = FALSE, warning = FALSE,message = FALSE}
-qqnorm(sdres1)
-qqline(sdres1)
-ggplot(data = data.frame(sdres1), aes(x = sdres1)) + geom_histogram(bins = 30) +
+qqnorm(sdres)
+qqline(sdres)
+ggplot(data = data.frame(sdres), aes(x = sdres)) + geom_histogram(bins = 30) +
   ggtitle("Histogram Plot")
 ```
 
