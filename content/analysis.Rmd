@@ -240,7 +240,10 @@ Model selection is extremely important in modeling analysis since choosing the r
 aic<-step(fit1,direction='both')
 ```
 
+
 The result shows that the optimal model is Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT, with athe lowest AIC of 746.9
+
+
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
 fit2<-lm(Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + 
     ACUTE_HOSP_READMSN_PCT,data=Train)
