@@ -102,7 +102,7 @@ ggplot(TOTAL,aes(x = PE_GPCI,y = Mean_Medicare_Payment)) +
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 14),
-        title = element_text(size = 14.5, face = "bold"))
+        title = element_text(size = 14, face = "bold"))
 ```
 Figure 3. The relationship between Geographic Practice Cost Index and Medicare Payment for each state in 2020.
 
