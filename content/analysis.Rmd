@@ -51,28 +51,6 @@ ggplot(Medicare_Coverage,aes(x = reorder(state,Mean_Medicare_Payment),y = Mean_M
 
 Theoretically, Medicare coverage should be the same across all states in the United States. Since it is a national program, the benefits and services it covers should be standardized, meaning that an individual who is enrolled in Medicare in one state will have the same coverage as someone who is enrolled in Medicare in another state. However, during initial exploratory data analysis, we found that average medicare payment varies greatly from state to state. As a result, we decided to shift our focus to understand the sources of variation in medicare payment across different geographic areas and identify sources that have the largest impact on medicare payment variations. We conducted some literature reviews and identified various possible factors including premium, geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, GDP, cover charged, and hierarchical condition category (HCC).
 
-### Plot 4: Medicare Coverage vs. Length of stay in hospital
-
-```{R echo = FALSE, warning = FALSE,message = FALSE}
-library(tidyverse)
-Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
-save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
-medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
-medicare_data_sum1<- medicare_data_clean %>%
-  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
-  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
-            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
-            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
-            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
- 
-colnames(medicare_data_sum1)[1] ="state"
-LOS_plot <- merge(medicare_data_sum1, Avg_LOS, by = "state")
-LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
-```
-
-We further examined the relationship between Medicare coverage(Medicare payment/total payment) and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
-
-
 ## Depth of EDA
 
 ### Factor I: Medicare Payment vs. Premium
@@ -157,7 +135,28 @@ LOS_plot <- merge(medicare_data_sum, Avg_LOS, by = "state")
 LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Payment ($)") + ggtitle(" Medicare Payment  vs Length of Stay") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
-We further examined the relationship between medicare payment and length of stay in hospital. We summarized the medicare payment of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare payment and average length of stay. As shown above, there is a negative relationship between Medicare payment and average length of stay, implying that Medicare pays a higher percentage to doctors' wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
+We further examined the relationship between medicare payment and length of stay in hospital. We summarized the medicare payment of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare payment and average length of stay. As shown above, there is no correlation found between Medicare Payment and average length of stay. However, we found a negative relationship between Medicare Coverage and length of stay.
+
+### Follow-up analysis of Factor V: Medicare Coverage vs. Length of Stay
+
+```{R echo = FALSE, warning = FALSE,message = FALSE}
+library(tidyverse)
+Avg_LOS <- read_csv(here::here("dataset", "Avg_LOS.csv"))
+save(Avg_LOS, file = here::here("dataset/Avg_LOS.RData"))
+medicare_data_clean <- read_csv(here::here("dataset", "Medicare_Data_clean.csv"))
+medicare_data_sum1<- medicare_data_clean %>%
+  group_by(Rndrng_Prvdr_State_Abrvtn) %>%
+  summarize(Mean_Discharge = mean(Tot_Dschrgs), 
+            Mean_Covered = mean(Avg_Submtd_Cvrd_Chrg), 
+            Mean_Total_Payment = mean(Avg_Tot_Pymt_Amt), 
+            Mean_Medicare_Payment = mean(Avg_Mdcr_Pymt_Amt))
+ 
+colnames(medicare_data_sum1)[1] ="state"
+LOS_plot <- merge(medicare_data_sum1, Avg_LOS, by = "state")
+LOS_plot %>% ggplot(aes(x = LOS, y = Mean_Medicare_Payment/Mean_Total_Payment)) + geom_point() + geom_smooth(method = lm) + labs(x = "Length of Stay (days)", y = "Medicare Coverage (%)")
+```
+
+Since there is no significant relationship between medicare payment and length of stay. However, according to the policy that out-of-pocket expenses increases when length of stay increases, We further examined the relationship between Medicare coverage (Medicare payment/Total payment) and length of stay in hospital. We summarized the medicare coverage of each state and merged with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare coverage decreases with longer patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.
 
 ### Factor VI: Medicare Payment VS Health Status 
 ```{R echo = FALSE, warning = FALSE,message = FALSE}
@@ -332,5 +331,5 @@ ggplot(data = tested, aes(x = Index)) +
 ```
 This model gives us a MSE of 1033343 and RMSE of 0.005316997, which is much lower than the linear regression one. The graphs also show that XGBoost could catch all the extreme values. However, a drawback of the XGBoost approach is that machine learning models like this one are somewhat opaque in terms of how the algorithm works, making it challenging for us to pinpoint precisely which predictors are the strongest contributors and why.
 
-## Flaws and Limitations of EDA
-First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our datasets not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.
+## Flaws and Limitations
+First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our datasets not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis. In addition, our statistical model did not yield very satisfactory results. One of the reasons is that the correlation between many variables and Medicare payment is not very large, which leads to a limitation in the variables for which we can build linear regressions. In addition, the small number of observations also limited our modeling process.

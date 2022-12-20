@@ -37,39 +37,39 @@ draft: false
 <p><img src="/analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Theoretically, Medicare coverage should be the same across all states in the United States. Since it is a national program, the benefits and services it covers should be standardized, meaning that an individual who is enrolled in Medicare in one state will have the same coverage as someone who is enrolled in Medicare in another state. However, during initial exploratory data analysis, we found that average medicare payment varies greatly from state to state. As a result, we decided to shift our focus to understand the sources of variation in medicare payment across different geographic areas and identify sources that have the largest impact on medicare payment variations. We conducted some literature reviews and identified various possible factors including premium, geographic practice cost indices, length of stay, readmission rate, health status, income level, race, poverty rate, GDP, cover charged, and hierarchical condition category (HCC).</p>
 </div>
-<div id="plot-4-medicare-coverage-vs.-length-of-stay-in-hospital" class="section level3">
-<h3>Plot 4: Medicare Coverage vs. Length of stay in hospital</h3>
-<p><img src="/analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>We further examined the relationship between Medicare coverage(Medicare payment/total payment) and length of stay in hospital. We summarized the medicare coverage of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare pays a higher percentage to doctors’ wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.</p>
-</div>
 </div>
 <div id="depth-of-eda" class="section level2">
 <h2>Depth of EDA</h2>
 <div id="factor-i-medicare-payment-vs.-premium" class="section level3">
 <h3>Factor I: Medicare Payment vs. Premium</h3>
+<p><img src="/analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p><img src="/analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p><img src="/analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The first plot shows the regression plot between premium and medicare Payment. There is a positive regression relationship between the two variables, indicating that Medicare Payment increases as Premium increases. However, when we wanted to explore Medicare payment data for each state and reordered by premium, we saw no apparent patterns among the states. Although there is a positive relationship indicated in the regression plot, there is no obvious pattern shown in the boxplot. Therefore, we cannot conclude that medicare Payment goes up with the increase in premium. In other words, more expensive medicare premium does not bring greater medicare Payment, and cheaper premium does not lower the payment either.</p>
 </div>
 <div id="factor-ii-medicare-payment-vs.-gdp" class="section level3">
 <h3>Factor II: Medicare Payment vs. GDP</h3>
-<p><img src="/analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Then We decide to investigate the relationship between GDP and Medicare Payment since we believe that a state with higher GDP has more expensive medical care, and medicare payment should also rise to cover the corresponding inflation. According to the plot above, medicare payment increases as GDP goes up, which means that the average medicare payment for each beneficiary is positively correlated with the GDP of the state where the beneficiary resides. This observation could be potentially explained by the fact that GDP could impact the cost of living. As GDP increases, the cost of living may also increase, which could lead to higher prices for medical goods and services. If the cost of providing medical care increases, Medicare may need to adjust its payment rates in order to cover these costs.</p>
 </div>
 <div id="factor-iii-medicare-payment-vs-hierarchical-condition-category-hcc" class="section level3">
 <h3>Factor III: Medicare Payment vs Hierarchical Condition Category (HCC)</h3>
-<p><img src="/analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Hierarchical condition category (HCC) is a coding system that is used in the United States to classify medical conditions for the purpose of determining the amount of reimbursement that a healthcare provider will receive from Medicare. Higher HCC score means the providers will receive higher reimbursement. There is one obvious outlier, which is DC, it has high Medicare payment but low HCC score. As indicated in the graph, there is limited relationship between Medicare payment and HCC.</p>
 </div>
 <div id="factor-iv-medicare-payment-vs-readmission-rate" class="section level3">
 <h3>Factor IV: Medicare Payment vs Readmission Rate</h3>
-<p><img src="/analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="/analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Readmission rate is the percentage of patients who are admitted to a hospital again within a certain period of time after being discharged. This rate is often used as a measure of the quality of care provided by a hospital, as higher readmission rates may indicate that patients are not receiving the care they need to prevent their condition from worsening or recurring. Starting 2012, the Hospital Readmissions Reduction Program (HRRP) reduces at max three percent of Medicare payment for hopsitals that have high 30 days readmission rate. There is also limited relationship between Readmission Rate and Medicare Payment shown in this graph.</p>
 </div>
 <div id="factor-v-medicare-payment-vs-length-of-stay" class="section level3">
 <h3>Factor V: Medicare Payment vs Length of Stay</h3>
+<p><img src="/analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>We further examined the relationship between medicare payment and length of stay in hospital. We summarized the medicare payment of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare payment and average length of stay. As shown above, there is no correlation found between Medicare Payment and average length of stay. However, we found a negative relationship between Medicare Coverage and length of stay.</p>
+</div>
+<div id="follow-up-analysis-of-factor-v-medicare-coverage-vs.-length-of-stay" class="section level3">
+<h3>Follow-up analysis of Factor V: Medicare Coverage vs. Length of Stay</h3>
 <p><img src="/analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>We further examined the relationship between medicare payment and length of stay in hospital. We summarized the medicare payment of each state and merge with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare payment and average length of stay. As shown above, there is a negative relationship between Medicare payment and average length of stay, implying that Medicare pays a higher percentage to doctors’ wage in states with shorter patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.</p>
+<p>Since there is no significant relationship between medicare payment and length of stay. However, according to the policy that out-of-pocket expenses increases when length of stay increases, We further examined the relationship between Medicare coverage (Medicare payment/Total payment) and length of stay in hospital. We summarized the medicare coverage of each state and merged with data of average length of stay in hospital of people with medicare in each state. Then, we plotted the relationship between Medicare coverage and average length of stay. As shown above, there is a negative relationship between Medicare coverage and average length of stay, implying that Medicare coverage decreases with longer patient lengths of stay. This is because when a patient stays in the hospital longer, more of the Medicare payment goes to pay for medicines, medical equipment, treatments, etc., so the doctor gets a smaller percentage of the Medicare payment.</p>
 </div>
 <div id="factor-vi-medicare-payment-vs-health-status" class="section level3">
 <h3>Factor VI: Medicare Payment VS Health Status</h3>
@@ -250,7 +250,7 @@ The linear regression model gives us a MSE of 2199525 and RMSE of 0.01131751. Ou
 This model gives us a MSE of 1033343 and RMSE of 0.005316997, which is much lower than the linear regression one. The graphs also show that XGBoost could catch all the extreme values. However, a drawback of the XGBoost approach is that machine learning models like this one are somewhat opaque in terms of how the algorithm works, making it challenging for us to pinpoint precisely which predictors are the strongest contributors and why.</p>
 </div>
 </div>
-<div id="flaws-and-limitations-of-eda" class="section level2">
-<h2>Flaws and Limitations of EDA</h2>
-<p>First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our datasets not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.</p>
+<div id="flaws-and-limitations" class="section level2">
+<h2>Flaws and Limitations</h2>
+<p>First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our datasets not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis. In addition, our statistical model did not yield very satisfactory results. One of the reasons is that the correlation between many variables and Medicare payment is not very large, which leads to a limitation in the variables for which we can build linear regressions. In addition, the small number of observations also limited our modeling process.</p>
 </div>

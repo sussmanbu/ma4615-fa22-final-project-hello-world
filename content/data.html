@@ -75,36 +75,21 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <h1>Variables</h1>
 <ul>
 <li><code>Rndrng_Prvdr_Org_Name</code>: Rendering provider name; name of the provider.</li>
-<li><code>Rndrng_Prvdr_City</code>: Rendering provider city; the city in which the provider is physically located.</li>
 <li><code>Rndrng_Prvdr_State_Abrvtn</code>: Rendering provider state abbreviation; the state abbreviation for the state in which the provider is physically located.</li>
-<li><code>Rndrng_Prvdr_RUCA</code>: Rendering provider rural-urban commuting area(RUCA) codes; RUCA code for which the provider is physically located. RUCA code classify zip codes as rural/urban areas based on measures of population density, level of urbanization, and daily commuting patterns. The smaller the code, the more urbanize the area.</li>
-<li><code>DRG_Cd</code>: Diagnosis Related Group (DRG) definition; groups similar clinical conditions</li>
-<li><code>DRG_Desc</code>: DRG description; description of DRG_Cd.</li>
-<li><code>Tot_Dschrgs</code>: Total discharges; measures the number of discharges billed by all providers for inpatient hospital services. (for each hospital)</li>
-<li><code>Avg_Submtd_Cvrd_Chrg</code>: Average covered charges; the average charge of all providers’ services covered by Medicare for discharges in the DRG.(for each hospital)</li>
 <li><code>Avg_Tot_Pymt_Amt</code>: Average total payments; the average total payments to all providers for the DRG. (for each hospital)</li>
 <li><code>Avg_Mdcr_Pymt_Amt</code>: Average medicare payments; the average amount that Medicare pays to the provider for Medicare’s share of the MS-DRG. (for each hospital)</li>
-<li><code>Mean_Discharge</code>: The mean value of total number of patient discharges for each state; A processed variable based on <code>Tot_Dschrgs</code>.</li>
-<li><code>Mean_Covered</code>: The mean value of covered payments for each state; A processed variable based on <code>Avg_Submtd_Cvrd_Chrg</code>.</li>
 <li><code>Mean_Total_Payment</code>: The mean value of total payments for each state; A processed variable based on <code>Avg_Tot_Pymt_Amt</code>.</li>
 <li><code>Mean_Medicare_Payment</code>: The mean value of medicare payments for each state; A processed variable based on <code>Avg_Mdcr_Pymt_Amt</code>.</li>
+<li><code>Mean_Medicare_Coverage</code>: The mean value of medicare coverage proportion for each state; A processed variable based on <code>Mean_Medicare_Payment</code>/<code>Avg_Tot_Pymt_Amt</code></li>
 <li><code>Total_Premium_Number_of_Beneficiaries</code>: Number of Medicare beneficiaries who have the pay Part A premium; individuals who enrolled in Medicare Part A but did not have at least 40 quarters of Medicare-covered employment.</li>
 <li><code>Total_Premium_Amount</code>: Total Medicare part A premium paid in a given state.</li>
-<li><code>Standard_Base_Premium_Number_of_Beneficiaries</code>: Individuals who enrolled in Medicare Part A but did not have at least 30 quarters of Medicare-covered employment.</li>
-<li><code>Standard_Base_Premium_Amount</code>: Total Medicare part A standard premium paid in a given state.</li>
-<li><code>Reduced_Base_Premium_Number_of_Beneficiaries</code>: Individuals who had at least 30 quarters of coverage or were married to someone with at least 30 quarters of coverage may buy into Part A with reduced premium.</li>
-<li><code>Reduced_Base_Premium_Amount</code>: Total Medicare part A reduced premium paid in a given state.</li>
+<li><code>premium_average</code>: Average premium value per person. A processed variable of <code>Total_Premium_Amount</code>/<code>Total_Premium_Number_of_Beneficiaries</code></li>
 <li><code>BENE_AVG_RISK_SCRE</code>: Average HCC Score; average Hierarchical Condition Category Score (HCC Score).</li>
 <li><code>ACUTE_HOSP_READMSN_PCT</code>: Hospital Readmission Rate; percent of inpatient readmission within 30 days of an acute hospital stay during the reference period, where the reference period refers to an inpatient hospital stay during the calendar year.</li>
-<li><code>BENE_AGE_LVL</code>: Age level; All Beneficiaries, Beneficiaries under 65, or Beneficiaries 65 or older.</li>
-<li><code>BENE_GEO_LVL</code>:Geographic Level;National, State, County, or HRR.</li>
-<li><code>BENE_GEO_DESC</code>: HRR; Name of HRR.</li>
 <li><code>Avg_LOS</code>: Average Length of Stay; The average days the patients would stay in hospitals for each state.</li>
 <li><code>Health_Status</code>: Percentage of adults who reported that their health was very good or excellent.</li>
 <li><code>GDP</code>: Gross Domestic Product; value based on each state.</li>
-<li><code>PW_GPCI</code>: physician work geographic practice cost index for each state</li>
 <li><code>PE_GPCI</code>: practice expense geographic practice cost index for each state</li>
-<li><code>MP_GPCI</code>: malpractice premium geographic practice cost index for each state</li>
 </ul>
 </div>
 <div id="data-import-and-cleaning" class="section level1">
@@ -291,25 +276,13 @@ HCC_Readmission_clean &lt;- HCC_Readmission %&gt;% filter(BENE_AGE_LVL == &#39;A
 HCC_Readmission_Only &lt;- HCC_Readmission_clean %&gt;% select(state, BENE_AVG_RISK_SCRE,ACUTE_HOSP_READMSN_PCT)
 ##Store the dataset for further usage
 write_csv(HCC_Readmission_Only, file = here::here(&quot;dataset&quot;, &quot;HCC_Readmission_Only.csv&quot;))
-save(HCC_Readmission_Only, file = here::here(&quot;dataset/HCC_Readmission_Only.RData&quot;))
-
-##Dataset7: Population
-population &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;population.csv&quot;))
-##Store the dataset for further usage
-write_csv(population, file = here::here(&quot;dataset&quot;, &quot;population.csv&quot;))
-save(population, file = here::here(&quot;dataset/population.RData&quot;))</code></pre>
+save(HCC_Readmission_Only, file = here::here(&quot;dataset/HCC_Readmission_Only.RData&quot;))</code></pre>
 </div>
 </div>
 <div id="data-combination" class="section level1">
 <h1>Data Combination</h1>
-<pre class="r"><code>##Dataset8: Combined dataset for year 2018-2019
-medicare18 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;medicare-18.csv&quot;),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
-medicare19 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;medicare-19.csv&quot;),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
-medicare_train &lt;- rbind(medicare18,medicare19)
-medicare_train &lt;- medicare_train %&gt;% mutate(state=Rndrng_Prvdr_State_Abrvtn) %&gt;% group_by(state)%&gt;% summarize(Medicare_Coverage_Train=mean(Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt))
-
-##Dataset9: Combined dataset for year 2020
-Avg_LOS &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;Avg_LOS.csv&quot;))
+<p>We combined all of our datasets using <code>inner_join</code> by <code>state</code> in order to combine all of the useful data into a single dataset and to make sure that only states in the first dataset, our primary dataset, are covered and used for analysis.</p>
+<pre class="r"><code>Avg_LOS &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;Avg_LOS.csv&quot;))
 health_status &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;Health_Status_2020.csv&quot;)) %&gt;% rename(state = STATE)
 HCC_Readmission_Only &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;HCC_Readmission_Only.csv&quot;))
 GPCI2020 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;GPCI2020.csv&quot;))
@@ -319,58 +292,7 @@ medicare_data_sum &lt;- medicare_data_sum %&gt;% rename(state = Rndrng_Prvdr_Sta
 df_list&lt;- list(HCC_Readmission_Only,GPCI2020,GDP,medicare_data_sum,Avg_LOS,population, premiumA, health_status)
 Data_Combined &lt;- df_list %&gt;% reduce(inner_join, by=&#39;state&#39;)
 write_csv(Data_Combined, file = here::here(&quot;dataset&quot;, &quot;Data_Combined.csv&quot;))
-save(Data_Combined, file = here::here(&quot;dataset/Data_Combined.RData&quot;))
-
-Data_Combined_fit &lt;-Data_Combined %&gt;% select(BENE_AVG_RISK_SCRE:Year2020)
-library(GGally)
-ggpairs(Data_Combined_fit,upper = list(continuous = wrap(&quot;points&quot;, alpha = 0.3,size=0.1)),
-        lower = list(continuous = wrap(&#39;cor&#39;, size = 4)))
-fit1&lt;-lm(Medicare_Coverage~.,data=Data_Combined_fit)
-summary(fit1)
-Data_Combined$Medicare_Coverage
-plot(fit1)
-aic&lt;-step(fit1,direction=&#39;both&#39;)
-view(Data_Combined_fit)
-
-medicare_data_clean&lt;-read_csv(here::here(&quot;dataset&quot;,&quot;medicare_data_clean.csv&quot;),col_types = cols_only(state=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
-medicare_data_clean&lt;-medicare_data_clean %&gt;% mutate(Medicare_Coverage=Avg_Mdcr_Pymt_Amt/Avg_Tot_Pymt_Amt) %&gt;% select(Medicare_Coverage,Rndrng_Prvdr_State_Abrvtn)
-df_list2&lt;-list(medicare_data_clean,GDP,Avg_LOS,HCC_Readmission_Only,GPCI2020,population)
-Data_Combined2&lt;-df_list2 %&gt;% reduce(full_join,by=&#39;state&#39;)
-ggpairs(Data_Combined2 %&gt;% select(Medicare_Coverage,GDP:Year2020),upper = list(continuous = wrap(&quot;points&quot;, alpha = 0.3,size=0.1)),
-         lower = list(continuous = wrap(&#39;cor&#39;, size = 4)))
-
-GPCI_Train&lt;-GPCI_Train %&gt;% rbind(GPCI2018,GPCI2019) %&gt;% group_by(state) %&gt;% summarise(PW_GPCI=mean(PW_GPCI),PE_GPCI=mean(PE_GPCI),MP_GPCI=mean(MP_GPCI))
-Train &lt;- merge(GPCI_Train,medicare_train) %&gt;% select(PW_GPCI:Medicare_Coverage_Train)
-ggpairs(Train,upper = list(continuous = wrap(&quot;points&quot;, alpha = 0.3,size=0.1)),
-        lower = list(continuous = wrap(&#39;cor&#39;, size = 4)))
-
-write_csv(Train, file = here::here(&quot;dataset&quot;, &quot;Training.csv&quot;))
-save(Train, file = here::here(&quot;dataset/Training.RData&quot;))
-
-##Dataset11: Medicare Coverage and US map
-#Run the packages
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(sf))
-suppressPackageStartupMessages(library(tmap))
-suppressPackageStartupMessages(library(USAboundaries))
-
-#Create a map for the US
-epsg_us &lt;- 2163
-us_states &lt;- st_read(&quot;C:/Users/Lena/Desktop/MA415/R/ma4615-fa22-final-project-hello-world/dataset/cb_2019_us_state_20m/cb_2019_us_state_20m.shp&quot;) %&gt;%
-  st_transform(epsg_us)
-
-not_contiguous &lt;-
-  c(&quot;Guam&quot;, &quot;Commonwealth of the Northern Mariana Islands&quot;,
-    &quot;American Samoa&quot;, &quot;Puerto Rico&quot;, &quot;United States Virgin Islands&quot;)
-us_cont &lt;- us_states %&gt;%
-  filter(!(NAME %in% not_contiguous)) %&gt;%
-  select(STATEFP, STUSPS, NAME)
-
-#Plot a map colored with medicare coverage level
-cont_medicare_coverage &lt;- inner_join(us_cont, medicare_data_sum, by = c(&quot;STUSPS&quot; = &quot;state&quot;))
-
-write_csv(cont_medicare_coverage, file = here::here(&quot;dataset&quot;, &quot;cont_medicare_coverage.csv&quot;))
-save(cont_medicare_coverage, file = here::here(&quot;dataset/cont_medicare_coverage.RData&quot;))</code></pre>
+save(Data_Combined, file = here::here(&quot;dataset/Data_Combined.RData&quot;))</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
