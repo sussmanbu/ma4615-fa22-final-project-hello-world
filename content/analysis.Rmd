@@ -178,6 +178,7 @@ The Geographic Practice Cost Index (GPCI) is the factor used by the Centers for 
 First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our dataset not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.
 
 
+
 ## Modeling
 
 ### Motivations for modeling

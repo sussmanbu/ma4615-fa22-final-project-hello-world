@@ -82,11 +82,175 @@ draft: false
 The Geographic Practice Cost Index (GPCI) is the factor used by the Centers for Medicare &amp; Medicaid Services (CMS) to adjust payment rates based on the relative cost of providing these services in different areas of the country. The GPCI takes into account differences in the cost of labor, rent, and other expenses associated with providing medical services in different regions. The graph shows a positive relationship, meaning that if the GPCI for a certain area is higher than the national average, Medicare payment will be adjusted upward to reflect the higher cost of providing those services in that location. Conversely, if the GPCI for a certain area is lower than the national average,Medicare payment for services provided in that area will be adjusted downward.</p>
 </div>
 </div>
-<div id="modeling" class="section level2">
-<h2>Modeling</h2>
-<p><a href="/Modeling%20&amp;%20Prediction/">Modeling &amp; Prediction</a></p>
-</div>
 <div id="flaws-and-limitations-of-eda" class="section level2">
 <h2>Flaws and Limitations of EDA</h2>
 <p>First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our dataset not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.</p>
+</div>
+<div id="modeling" class="section level2">
+<h2>Modeling</h2>
+<div id="motivations-for-modeling" class="section level3">
+<h3>Motivations for modeling</h3>
+<p>After observing the relationships between variables through EDA, we plan to creates a model that could help us predict medicare payment. This modeling&amp;prediction sections involves four main parts: datasets, correlation, optimal model selection, and predicition.</p>
+</div>
+<div id="create-training-and-testing-datasets" class="section level3">
+<h3>Create training and testing datasets</h3>
+<p>We first collect all our 2019 datasets and combine them together to create the trainning dataset called “Train” and combined all our 2020 datasets to create the testing dataset called “Test”. Again, we only have 51 observations since we need to merge all out datasets by the common variables “state” and there are only 51 states in the U.S. We choose Medicare Payment as our output, aim to figure out which variables affect Medicare Payment the most, and use the optimal model to predict Medicare Payment. Our initial x variables include GDP, all the GPCI’s, Lenth of state (LOS), Health_Status, Average Hierarchical Condition Category variables BENE_AVG_RISK_SCRE and ACUTE_HOSP_READMSN_PCT.</p>
+</div>
+<div id="correlation-matrix" class="section level3">
+<h3>Correlation Matrix</h3>
+<p>In order to have a deeper understanding of the correlations between variables, we then create the scatterplot matrix of all the variables, figuring out which variables have the biggest correlation with Mean_Medicare_Payment.
+<img src="/analysis_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>According to the graph, PE_GPCI seems like the one with the highest correlation with Medicare Payment, with 0.42. GDP, PW_GPCI, and Health Ststus are another variables that also indicate strong relationships with Medicare Payment.</p>
+</div>
+<div id="simple-linear-regression-1" class="section level3">
+<h3>Simple Linear Regression 1</h3>
+<pre><code>## 
+## Call:
+## lm(formula = Mean_Medicare_Payment ~ ., data = Train)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3236.8  -809.9  -108.1   738.6  5809.2 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            -1.644e+04  5.387e+03  -3.052  0.00394 ** 
+## LOS                     1.514e+02  5.480e+02   0.276  0.78375    
+## PW_GPCI                 1.053e+04  3.632e+03   2.900  0.00592 ** 
+## PE_GPCI                 1.911e+04  4.152e+03   4.604 3.81e-05 ***
+## MP_GPCI                 2.255e+02  6.106e+02   0.369  0.71375    
+## Health_Status          -4.366e+02  7.431e+03  -0.059  0.95342    
+## GDP                     4.095e-04  5.627e-04   0.728  0.47078    
+## BENE_AVG_RISK_SCRE      9.024e+03  4.792e+03   1.883  0.06660 .  
+## ACUTE_HOSP_READMSN_PCT -5.298e+04  2.063e+04  -2.569  0.01385 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1497 on 42 degrees of freedom
+## Multiple R-squared:  0.6795, Adjusted R-squared:  0.6184 
+## F-statistic: 11.13 on 8 and 42 DF,  p-value: 2.842e-08</code></pre>
+<p>We first fit a linear regression model on our output Medicare Payment with all other x variables. We get a F-statistics of 11.13 p-value of 0.06286, which is much less than 0.05. The adjusted R-squared of 0.6184, which says that 61.84% of the variance in the training set is explained by the model. According to the t-test, most of the p-values are greater than 0.05, such as those of GPCI, indicating that they have little impact of Medicare Payment. However, variables like PW_GPCI and PE_GPCI have very low p-values, which shows that they might have greater affects on Medicare Payment, and it aligns with out conclusions in the scatter matrix part.</p>
+</div>
+<div id="model-selection" class="section level3">
+<h3>Model Selection</h3>
+<p>Model selection is extremely important in modeling analysis since choosing the right variables can help you find the optimal model. Even though we have already done the correlation matrix and T-test to find variables that had big influence on medicare payment, it is still significant to apply more technical methods to find the optimal model. Here we first use the step-wise AIC on our simple regression model 1, which can help us measure the bias-variance trade-off.</p>
+<pre><code>## Start:  AIC=753.87
+## Mean_Medicare_Payment ~ LOS + PW_GPCI + PE_GPCI + MP_GPCI + Health_Status + 
+##     GDP + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT
+## 
+##                          Df Sum of Sq       RSS    AIC
+## - Health_Status           1      7742  94181291 751.87
+## - LOS                     1    171057  94344607 751.96
+## - MP_GPCI                 1    305828  94479378 752.04
+## - GDP                     1   1187653  95361202 752.51
+## &lt;none&gt;                                 94173549 753.87
+## - BENE_AVG_RISK_SCRE      1   7952293 102125842 756.00
+## - ACUTE_HOSP_READMSN_PCT  1  14796223 108969772 759.31
+## - PW_GPCI                 1  18852352 113025901 761.18
+## - PE_GPCI                 1  47527631 141701181 772.71
+## 
+## Step:  AIC=751.87
+## Mean_Medicare_Payment ~ LOS + PW_GPCI + PE_GPCI + MP_GPCI + GDP + 
+##     BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT
+## 
+##                          Df Sum of Sq       RSS    AIC
+## - LOS                     1    205243  94386534 749.99
+## - MP_GPCI                 1    303740  94485031 750.04
+## - GDP                     1   1567226  95748517 750.72
+## &lt;none&gt;                                 94181291 751.87
+## + Health_Status           1      7742  94173549 753.87
+## - BENE_AVG_RISK_SCRE      1   7979576 102160867 754.02
+## - ACUTE_HOSP_READMSN_PCT  1  14885687 109066978 757.36
+## - PW_GPCI                 1  18986306 113167597 759.24
+## - PE_GPCI                 1  93311337 187492628 784.99
+## 
+## Step:  AIC=749.99
+## Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + MP_GPCI + GDP + BENE_AVG_RISK_SCRE + 
+##     ACUTE_HOSP_READMSN_PCT
+## 
+##                          Df Sum of Sq       RSS    AIC
+## - MP_GPCI                 1    262901  94649435 748.13
+## - GDP                     1   1363504  95750039 748.72
+## &lt;none&gt;                                 94386534 749.99
+## + LOS                     1    205243  94181291 751.87
+## + Health_Status           1     41927  94344607 751.96
+## - BENE_AVG_RISK_SCRE      1   8148022 102534556 752.21
+## - ACUTE_HOSP_READMSN_PCT  1  15749902 110136437 755.86
+## - PW_GPCI                 1  24540287 118926822 759.77
+## - PE_GPCI                 1  93862873 188249407 783.19
+## 
+## Step:  AIC=748.13
+## Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + GDP + BENE_AVG_RISK_SCRE + 
+##     ACUTE_HOSP_READMSN_PCT
+## 
+##                          Df Sum of Sq       RSS    AIC
+## - GDP                     1   1449441  96098876 746.90
+## &lt;none&gt;                                 94649435 748.13
+## + MP_GPCI                 1    262901  94386534 749.99
+## + LOS                     1    164404  94485031 750.04
+## + Health_Status           1     32724  94616711 750.11
+## - BENE_AVG_RISK_SCRE      1   8119729 102769164 750.32
+## - ACUTE_HOSP_READMSN_PCT  1  15499921 110149356 753.86
+## - PW_GPCI                 1  24281882 118931317 757.77
+## - PE_GPCI                 1  99300534 193949969 782.72
+## 
+## Step:  AIC=746.9
+## Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + 
+##     ACUTE_HOSP_READMSN_PCT
+## 
+##                          Df Sum of Sq       RSS    AIC
+## &lt;none&gt;                                 96098876 746.90
+## + GDP                     1   1449441  94649435 748.13
+## + Health_Status           1    374305  95724571 748.70
+## + MP_GPCI                 1    348837  95750039 748.72
+## + LOS                     1       566  96098310 748.90
+## - BENE_AVG_RISK_SCRE      1  10032270 106131146 749.97
+## - ACUTE_HOSP_READMSN_PCT  1  16953747 113052624 753.19
+## - PW_GPCI                 1  23461910 119560786 756.04
+## - PE_GPCI                 1 120199703 216298579 786.28</code></pre>
+<p>The result shows that the optimal model is Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT, with athe lowest AIC of 746.9</p>
+<pre><code>## 
+## Call:
+## lm(formula = Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + 
+##     ACUTE_HOSP_READMSN_PCT, data = Train)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3396.2  -694.2  -165.0   753.5  5819.1 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              -17517       4507  -3.886 0.000325 ***
+## PW_GPCI                   10659       3181   3.351 0.001616 ** 
+## PE_GPCI                   19928       2627   7.585 1.22e-09 ***
+## BENE_AVG_RISK_SCRE         9894       4515   2.191 0.033526 *  
+## ACUTE_HOSP_READMSN_PCT   -51427      18053  -2.849 0.006543 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1445 on 46 degrees of freedom
+## Multiple R-squared:  0.6729, Adjusted R-squared:  0.6445 
+## F-statistic: 23.66 on 4 and 46 DF,  p-value: 1.131e-10</code></pre>
+<p>Based on our model selection analysis, we choose Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT as our optimal model and get a p-value of 1.131e-10 in the F-test, which indicates that our model is statistically significant. According to the T-test, all three variables have relatively low p-values, and our adjusted R-squared is 0.6445, which is much higher than the initial model.</p>
+</div>
+<div id="constant-variance-assumption" class="section level3">
+<h3>Constant variance assumption</h3>
+<p>It is important to check whether the statistical assumptions hold for our model. We first check the constant variance assumption by plotting standardized residuals with outputs.
+<img src="/analysis_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+According to the graph, constant variance assumption holds since there is no pattern shown. It is also necessary to check the normality assumption; therefore, we graphed the normal QQ-plot and Histogram plot.</p>
+<p><img src="/analysis_files/figure-html/unnamed-chunk-21-1.png" width="672" /><img src="/analysis_files/figure-html/unnamed-chunk-21-2.png" width="672" /></p>
+<p>Based on the normal QQ-plot, there are a few outliers, but the normality assumption is not violated. Even though the histogram does show normality, we think this is because we only have 51 observations.</p>
+</div>
+<div id="linear-regression-model-prediction" class="section level3">
+<h3>Linear Regression Model Prediction</h3>
+<p>After checking the statistical assumptions, it’s time to perform predictions based on our model Mean_Medicare_Payment ~ PW_GPCI + PE_GPCI + BENE_AVG_RISK_SCRE + ACUTE_HOSP_READMSN_PCT.
+<img src="/analysis_files/figure-html/unnamed-chunk-22-1.png" width="672" /><img src="/analysis_files/figure-html/unnamed-chunk-22-2.png" width="672" />
+The linear regression model gives us a MSE of 2199525 and RMSE of 0.01131751. Our prediction in the Validation Medicare Payment vs Prediction graph fits well in the actual data. Also, in the further comparisons, the prediction graph also shows our indication works well since most of the extreme values are captured by our model. Moreover, the low relative mean square error also indicates that our model could make good predictions on medicare payment.</p>
+</div>
+<div id="xgboost-prediction" class="section level3">
+<h3>XGboost Prediction</h3>
+<p>We then decide to perform a more advanced prediction method, XGboost regression, to predict medicare payment.
+<img src="/analysis_files/figure-html/unnamed-chunk-23-1.png" width="672" /><img src="/analysis_files/figure-html/unnamed-chunk-23-2.png" width="672" />
+This model gives us a MSE of 1033343 and RMSE of 0.005316997, which is much lower than the linear regression one. The graphs also show that XGBoost could catch all the extreme values. However, a drawback of the XGBoost approach is that machine learning models like this one are somewhat opaque in terms of how the algorithm works, making it challenging for us to pinpoint precisely which predictors are the strongest contributors and why.</p>
+</div>
 </div>

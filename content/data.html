@@ -66,8 +66,8 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <h2>Dataset 7</h2>
 <ul>
 <li>Link to the original Dataset:
-<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files</a></li>
-<li></li>
+<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></li>
+<li>This dataset contains information on services covered by the Medicare Physician Fee Schedule. It shows how fee schedule amounts are adjusted to reflect the variation in practice costs from area to area. Geographic Practice Cost Indices (GPCIs) are used by the Centers for Medicare and Medicaid Services (CMS) to adjust payment rates for Medicare services based on the cost of providing healthcare in different areas of the United States. The GPCIs take into account factors such as the cost of living, the cost of medical supplies and equipment, and the cost of labor in different regions. There are three GPCIs: one for physician work, one for practice expense, and one for malpractice insurance.</li>
 </ul>
 </div>
 </div>
@@ -102,9 +102,9 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <li><code>Avg_LOS</code>: Average Length of Stay; The average days the patients would stay in hospitals for each state.</li>
 <li><code>Health_Status</code>: Percentage of adults who reported that their health was very good or excellent.</li>
 <li><code>GDP</code>: Gross Domestic Product; value based on each state.</li>
-<li><code>PW_GPCI</code>:</li>
-<li><code>PE_GPCI</code>:</li>
-<li><code>MP_GPCI</code>:</li>
+<li><code>PW_GPCI</code>: physician work geographic practice cost index for each state</li>
+<li><code>PE_GPCI</code>: practice expense geographic practice cost index for each state</li>
+<li><code>MP_GPCI</code>: malpractice premium geographic practice cost index for each state</li>
 </ul>
 </div>
 <div id="data-import-and-cleaning" class="section level1">
@@ -130,6 +130,7 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 </div>
 <div id="the-fifth-dataset-geographic-practice-cost-indices" class="section level2">
 <h2>The fifth dataset: Geographic Practice Cost Indices</h2>
+<p>For this dataset, we are interested in geographic practice cost indices (GPCI), which are used to calculate Medicare payment rates, adjusted for geographic variation in the direct and indirect costs of providing services and maintaining clinics. We removed irrelevant columns and extract the state variables. We explored the correlation between GPCI and medicare payment and merged the dataset with other factors for modeling.</p>
 </div>
 <div id="the-sixth-dataset-hierarchical-condition-category-readmission-penalties" class="section level2">
 <h2>The sixth dataset: Hierarchical Condition Category &amp; Readmission penalties</h2>
