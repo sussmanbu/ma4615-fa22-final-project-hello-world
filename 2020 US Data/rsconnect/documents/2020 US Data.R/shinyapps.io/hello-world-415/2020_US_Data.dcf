@@ -5,9 +5,9 @@ account: hello-world-415
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7908426
-bundleId: 6647229
+bundleId: 6655946
 url: https://hello-world-415.shinyapps.io/2020_US_Data/
-when: 1671258414.79656
-lastSyncTime: 1671258414.79657
+when: 1671501444.30771
+lastSyncTime: 1671501444.30772
 asMultiple: FALSE
 asStatic: FALSE

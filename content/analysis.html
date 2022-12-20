@@ -82,10 +82,6 @@ draft: false
 The Geographic Practice Cost Index (GPCI) is the factor used by the Centers for Medicare &amp; Medicaid Services (CMS) to adjust payment rates based on the relative cost of providing these services in different areas of the country. The GPCI takes into account differences in the cost of labor, rent, and other expenses associated with providing medical services in different regions. The graph shows a positive relationship, meaning that if the GPCI for a certain area is higher than the national average, Medicare payment will be adjusted upward to reflect the higher cost of providing those services in that location. Conversely, if the GPCI for a certain area is lower than the national average,Medicare payment for services provided in that area will be adjusted downward.</p>
 </div>
 </div>
-<div id="flaws-and-limitations-of-eda" class="section level2">
-<h2>Flaws and Limitations of EDA</h2>
-<p>First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our dataset not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.</p>
-</div>
 <div id="modeling" class="section level2">
 <h2>Modeling</h2>
 <div id="motivations-for-modeling" class="section level3">
@@ -253,4 +249,8 @@ The linear regression model gives us a MSE of 2199525 and RMSE of 0.01131751. Ou
 <img src="/analysis_files/figure-html/unnamed-chunk-23-1.png" width="672" /><img src="/analysis_files/figure-html/unnamed-chunk-23-2.png" width="672" />
 This model gives us a MSE of 1033343 and RMSE of 0.005316997, which is much lower than the linear regression one. The graphs also show that XGBoost could catch all the extreme values. However, a drawback of the XGBoost approach is that machine learning models like this one are somewhat opaque in terms of how the algorithm works, making it challenging for us to pinpoint precisely which predictors are the strongest contributors and why.</p>
 </div>
+</div>
+<div id="flaws-and-limitations-of-eda" class="section level2">
+<h2>Flaws and Limitations of EDA</h2>
+<p>First, due to the availability of the database, we were unable to obtain data from more years, which resulted in our data being insufficient to analyze and obtain any long-term effects. Secondly, it was difficult for us to use the raw data set for the analysis of some factors, which resulted in our datasets not being large enough, so we obtained several not ideal correlations. In addition, in real life, Medicare payment is a variable that is influenced by so many factors, so any single variable on Medicare payment would not be very significant. We need to collect and analyze more factors that may affect Medicare payment for the analysis.</p>
 </div>

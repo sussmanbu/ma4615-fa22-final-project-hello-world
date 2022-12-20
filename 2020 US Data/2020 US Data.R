@@ -30,16 +30,16 @@ Data_Combined <- read_csv(here::here("Data_Combined.csv")) %>%
   rename(Hierarchical_Condition_Category_Score = BENE_AVG_RISK_SCRE, Hospital_Readmission_Rate = ACUTE_HOSP_READMSN_PCT, Geographic_Practice_Cost_Index = PE_GPCI, Length_of_Stay = LOS, Premium = premium_avg)
 
 Data_Table <- Data_Combined %>%
-  select(state, Mean_Medicare_Payment,Hierarchical_Condition_Category_Score, Hospital_Readmission_Rate, Geographic_Practice_Cost_Index, Length_of_Stay, GDP, Premium, Health_Status)
+  select(state, Mean_Medicare_Payment, Mean_Total_Payment, Hierarchical_Condition_Category_Score, Hospital_Readmission_Rate, Geographic_Practice_Cost_Index, Length_of_Stay, GDP, Premium, Health_Status)
 
 lin_reg <- cont_medicare_coverage %>%
   inner_join(Data_Combined, by = c("STUSPS" = "state")) %>%
   relocate(NAME, .before = STATEFP) %>%
   relocate(geometry, .before = STATEFP) %>%
-  select(-Mean_Medicare_Payment.y) %>%
-  rename(Mean_Medicare_Payment = Mean_Medicare_Payment.x)
+  select(-Mean_Medicare_Payment.y, -Mean_Total_Payment.y) %>%
+  rename(Mean_Medicare_Payment = Mean_Medicare_Payment.x, Mean_Total_Payment = Mean_Total_Payment.x)
 
-which_count <- c("Mean_Medicare_Payment", "Hierarchical_Condition_Category_Score", "Hospital_Readmission_Rate", "Geographic_Practice_Cost_Index", "Length_of_Stay", "GDP", "Premium", "Health_Status")
+which_count <- c("Mean_Medicare_Payment", "Mean_Total_Payment", "Hierarchical_Condition_Category_Score", "Hospital_Readmission_Rate", "Geographic_Practice_Cost_Index", "Length_of_Stay", "GDP", "Premium", "Health_Status")
 
 ui <- fluidPage(
   fluidRow(
