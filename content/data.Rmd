@@ -39,6 +39,12 @@ https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-typ
 https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020
 *  This dataset shows each state's statistics about the percentage of adults who reported that their health was very good or excellent. The dataset is provided by CDC, Behavioral Risk Factor Surveillance System aiming to find out how individuals perceive their own health. The self perceive health status could be a good measure for government medicare policy since it reflects people's health-related quality of life. We intend to join this dataset with the original dataset to analyze if there's any connection in between.
 
+## Dataset 7
+* Link to the original Dataset:
+https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files
+* 
+
+
 # Variables
 * `Rndrng_Prvdr_Org_Name`: Rendering provider name; name of the provider.
 * `Rndrng_Prvdr_City`: Rendering provider city; the city in which the provider is physically located.
@@ -68,6 +74,10 @@ https://www.americashealthrankings.org/explore/annual/measure/Health_Status/stat
 * `Avg_LOS`: Average Length of Stay; The average days the patients would stay in hospitals for each state.
 * `Health_Status`: Percentage of adults who reported that their health was very good or excellent.
 * `GDP`: Gross Domestic Product; value based on each state.
+* `PW_GPCI`:
+* `PE_GPCI`:
+* `MP_GPCI`:
+
 
 # Data Import and Cleaning
 In [load_and_clean_data.R](https://hello-world-415.netlify.app/load_and_clean_data.R), we loaded and cleaned our datasets:
@@ -76,30 +86,33 @@ In [load_and_clean_data.R](https://hello-world-415.netlify.app/load_and_clean_da
 The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis. 
 
 We first discussed to identify the columns we need for this project. After selecting the required columns for our datasets, we created another global variable dataset by filtering out those datasets with missing and abnormal values. There are mainly two types of missing values in our datasets – “NA” and “Unknown”. “Unknown” only appears in the RUCA variable and “NA” only appears in the numeric value. After dropping these values, we made some further decisions on the columns that will be needed for our EDA process. In the end, we dropped those variables with repetitive meanings such as the name and code for providers. After testing the availability of the test and making some basic coding on the cleaned dataset, we created our finalized dataset for future usage.
+
+To study the performance of each state, we used `group_by` function to create a sub dataset that shows the statistics of each state. Accordingly, for this new dataset, we have four new variables named by "Mean". To make sure we make comparison between different datasets conveniently, we renamed variable `Rndrng_Prvdr_State_Abrvtn` to `state` This sub dataset was then saved for later usage.
  
 ## The second dataset: CMS Program Statistics - Medicare Premiums
 While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recorded the file under CSV format and finalized the merging data into another file.
 
-## The third dataset: Geographic Variation of Medicare Services
-For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. Based on the evaluation we made, we found two variables HCC and Readmission Rate that could best show the performance of medicare. After sorting out missing and ineffective values, we took these two columns of data out from the dataset and used the inner-join function to create a new dataframe so that we can practice analysis based on the data. 
+## The third dataset: GDP by state
+For the GDP dataset, we wanted to show the relationship between GDP and medicare payment. The dataset we have for GDP is very clean compare to other datasets we have. It is already grouped by states. After loading the datasets, we found out we can directly merge the data we have for GDP with the original dataset. We then created and recorded the data in a CSV file so that we can use it for other purposes.
 
-## The fourth dataset: CMS Program Statistics - Medicare Advantage-Inpatient Hospital
-In the research of this dataset, we wanted to know how length of stay of patients could possibly relate to medicare payment. To make the study of this dataset easier, we first created a global dataframe from the original dataset of medicare payment. We used the function group_by to create a dataset that shows the value given by each state. After this, we selected out the variable we needed from this dataset and merged it with the processed version of original dataset. It gave us a result that's based on each state.
+## The fourth dataset: Geographic Variation of Medicare Services
+For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. After sorting out missing and ineffective values, we first took all the columns that could be useful in evaluating the medicare payment out of this dataset. Since the dataset contains a large number of variables, we decided to save the files and test each variable that could be useful for analysis.
 
-The by-state dataset was then saved for further usage for other datasets like Health Status.
+## The fifth dataset: Geographic Practice Cost Indices 
 
-## The fifth dataset: American Health Rankings
-People's personal perception to their health status could be a good implication of how well the medicare services are implemented. For this dataset, we intend to show the relationship between these factors. Fortunately, this dataset has already summed up a variable that tells us what percentage of population perceive themselves to be healthy in each state. After taking out columns we needed from the raw dataset, we used a left-join based on each state. 
 
-## The sixth dataset: GDP
-[...]
+## The sixth dataset: Hierarchical Condition Category & Readmission penalties
+Based on the evaluation we made for the fourth datasets, we found two variables HCC and Readmission Rate that could best show the performance of medicare. We selected these two variables out from the fourth dataset and put them into a new dataset. By putting them into a new datasets, we were then able to indivually comparing these two variables with the main variable: `Mean_Medicare_Payment`.
 
-# Datasets Combination
+## The seventh dataset: CMS Program Statistics - Medicare Advantage-Inpatient Hospital
+In the research of this dataset, we wanted to know how length of stay of patients could possibly relate to medicare payment. To make the study of this dataset easier, we first created a global dataframe from the original dataset of medicare payment. We then selected and extracted the variable we needed for this analysis. After taking out what we need for analyzing length of stay, we saved the variable in a new dataset for further usage.
+
+## The eighth dataset: American Health Rankings
+People's personal perception to their health status could be a good implication of how well the medicare services are implemented. For this dataset, we intend to show the relationship between these factors. Fortunately, this dataset has already summed up a variable that tells us what percentage of population perceive themselves to be healthy in each state. After taking out columns we needed from the raw dataset, we used a left-join based on each state.
+
 ```{r eval=FALSE}
 library(tidyverse)
 library(dplyr)
-
-
 
 ## Below is how we load and clean our data set.
 
@@ -164,7 +177,7 @@ medicare_premium_combined <- merge(premiumA,medicare_data_sum)
 write_csv(medicare_premium_combined, file = here::here("dataset", "medicare_premium_combined.csv"))
 save(medicare_premium_combined, file = here::here("dataset/Medicare_Data.RData"))
 
-##Dataset 3: GDP by states
+##Dataset 3: GDP
 GDP <- read_csv(here::here("dataset", "GDP.csv"), 
                 col_types = cols_only(GDP=col_number(),  
                                       state =col_character()))
@@ -254,6 +267,10 @@ population <- read_csv(here::here("dataset","population.csv"))
 write_csv(population, file = here::here("dataset", "population.csv"))
 save(population, file = here::here("dataset/population.RData"))
 
+```
+
+# Data Combination
+``` {r eval=FALSE}
 ##Dataset8: Combined dataset for year 2018-2019
 medicare18 <- read_csv(here::here("dataset","medicare-18.csv"),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
 medicare19 <- read_csv(here::here("dataset","medicare-19.csv"),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
@@ -347,6 +364,11 @@ https://www.americashealthrankings.org/explore/annual/measure/Health_Status/stat
 https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019
 * American Health Rankings, High Health Status, 2018,
 https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018
+* Gross Domestic Product by State and Personal Income by State, 
+https://www.bea.gov/data/gdp/gdp-state
+* Geographic Practice Cost Indices, 2020, 2019, 2018,
+https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d
+https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C
+https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D 
 
-* [GDP reference]
 

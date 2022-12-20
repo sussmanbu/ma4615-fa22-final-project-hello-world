@@ -62,6 +62,14 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <li>This dataset shows each state’s statistics about the percentage of adults who reported that their health was very good or excellent. The dataset is provided by CDC, Behavioral Risk Factor Surveillance System aiming to find out how individuals perceive their own health. The self perceive health status could be a good measure for government medicare policy since it reflects people’s health-related quality of life. We intend to join this dataset with the original dataset to analyze if there’s any connection in between.</li>
 </ul>
 </div>
+<div id="dataset-7" class="section level2">
+<h2>Dataset 7</h2>
+<ul>
+<li>Link to the original Dataset:
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files</a></li>
+<li></li>
+</ul>
+</div>
 </div>
 <div id="variables" class="section level1">
 <h1>Variables</h1>
@@ -94,6 +102,9 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <li><code>Avg_LOS</code>: Average Length of Stay; The average days the patients would stay in hospitals for each state.</li>
 <li><code>Health_Status</code>: Percentage of adults who reported that their health was very good or excellent.</li>
 <li><code>GDP</code>: Gross Domestic Product; value based on each state.</li>
+<li><code>PW_GPCI</code>:</li>
+<li><code>PE_GPCI</code>:</li>
+<li><code>MP_GPCI</code>:</li>
 </ul>
 </div>
 <div id="data-import-and-cleaning" class="section level1">
@@ -103,35 +114,36 @@ Amyotrophic Lateral Sclerosis (ALS) can get Medicare services earlier. Therefore
 <h2>The first dataset: Medicare Inpatient Hospitals - by Provider and Service</h2>
 <p>The size of our dataset is smaller than 50 mb so we included Medicare_Data.csv file in the dataset folder. We loaded the data using read_csv and cleaned the data by removing rows with missing values. We also removed columns with meaningless information for our analysis.</p>
 <p>We first discussed to identify the columns we need for this project. After selecting the required columns for our datasets, we created another global variable dataset by filtering out those datasets with missing and abnormal values. There are mainly two types of missing values in our datasets – “NA” and “Unknown”. “Unknown” only appears in the RUCA variable and “NA” only appears in the numeric value. After dropping these values, we made some further decisions on the columns that will be needed for our EDA process. In the end, we dropped those variables with repetitive meanings such as the name and code for providers. After testing the availability of the test and making some basic coding on the cleaned dataset, we created our finalized dataset for future usage.</p>
+<p>To study the performance of each state, we used <code>group_by</code> function to create a sub dataset that shows the statistics of each state. Accordingly, for this new dataset, we have four new variables named by “Mean”. To make sure we make comparison between different datasets conveniently, we renamed variable <code>Rndrng_Prvdr_State_Abrvtn</code> to <code>state</code> This sub dataset was then saved for later usage.</p>
 </div>
 <div id="the-second-dataset-cms-program-statistics---medicare-premiums" class="section level2">
 <h2>The second dataset: CMS Program Statistics - Medicare Premiums</h2>
 <p>While merging the cleaned first dataset with other datasets, we summarized and categorized the data based on the number of states that’s been recorded. During the merging process, we identified the disparity between data that some columns in the second raw datasets utilized a different data type which made the merge incompatible. We then unified the data formats and deleted the dollar signs and commas in the raw datasets in the Excel file. To make sure we can conveniently apply the dataset in the future, we recorded the file under CSV format and finalized the merging data into another file.</p>
 </div>
-<div id="the-third-dataset-geographic-variation-of-medicare-services" class="section level2">
-<h2>The third dataset: Geographic Variation of Medicare Services</h2>
-<p>For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. Based on the evaluation we made, we found two variables HCC and Readmission Rate that could best show the performance of medicare. After sorting out missing and ineffective values, we took these two columns of data out from the dataset and used the inner-join function to create a new dataframe so that we can practice analysis based on the data.</p>
+<div id="the-third-dataset-gdp-by-state" class="section level2">
+<h2>The third dataset: GDP by state</h2>
+<p>For the GDP dataset, we wanted to show the relationship between GDP and medicare payment. The dataset we have for GDP is very clean compare to other datasets we have. It is already grouped by states. After loading the datasets, we found out we can directly merge the data we have for GDP with the original dataset. We then created and recorded the data in a CSV file so that we can use it for other purposes.</p>
 </div>
-<div id="the-fourth-dataset-cms-program-statistics---medicare-advantage-inpatient-hospital" class="section level2">
-<h2>The fourth dataset: CMS Program Statistics - Medicare Advantage-Inpatient Hospital</h2>
-<p>In the research of this dataset, we wanted to know how length of stay of patients could possibly relate to medicare payment. To make the study of this dataset easier, we first created a global dataframe from the original dataset of medicare payment. We used the function group_by to create a dataset that shows the value given by each state. After this, we selected out the variable we needed from this dataset and merged it with the processed version of original dataset. It gave us a result that’s based on each state.</p>
-<p>The by-state dataset was then saved for further usage for other datasets like Health Status.</p>
+<div id="the-fourth-dataset-geographic-variation-of-medicare-services" class="section level2">
+<h2>The fourth dataset: Geographic Variation of Medicare Services</h2>
+<p>For this dataset, we are interested in the relationship between medicare payment and the geographic location where medicare services are implemented. We first summarized what we can find as useful information in this dataset. After sorting out missing and ineffective values, we first took all the columns that could be useful in evaluating the medicare payment out of this dataset. Since the dataset contains a large number of variables, we decided to save the files and test each variable that could be useful for analysis.</p>
 </div>
-<div id="the-fifth-dataset-american-health-rankings" class="section level2">
-<h2>The fifth dataset: American Health Rankings</h2>
+<div id="the-fifth-dataset-geographic-practice-cost-indices" class="section level2">
+<h2>The fifth dataset: Geographic Practice Cost Indices</h2>
+</div>
+<div id="the-sixth-dataset-hierarchical-condition-category-readmission-penalties" class="section level2">
+<h2>The sixth dataset: Hierarchical Condition Category &amp; Readmission penalties</h2>
+<p>Based on the evaluation we made for the fourth datasets, we found two variables HCC and Readmission Rate that could best show the performance of medicare. We selected these two variables out from the fourth dataset and put them into a new dataset. By putting them into a new datasets, we were then able to indivually comparing these two variables with the main variable: <code>Mean_Medicare_Payment</code>.</p>
+</div>
+<div id="the-seventh-dataset-cms-program-statistics---medicare-advantage-inpatient-hospital" class="section level2">
+<h2>The seventh dataset: CMS Program Statistics - Medicare Advantage-Inpatient Hospital</h2>
+<p>In the research of this dataset, we wanted to know how length of stay of patients could possibly relate to medicare payment. To make the study of this dataset easier, we first created a global dataframe from the original dataset of medicare payment. We then selected and extracted the variable we needed for this analysis. After taking out what we need for analyzing length of stay, we saved the variable in a new dataset for further usage.</p>
+</div>
+<div id="the-eighth-dataset-american-health-rankings" class="section level2">
+<h2>The eighth dataset: American Health Rankings</h2>
 <p>People’s personal perception to their health status could be a good implication of how well the medicare services are implemented. For this dataset, we intend to show the relationship between these factors. Fortunately, this dataset has already summed up a variable that tells us what percentage of population perceive themselves to be healthy in each state. After taking out columns we needed from the raw dataset, we used a left-join based on each state.</p>
-</div>
-<div id="the-sixth-dataset-gdp" class="section level2">
-<h2>The sixth dataset: GDP</h2>
-<p>[…]</p>
-</div>
-</div>
-<div id="datasets-combination" class="section level1">
-<h1>Datasets Combination</h1>
 <pre class="r"><code>library(tidyverse)
 library(dplyr)
-
-
 
 ## Below is how we load and clean our data set.
 
@@ -196,7 +208,7 @@ medicare_premium_combined &lt;- merge(premiumA,medicare_data_sum)
 write_csv(medicare_premium_combined, file = here::here(&quot;dataset&quot;, &quot;medicare_premium_combined.csv&quot;))
 save(medicare_premium_combined, file = here::here(&quot;dataset/Medicare_Data.RData&quot;))
 
-##Dataset 3: GDP by states
+##Dataset 3: GDP
 GDP &lt;- read_csv(here::here(&quot;dataset&quot;, &quot;GDP.csv&quot;), 
                 col_types = cols_only(GDP=col_number(),  
                                       state =col_character()))
@@ -284,9 +296,12 @@ save(HCC_Readmission_Only, file = here::here(&quot;dataset/HCC_Readmission_Only.
 population &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;population.csv&quot;))
 ##Store the dataset for further usage
 write_csv(population, file = here::here(&quot;dataset&quot;, &quot;population.csv&quot;))
-save(population, file = here::here(&quot;dataset/population.RData&quot;))
-
-##Dataset8: Combined dataset for year 2018-2019
+save(population, file = here::here(&quot;dataset/population.RData&quot;))</code></pre>
+</div>
+</div>
+<div id="data-combination" class="section level1">
+<h1>Data Combination</h1>
+<pre class="r"><code>##Dataset8: Combined dataset for year 2018-2019
 medicare18 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;medicare-18.csv&quot;),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
 medicare19 &lt;- read_csv(here::here(&quot;dataset&quot;,&quot;medicare-19.csv&quot;),col_types=cols_only(Rndrng_Prvdr_State_Abrvtn=col_character(),Avg_Tot_Pymt_Amt=col_number(),Avg_Mdcr_Pymt_Amt=col_number()))
 medicare_train &lt;- rbind(medicare18,medicare19)
@@ -359,26 +374,31 @@ save(cont_medicare_coverage, file = here::here(&quot;dataset/cont_medicare_cover
 <div id="references" class="section level1">
 <h1>References</h1>
 <ul>
-<li><p>Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service" class="uri">https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service</a>.</p></li>
-<li><p>Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a>.</p></li>
-<li><p>Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, <a href="https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020" class="uri">https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020</a>.</p></li>
-<li><p>Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) <a href="https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/" class="uri">https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/</a> (21 Nov. 2022)</p></li>
-<li><p>Medicare Geographic Variation - by National, State &amp; County, 2020,
-<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data</a></p></li>
-<li><p>Physician Fee Schedule Value Files, 2020,
-<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></p></li>
-<li><p>Physician Fee Schedule Value Files, 2019,
-<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C</a></p></li>
-<li><p>Physician Fee Schedule Value Files, 2018,
-<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D</a></p></li>
-<li><p>CMS Program Statistics - Medicare Advantage-Inpatient Hospital, 2019,
-<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital</a></p></li>
-<li><p>American Health Rankings, High Health Status, 2020,
-<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020</a></p></li>
-<li><p>American Health Rankings, High Health Status, 2019,
-<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019</a></p></li>
-<li><p>American Health Rankings, High Health Status, 2018,
-<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018</a></p></li>
-<li><p>[GDP reference]</p></li>
+<li>Centers for Medicare &amp; Medicaid Services. “Medicare Inpatient Hospitals - by Provider and Service.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service" class="uri">https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatient-hospitals/medicare-inpatient-hospitals-by-provider-and-service</a>.</li>
+<li>Centers for Medicare &amp; Medicaid Services. “CMS Program Statistics - Medicare Premiums.” Centers for Medicare &amp; Medicaid Services Data, 2022, <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-premium-reports/cms-program-statistics-medicare-premiums</a>.</li>
+<li>Kurani, Nisha, et al. “How Has U.S. Spending on Healthcare Changed over Time?” Peterson-KFF Health System Tracker, 25 Feb. 2022, <a href="https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020" class="uri">https://www.healthsystemtracker.org/chart-collection/u-s-spending-healthcare-changed-time/#Total%20national%20health%20expenditures,%20US%20$%20Billions,%201970-2020</a>.</li>
+<li>Juliette Cubanski and Tricia Neuman, The Facts on Medicare Spending and Financing, (KFF, 20 Aug. 2019) <a href="https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/" class="uri">https://www.kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/</a> (21 Nov. 2022)</li>
+<li>Medicare Geographic Variation - by National, State &amp; County, 2020,
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-geographic-comparisons/medicare-geographic-variation-by-national-state-county/data</a></li>
+<li>Physician Fee Schedule Value Files, 2020,
+<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a></li>
+<li>Physician Fee Schedule Value Files, 2019,
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C</a></li>
+<li>Physician Fee Schedule Value Files, 2018,
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D</a></li>
+<li>CMS Program Statistics - Medicare Advantage-Inpatient Hospital, 2019,
+<a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital" class="uri">https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-service-type-reports/cms-program-statistics-medicare-advantage-inpatient-hospital</a></li>
+<li>American Health Rankings, High Health Status, 2020,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2020</a></li>
+<li>American Health Rankings, High Health Status, 2019,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2019</a></li>
+<li>American Health Rankings, High Health Status, 2018,
+<a href="https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018" class="uri">https://www.americashealthrankings.org/explore/annual/measure/Health_Status/state/ALL?edition-year=2018</a></li>
+<li>Gross Domestic Product by State and Personal Income by State,
+<a href="https://www.bea.gov/data/gdp/gdp-state" class="uri">https://www.bea.gov/data/gdp/gdp-state</a></li>
+<li>Geographic Practice Cost Indices, 2020, 2019, 2018,
+<a href="https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d" class="uri">https://www.cms.gov/medicaremedicare-fee-service-paymentphysicianfeeschedpfs-relative-value-files/rvu20d</a>
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU19C</a>
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D" class="uri">https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/PhysicianFeeSched/PFS-Relative-Value-Files-Items/RVU18D</a></li>
 </ul>
 </div>
